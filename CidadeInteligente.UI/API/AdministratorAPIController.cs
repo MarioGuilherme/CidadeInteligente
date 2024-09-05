@@ -2,13 +2,15 @@
 using CidadeInteligente.Application.Commands.CreateCourse;
 using CidadeInteligente.Application.Commands.CreateUser;
 using CidadeInteligente.Application.Commands.DeleteAreaById;
+using CidadeInteligente.Application.Commands.DeleteCourseById;
+using CidadeInteligente.Application.Commands.DeleteUserById;
 using CidadeInteligente.Application.Commands.UpdateArea;
 using CidadeInteligente.Application.Commands.UpdateCourse;
 using CidadeInteligente.Application.Commands.UpdateUser;
 using CidadeInteligente.Application.Queries.GetAllAreas;
-using CidadeInteligente.Application.Queries.GetAllCourse;
+using CidadeInteligente.Application.Queries.GetAllCourses;
 using CidadeInteligente.Application.Queries.GetAllUsers;
-using CidadeInteligente.Application.Queries.GetAreaByAreaId;
+using CidadeInteligente.Application.Queries.GetAreaById;
 using CidadeInteligente.Application.Queries.GetCourseById;
 using CidadeInteligente.Application.Queries.GetUserById;
 using CidadeInteligente.Core.Entities;

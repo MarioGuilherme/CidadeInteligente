@@ -1,9 +1,8 @@
 ﻿using CidadeInteligente.Application.Queries.GetAllAreas;
-using CidadeInteligente.Application.Queries.GetAllCourse;
+using CidadeInteligente.Application.Queries.GetAllCourses;
 using CidadeInteligente.Application.Queries.GetAllUsers;
 using CidadeInteligente.Core.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CidadeInteligente.UI.Controllers;

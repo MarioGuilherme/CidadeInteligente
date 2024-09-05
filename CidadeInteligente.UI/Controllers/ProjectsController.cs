@@ -1,17 +1,13 @@
 using CidadeInteligente.Application.Queries.GetAllAreas;
-using CidadeInteligente.Application.Queries.GetAllCourse;
+using CidadeInteligente.Application.Queries.GetAllCourses;
 using CidadeInteligente.Application.Queries.GetAllProjects;
 using CidadeInteligente.Application.Queries.GetAllUsers;
-using CidadeInteligente.Application.Queries.GetAreaByAreaId;
-using CidadeInteligente.Application.Queries.GetCreatedProjectsFromUser;
 using CidadeInteligente.Application.Queries.GetProjectById;
 using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
-using CidadeInteligente.UI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace CidadeInteligente.UI.Controllers;
 

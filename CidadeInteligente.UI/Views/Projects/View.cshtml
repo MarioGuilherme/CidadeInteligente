@@ -1,0 +1,89 @@
+﻿@using CidadeInteligente.Core.Entities
+@model Project;
+
+@{
+    this.ViewData["Title"] = $"Projeto - {this.Model.ProjectId}";
+}
+
+<link rel="stylesheet" href="~/css/header.css" />
+
+<partial name="_Header" />
+
+<main class="p-3">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6 pb-2">
+                <button class="btn btn-default-red btn-block btn-generate-qrcode">Gerar QRCODE do Projeto</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <hr>
+                <h4 class="font-weight-bold text-center default-color mt-2" style=word-break:break-all>@this.Model.Title</h4>
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <h5 class="font-weight-bold text-center default-color">Pessoas envolvidas</h5>
+                <div class="row justify-content-center align-items-center text-center m-1 p-1">
+                    @foreach (User user in this.Model.InvolvedUsers) {
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3"><p>@user.Name</p></div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5 text-center">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <h5 class="font-weight-bold default-color">Área</h5>
+                <p>@this.Model.AreaId</p>
+            </div>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <h5 class="font-weight-bold default-color">Curso</h5>
+                <p>@this.Model.CourseId</p>
+            </div>
+        </div>
+        <div class="row mt-5 text-center">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <h5 class="font-weight-bold default-color">Data de ínicio do projeto</h5>
+                <p>@this.Model.StartedAt.ToShortDateString()</p>
+            </div>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <h5 class="font-weight-bold default-color">Data de término do projeto</h5>
+                <p>@(this.Model.FinishedAt?.ToShortDateString() ?? "Sem data de términio")</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mt-4">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <h5 class="font-weight-bold text-center default-color" style=word-break:break-all>Descrição</h5>
+                @if (this.Model.Description is null) {
+                    <p style=text-align:center>Nenhuma descrição</p>
+                } else {
+                    <p style=text-align:justify>@this.Model.Description</p>
+                }
+            </div>
+        </div>
+        <hr>
+        <div class="row justify-content-center align-items-center m-1 p-1">
+            @foreach (Media media in this.Model.Medias) {
+                <div class="col-12 col-sm-12 col-lg-3 col-md-3 mt-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            @if (media.Extension == ".mp4") {
+                                <video class="d-block" style="width:-webkit-fill-available" preload="metadata" controls src=@media.Path></video>
+                            } else {
+                                <img class="d-block w-100 img-card" alt=@media.Title src=@media.Path>
+                            }
+                            <div class="form-group mt-2"><h4>@media.Title</h4></div>
+                            <div class="form-group">@(media.Description ?? "Nenhuma descrição")</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</main>
+
+<script src="~/js/qrcode.min.js"></script>
+<script src="~/js/viewProject.js"></script>

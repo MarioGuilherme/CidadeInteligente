@@ -1,0 +1,52 @@
+﻿@using CidadeInteligente.Core.Enums;
+
+<nav class="navbar navbar-expand-lg navCity">
+    <h4 class="navbar-brand">
+        <i class="fas fa-solid fa-city"></i> Cidade Inteligente
+    </h4>
+    <button class="navbar-toggler" data-target="#my-nav" data-toggle="collapse" aria-controls="my-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-solid fa-bars"></i>
+    </button>
+    <div id="my-nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropDownProject" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Projetos
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item@(this.Context.Request.Path == "/" ? " disabledItemDropDown" : string.Empty)" href="/">
+                        Galeria
+                    </a>
+                    @if (this.User.Identity!.IsAuthenticated && this.User.IsInRole(nameof(Role.Teacher))) {
+                        <a class="dropdown-item" href="/criar-projeto">
+                            Criar
+                        </a>
+                        <a class="dropdown-item" href="/meus-projetos">
+                            Meus Projetos
+                        </a>
+                    }
+                </div>
+            </li>
+            @if (this.User.Identity!.IsAuthenticated & this.User.IsInRole(nameof(Role.Teacher))) {
+                <a class="nav-link@(this.Context.Request.Path == "/admin" ? " disabledItem" : string.Empty)" href="/admin">
+                    Admin
+                </a>
+            }
+            @if (this.User.Identity.IsAuthenticated) {
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">
+                        Sair
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            } else {
+                <li class="nav-item">
+                    <a class="nav-link btn btn-default-red" href="/login">
+                        LOGIN
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,155 @@
+﻿@using CidadeInteligente.Core.Entities
+@model Project;
+
+@{
+    this.ViewData["Title"] = $"Editar Projeto - {this.Model.ProjectId}";
+}
+
+<link rel="stylesheet" href="~/css/header.css" />
+<link rel="stylesheet" href="~/css/form.css" />
+<link rel="stylesheet" href="~/css/editProject.css" />
+
+<partial name="_Header" />
+
+<main class="p-3">
+    <div class="container-fluid d-flex justify-content-center align-items-center flex-column p-0">
+        <div class="formTitle">
+            <h3 class="m-0 p-2 text-center">Editar Projeto</h3>
+        </div>
+        <div class="formContent">
+            <form class="form">
+                <input type="hidden" name="projectId" value=@this.Model.ProjectId>
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-12 input-form-title">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input value="@this.Model.Title" type="text" maxlength="100" name="title" class="form-control" placeholder="Digite o titulo">
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-12 col-sm-8 col-lg-8 col-md-8 d-flex justify-content-center align-items-center">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label>Área do projeto</label>
+                                    <select class="form-control" name="areaId">
+                                        @foreach (Area area in this.ViewBag.Areas) {
+                                            <option selected="@(this.Model.AreaId == area.AreaId)" value=@area.AreaId>@area.Description</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="my-select">Curso do projeto</label>
+                                    <select id="my-select" class="form-control" name="courseId">
+                                        @foreach (Course course in this.ViewBag.Courses) {
+                                            <option selected="@(this.Model.CourseId == course.CourseId)" value=@course.CourseId>@course.Description</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de ínicio do projeto</label>
+                                    <input class="form-control" value=@string.Join('-', this.Model.StartedAt.ToString().Split('/').Reverse()) type="date" name="startedAt">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de término do projeto</label>
+                                    <input class="form-control" value="@(this.Model.FinishedAt is not null ? string.Join('-', this.Model.FinishedAt!.ToString()!.Split('/').Reverse()) : string.Empty)" type="date" name="finishedAt">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label for="my-select">Pessoas Envolvidas</label>
+                            <div class="users">
+                                @foreach (User user in this.Model.InvolvedUsers) {
+                                    <div class="user" id=@user.UserId involved="true">
+                                        <span>@(user.Name.Length < 58 ? user.Name : $"{user.Name[0..58]}...")</span>
+                                    </div>
+                                }
+                                @foreach (User user in this.ViewBag.OthersUsers) {
+                                    <div class="user" id=@user.UserId>
+                                        <span>@(user.Name.Length < 58 ? user.Name : $"{user.Name[0..58]}...")</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-12">
+                        <div class="form-group">
+                            <label for="my-textarea">Descrição</label>
+                            <textarea class="form-control" name="description" maxlength="800" rows="5">@(this.Model.Description ?? string.Empty)</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-12 d-flex align-items-center justify-content-center flex-column text-center">
+                        <div class="form-group">
+                            <label>Mídias incluídas</label>
+                            <br>
+                            <button type="button" class="btn btn-add-media">
+                                <i class="mdi mdi-plus"></i>
+                                Adicionar mídia
+                            </button>
+                            <input type="file" name="medias[]" class="d-none input-new-medias" multiple accept=".jpg,.jpeg,.png,.mp4">
+                            <input type="file" class="d-none input-change-media" accept=".jpg,.jpeg,.png,.mp4">
+                        </div>
+                    </div>
+                </div>
+                <div class="medias row align-items-center">
+                    @foreach (Media media in this.Model.Medias) {
+                        <div class="col-12 col-sm-12 col-lg-3 col-md-3 my-3">
+                            <div class="card media" id=@media.MediaId>
+                                <div class="card-body">
+                                    @if (media.Extension == ".mp4") {
+                                        <video class="d-block" style="width:100%" preload="metadata" controls src=@media.Path size=@media.Size></video>
+                                    } else {
+                                        <img class="d-block w-100 img-card" src=@media.Path size=@media.Size>
+                                    }
+                                    <div class="row my-1">
+                                        <div class="col-12 col-lg-6">
+                                            <button type="button" class="btn btn-change-media w-100 btn-warning my-1">
+                                                <i class="mdi mdi-pencil"></i>
+                                                Alterar
+                                            </button>
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <button type="button" class="btn w-100 btn-remove-media btn-default-red my-1" id=@media.MediaId>
+                                                <i class="mdi mdi-trash-can-outline"></i>
+                                                Apagar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nome</label>
+                                        <input maxlength="60" class="form-control" type="text" value=@media.Title>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Descrição</label>
+                                        <textarea maxlength="300" class="form-control" rows="3">@(media.Description ?? string.Empty)</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-12">
+                        <button class="btn btn-strong-red btn-save btn-block" type="button">Salvar alterações</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script src="~/js/projectForm.js"></script>
+<script src="~/js/editProject.js"></script>

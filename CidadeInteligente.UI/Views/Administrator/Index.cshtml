@@ -1,0 +1,261 @@
+﻿@using CidadeInteligente.Core.Entities
+@using CidadeInteligente.Core.Enums
+@using CidadeInteligente.UI.Extensions;
+
+@{
+    this.ViewData["Title"] = "Administrativo";
+}
+
+<partial name="_Header" />
+
+<link rel="stylesheet" href="~/css/header.css">
+<link rel="stylesheet" href="~/css/dataTable.css">
+
+<style>
+    .tab-content .container-fluid {
+        border-right: 1px solid #b11116;
+        border-left: 1px solid #b11116;
+        border-bottom: 1px solid #b11116
+    }
+
+    .tab-pane > .container-fluid {
+        overflow: auto
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid #b11116
+    }
+
+    main .nav-link {
+        color: black;
+        border-top: 1px solid #f8868999 !important;
+        border-left: 1px solid #f8868999 !important;
+        border-right: 1px solid #f8868999 !important
+    }
+
+    main a.active {
+        border-top: 1px solid #b11116 !important;
+        border-left: 1px solid #b11116 !important;
+        border-right: 1px solid #b11116 !important
+    }
+
+    .tab-pane .col-12 {
+        overflow: auto
+    }
+</style>
+
+<main class="container-fluid p-5">
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true">Usuários</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="areas-tab" data-toggle="tab" href="#areas" role="tab" aria-controls="areas" aria-selected="false">Áreas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="courses-tab" data-toggle="tab" href="#courses" role="tab" aria-controls="courses" aria-selected="false">Cursos</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+                    <div class="container-fluid p-4">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <button class="btn btn-default-red" data-toggle="modal" data-target="#formModal">
+                                    <i class="fas fa-solid fa-plus"></i>
+                                    Cadastrar Usuário
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mt-3">
+                            <div class="col-12">
+                                <table class="table hover">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <td scope="col">#</td>
+                                            <td scope="col">Nome</td>
+                                            <td scope="col">E-mail</td>
+                                            <td scope="col">Curso</td>
+                                            <td scope="col">Permissão</td>
+                                            <td scope="col">Ações</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (User user in this.ViewBag.Users) {
+                                            <tr role="row">
+                                                <td>@user.UserId</td>
+                                                <td>@user.Name</td>
+                                                <td>@user.Email</td>
+                                                <td>@user.Course.Description</td>
+                                                <td>@user.Role.GetDescription()</td>
+                                                <td>
+                                                    <button id=@user.UserId class="btn btn-edit btn-strong-gray">
+                                                        <i class="fa fa-solid fa-pencil"></i> Editar
+                                                    </button>
+                                                    <button id=@user.UserId class="btn btn-delete btn-strong-red">
+                                                        <i class="fa fa-solid fa-trash"></i> Apagar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="areas" role="tabpanel" aria-labelledby="areas-tab">
+                    <div class="container-fluid p-4">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <button class="btn btn-default-red" data-toggle="modal" data-target="#formModal">
+                                    <i class="fas fa-solid fa-plus"></i>
+                                    Cadastrar Área
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mt-3">
+                            <div class="col-12">
+                                <table class="table hover">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <td scope="col">#</td>
+                                            <td scope="col">Descrição</td>
+                                            <td scope="col">Ações</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Area area in this.ViewBag.Areas) {
+                                            <tr role="row">
+                                                <td>@area.AreaId</td>
+                                                <td>@area.Description</td>
+                                                <td>
+                                                    <button id=@area.AreaId class="btn btn-edit btn-strong-gray">
+                                                        <i class="fa fa-solid fa-pencil"></i> Editar
+                                                    </button>
+                                                    <button id=@area.AreaId class="btn btn-delete btn-strong-red">
+                                                        <i class="fa fa-solid fa-trash"></i> Apagar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="courses" role="tabpanel" aria-labelledby="courses-tab">
+                    <div class="container-fluid p-4">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <button class="btn btn-default-red" data-toggle="modal" data-target="#formModal">
+                                    <i class="fas fa-solid fa-plus"></i>
+                                    Cadastrar Curso
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mt-3">
+                            <div class="col-12">
+                                <table class="table hover">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <td scope="col">#</td>
+                                            <td scope="col">Descrição</td>
+                                            <td scope="col">Ações</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Course course in this.ViewBag.Courses) {
+                                            <tr role="row">
+                                                <td>@course.CourseId</td>
+                                                <td>@course.Description</td>
+                                                <td>
+                                                    <button id=@course.CourseId class="btn btn-edit btn-strong-gray">
+                                                        <i class="fa fa-solid fa-pencil"></i> Editar
+                                                    </button>
+                                                    <button id=@course.CourseId class="btn btn-delete btn-strong-red">
+                                                        <i class="fa fa-solid fa-trash"></i> Apagar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="~/js/admin.js"></script>
+
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" name="userId">
+                    <div class="form-group">
+                        <label class="text-dark">Nome</label>
+                        <input class="form-control" maxlength="60" type="text" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="text-dark">E-mail</label>
+                        <input class="form-control" maxlength="60" type="text" name="email">
+                    </div>
+                    <div id="passwordInputs">
+                        <div class="form-group">
+                            <label class="text-dark">Senha</label>
+                            <input class="form-control" maxlength="60" type="password" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label class="text-dark">Confirmar Senha</label>
+                            <input class="form-control" maxlength="60" type="password" name="confirmPassword">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="text-dark">Curso</label>
+                        <div class="form-group">
+                            <select id="my-select" class="form-control" name="courseId">
+                                <option value="">SELECIONE O CURSO DO USUÁRIO</option>
+                                @foreach (Course course in this.ViewBag.Courses) {
+                                    <option value=@course.CourseId>@course.Description</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Usuário</label>
+                        <select class="form-control" name="role">
+                            <option value="">SELECIONE A PERMISSÃO DO USUÁRIO</option>
+                            <option value=@((byte)Role.Teacher)>@Role.Teacher.GetDescription()</option>
+                            <option value=@((byte)Role.Student)>@Role.Student.GetDescription()</option>
+                        </select>
+                    </div>
+                </form>
+                <form id="entityForm">
+                    <input type="hidden" name="entityId">
+                    <div class="form-group">
+                        <label class="text-dark">Descrição</label>
+                        <input class="form-control" maxlength="45" type="text" name="description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default-red btn-block btn-save">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>

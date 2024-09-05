@@ -1,0 +1,65 @@
+﻿@using CidadeInteligente.Application.ViewModels;
+@using CidadeInteligente.Core.Entities
+@using CidadeInteligente.Core.Enums
+@model PaginatedView<Project>
+
+@{
+    this.ViewData["Title"] = "Meus Projetos";
+}
+
+<link rel="stylesheet" href="~/css/header.css" />
+<link rel="stylesheet" href="~/css/myProjects.css" />
+
+<partial name="_Header" />
+
+<main class="p-3">
+    <div class="container-fluid">
+        <h3 class="title-my-projetos">Meus Projetos</h3>
+        <hr>
+        <div class="row justify-content-center mb-5 myProjects">
+            @if (this.Model.Data.Count == 0) {
+                <h3 class="text-center">Você não está participando de nenhum projeto.</h3>
+            } else {
+                foreach (Project project in this.Model.Data) {
+                    <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-3">
+                        <div class="card card-projeto">
+                            @if (project.Medias[0].Extension == ".mp4") {
+                                <video class="d-block" style="width:inherit" preload="metadata" src="@project.Medias[0].Path"></video>
+                            } else {
+                                <img class="card-img-top img-card" src="@project.Medias[0].Path">
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">@project.Title</h5>
+                                <p class="card-text">
+                                    @if (project.Description is not null) {
+                                        @(project.Description.Length < 125 ? project.Description : $"{project.Description[0..125]}...")
+                                    } else {
+                                        <small>Sem descrição</small>
+                                    }
+                                </p>
+                            </div>
+                            <a href="/ver-projeto/@project.ProjectId" class="btn btn-block mt-2 btn-view-project">Ver Projeto</a>
+                            @if (this.User.IsInRole(nameof(Role.Teacher))) {
+                                <a href="/editar-projeto/@project.ProjectId" class="btn mt-2 btn-edit-project">Editar</a>
+                                <button id=@project.ProjectId class="btn mt-2 btn-delete-project">Excluir</button>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="row justify-content-center mt-3 pages">
+            @for (int i = 0; i < this.Model.TotalPages; i++) {
+                if (i != this.Model.CurrentPage) {
+                    <a href="meus-projetos/@i">
+                        <button class="btn btn-default-red m-1">@i</button>
+                    </a>
+                } else {
+                    <button class="btn btn-strong-red m-1" disabled>@i</button>
+                }
+            }
+        </div>
+    </div>
+</main>
+
+<script src="~/js/myProjects.js"></script>

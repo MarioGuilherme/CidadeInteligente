@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Application.Commands.CreateMedia;
+﻿using CidadeInteligente.Application.Commands.UpdateMedia;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.UpdateProject;

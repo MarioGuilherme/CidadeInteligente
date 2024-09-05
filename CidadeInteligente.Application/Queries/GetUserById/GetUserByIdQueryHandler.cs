@@ -3,7 +3,8 @@ using CidadeInteligente.Core.Repositories;
 using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetUserById;
-internal class GetUserByIdQueryHandler(IUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, User?> {
+
+public class GetUserByIdQueryHandler(IUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, User?> {
     private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<User?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken) {

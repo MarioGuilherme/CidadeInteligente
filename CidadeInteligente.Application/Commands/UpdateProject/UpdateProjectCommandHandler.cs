@@ -1,11 +1,12 @@
 ﻿using CidadeInteligente.Application.Commands.CreateMedia;
+using CidadeInteligente.Application.Commands.UpdateMedia;
 using CidadeInteligente.Application.Commands.UpdateProject;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Core.Services;
 using MediatR;
 
-namespace CidadeInteligente.Application.Commands.UpdateCourse;
+namespace CidadeInteligente.Application.Commands.UpdateProject;
 
 public class UpdateProjectCommandHandler(IProjectRepository projectRepository, IUserRepository userRepository, IFileStorage fileStorage) : IRequestHandler<UpdateProjectCommand, Unit?> {
     private readonly IProjectRepository _projectRepository = projectRepository;

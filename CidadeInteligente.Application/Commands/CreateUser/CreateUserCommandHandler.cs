@@ -1,9 +1,8 @@
-﻿using CidadeInteligente.Application.Commands.CreateUser;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
 using MediatR;
 
-namespace CidadeInteligente.Application.Commands.CreateCourse;
+namespace CidadeInteligente.Application.Commands.CreateUser;
 
 public class CreateUserCommandHandler(IUserRepository userRepository) : IRequestHandler<CreateUserCommand, long> {
     private readonly IUserRepository _userRepository = userRepository;

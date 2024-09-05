@@ -1,9 +1,8 @@
-﻿using CidadeInteligente.Application.Queries.GetAreaByAreaId;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
 using MediatR;
 
-namespace CidadeInteligente.Application.Queries.GetProjectById;
+namespace CidadeInteligente.Application.Queries.GetAreaById;
 
 public class GetAreatByIdQueryHandler(IAreaRepository projectRepository) : IRequestHandler<GetAreaByIdQuery, Area?> {
     private readonly IAreaRepository _areaRepository = projectRepository;

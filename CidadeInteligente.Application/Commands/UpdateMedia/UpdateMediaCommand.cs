@@ -1,4 +1,4 @@
-﻿namespace CidadeInteligente.Application.Commands.CreateMedia;
+﻿namespace CidadeInteligente.Application.Commands.UpdateMedia;
 
 public class UpdateMediaCommand {
     public long? MediaId { get; set; }

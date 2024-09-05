@@ -1,9 +1,8 @@
-﻿using CidadeInteligente.Application.Commands.DeleteAreaById;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
 using MediatR;
 
-namespace CidadeInteligente.Application.Commands.GetProjectById;
+namespace CidadeInteligente.Application.Commands.DeleteAreaById;
 
 public class DeleteAreaByIdCommandHandler(IAreaRepository areaRepository) : IRequestHandler<DeleteAreaByIdCommand, Unit?> {
     private readonly IAreaRepository _areaRepository = areaRepository;

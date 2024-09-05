@@ -1,6 +1,5 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
-using CidadeInteligente.Core.Services;
 using MediatR;
 using static BCrypt.Net.BCrypt;
 

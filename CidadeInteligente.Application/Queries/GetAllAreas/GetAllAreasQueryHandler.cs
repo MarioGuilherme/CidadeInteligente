@@ -1,5 +1,4 @@
-﻿using CidadeInteligente.Application.Queries.GetAllAreas;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
 using MediatR;
 

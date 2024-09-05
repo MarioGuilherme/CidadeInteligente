@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
-internal class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand> {
+public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand> {
     public CreateProjectCommandValidator() {
         this.RuleFor(p => p.Title)
             .NotNull().WithMessage("É necessário informar o título do projeto!")

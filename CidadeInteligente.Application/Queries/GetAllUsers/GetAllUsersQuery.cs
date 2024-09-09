@@ -1,6 +1,6 @@
-﻿using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Application.ViewModels;
 using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetAllUsers;
 
-public class GetAllUsersQuery : IRequest<List<User>> { }
+public class GetAllUsersQuery : IRequest<List<UserViewModel>> { }

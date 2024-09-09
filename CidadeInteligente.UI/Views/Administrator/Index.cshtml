@@ -1,5 +1,5 @@
-﻿@using CidadeInteligente.Core.Entities
-@using CidadeInteligente.Core.Enums
+﻿@using CidadeInteligente.Application.ViewModels;
+@using CidadeInteligente.Core.Enums;
 @using CidadeInteligente.UI.Extensions;
 
 @{
@@ -83,13 +83,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (User user in this.ViewBag.Users) {
+                                        @foreach (UserViewModel user in this.ViewBag.Users) {
                                             <tr role="row">
                                                 <td>@user.UserId</td>
                                                 <td>@user.Name</td>
                                                 <td>@user.Email</td>
-                                                <td>@user.Course.Description</td>
-                                                <td>@user.Role.GetDescription()</td>
+                                                <td>@user.Course</td>
+                                                <td>@user.Role</td>
                                                 <td>
                                                     <button id=@user.UserId class="btn btn-edit btn-strong-gray">
                                                         <i class="fa fa-solid fa-pencil"></i> Editar
@@ -127,7 +127,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (Area area in this.ViewBag.Areas) {
+                                        @foreach (AreaViewModel area in this.ViewBag.Areas) {
                                             <tr role="row">
                                                 <td>@area.AreaId</td>
                                                 <td>@area.Description</td>
@@ -168,7 +168,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (Course course in this.ViewBag.Courses) {
+                                        @foreach (CourseViewModel course in this.ViewBag.Courses) {
                                             <tr role="row">
                                                 <td>@course.CourseId</td>
                                                 <td>@course.Description</td>
@@ -230,7 +230,7 @@
                         <div class="form-group">
                             <select id="my-select" class="form-control" name="courseId">
                                 <option value="">SELECIONE O CURSO DO USUÁRIO</option>
-                                @foreach (Course course in this.ViewBag.Courses) {
+                                @foreach (CourseViewModel course in this.ViewBag.Courses) {
                                     <option value=@course.CourseId>@course.Description</option>
                                 }
                             </select>

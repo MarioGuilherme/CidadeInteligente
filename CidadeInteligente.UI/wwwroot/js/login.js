@@ -7,7 +7,7 @@ $(document).ready(() => {
             email: $("input[name=email]").val().trim(),
             password: $("input[name=password]").val().trim()
         });
-        window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+        toggleExitConfirmation(false);
 
         status == 204
             ? sweetAlert("success", "Login efetuado!").then(({ value }) => value && $(location).attr("href", "/"))

@@ -14,7 +14,7 @@ $(document).ready(() => {
             if (value) {
                 sweetAlertAwait("Apagando projeto");
                 const { status } = await api.delete(`projects/${$(this).attr("id")}`);
-                window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+                toggleExitConfirmation(false);
 
                 switch (status) {
                     case 204:

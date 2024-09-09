@@ -1,4 +1,5 @@
 ﻿using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Models;
 using CidadeInteligente.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +14,10 @@ public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectR
         await this._dbContext.SaveChangesAsync();
     }
 
-    public Task<List<Project>> GetAllAsync() => this._dbContext.Projects
+    public Task<PaginationResult<Project>> GetAllAsync(int page) => this._dbContext.Projects
         .Include(p => p.Medias)
         .AsNoTracking()
-        .ToListAsync();
+        .GetPaged(page);
 
     public async Task DeleteProjectAsync(Project project) {
         this._dbContext.Medias.RemoveRange(project.Medias);
@@ -33,6 +34,14 @@ public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectR
         : await this._dbContext.Projects.Include(p => p.Medias)
                                         .Include(p => p.InvolvedUsers)
                                         .AsNoTracking().FirstOrDefaultAsync(p => p.ProjectId == projectId);
+
+    public Task<Project?> GetDetailsById(long projectId) => this._dbContext.Projects
+        .Include(p => p.Area)
+        .Include(p => p.Course)
+        .Include(p => p.Medias)
+        .Include(p => p.InvolvedUsers)
+        .AsNoTracking()
+        .FirstOrDefaultAsync(p => p.ProjectId == projectId);
 
     public Task<Media?> GetMediaById(long mediaId) => this._dbContext.Medias.FirstOrDefaultAsync(m => m.MediaId == mediaId);
 

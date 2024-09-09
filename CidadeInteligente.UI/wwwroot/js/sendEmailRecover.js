@@ -5,7 +5,7 @@ $(document).ready(() => {
         (async () => {
             sweetAlertAwait("Enviando email de recuperação");
             const { icon, message } = await api.post("sendEmailRecover", { email: $("input[name=email]").val() });
-            window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+            toggleExitConfirmation(false);
 
             if (icon == "success") {
                 sweetAlert(icon, message);

@@ -13,14 +13,16 @@ using CidadeInteligente.Application.Queries.GetAllUsers;
 using CidadeInteligente.Application.Queries.GetAreaById;
 using CidadeInteligente.Application.Queries.GetCourseById;
 using CidadeInteligente.Application.Queries.GetUserById;
-using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Application.ViewModels;
+using CidadeInteligente.Core.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CidadeInteligente.API;
 
 [Route("API/admin")]
-//[Authorize(Roles = nameof(Role.Teacher))]
+[Authorize(Roles = nameof(Role.Teacher))]
 public class AdministratorAPIController(ILogger<AdministratorAPIController> logger, IMediator mediator) : ControllerBase {
     private readonly ILogger<AdministratorAPIController> _logger = logger;
     private readonly IMediator _mediator = mediator;
@@ -29,14 +31,14 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
     [HttpGet("users")]
     public async Task<ActionResult> GetAllUsers() {
         GetAllUsersQuery getAllUsersQuery = new();
-        List<User> users = await this._mediator.Send(getAllUsersQuery);
+        List<UserViewModel> users = await this._mediator.Send(getAllUsersQuery);
         return this.Ok(users);
     }
 
     [HttpGet("users/{userId}")]
     public async Task<ActionResult> GetUserById(long userId) {
         GetUserByIdQuery getUserByIdQuery = new(userId);
-        User? user = await this._mediator.Send(getUserByIdQuery);
+        UserViewModel? user = await this._mediator.Send(getUserByIdQuery);
 
         if (user is null)
             return this.NotFound();
@@ -76,14 +78,14 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
     [HttpGet("areas")]
     public async Task<ActionResult> GetAllAreas() {
         GetAllAreasQuery getAllAreasQuery = new();
-        List<Area> areas = await this._mediator.Send(getAllAreasQuery);
+        List<AreaViewModel> areas = await this._mediator.Send(getAllAreasQuery);
         return this.Ok(areas);
     }
 
     [HttpGet("areas/{areaId}")]
     public async Task<ActionResult> GetAreaById(long areaId) {
         GetAreaByIdQuery getAreaByIdQuery = new(areaId);
-        Area? area = await this._mediator.Send(getAreaByIdQuery);
+        AreaViewModel? area = await this._mediator.Send(getAreaByIdQuery);
 
         if (area is null)
             return this.NotFound();
@@ -123,14 +125,14 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
     [HttpGet("courses")]
     public async Task<ActionResult> GetAllCourses() {
         GetAllCoursesQuery getAllCoursesQuery = new();
-        List<Course> courses = await this._mediator.Send(getAllCoursesQuery);
+        List<CourseViewModel> courses = await this._mediator.Send(getAllCoursesQuery);
         return this.Ok(courses);
     }
 
     [HttpGet("courses/{courseId}")]
     public async Task<ActionResult> GetCourseById(long courseId) {
         GetCourseByIdQuery getCourseByIdQuery = new(courseId);
-        Course? course = await this._mediator.Send(getCourseByIdQuery);
+        CourseViewModel? course = await this._mediator.Send(getCourseByIdQuery);
 
         if (course is null)
             return this.NotFound();

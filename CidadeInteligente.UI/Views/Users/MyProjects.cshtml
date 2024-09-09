@@ -1,7 +1,7 @@
 ﻿@using CidadeInteligente.Application.ViewModels;
-@using CidadeInteligente.Core.Entities
 @using CidadeInteligente.Core.Enums
-@model PaginatedView<Project>
+@using CidadeInteligente.Core.Models;
+@model PaginationResult<ProjectViewModel>;
 
 @{
     this.ViewData["Title"] = "Meus Projetos";
@@ -20,7 +20,7 @@
             @if (this.Model.Data.Count == 0) {
                 <h3 class="text-center">Você não está participando de nenhum projeto.</h3>
             } else {
-                foreach (Project project in this.Model.Data) {
+                foreach (ProjectViewModel project in this.Model.Data) {
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-3">
                         <div class="card card-projeto">
                             @if (project.Medias[0].Extension == ".mp4") {

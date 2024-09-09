@@ -1,14 +1,15 @@
 ﻿using CidadeInteligente.Application.Queries.GetAllAreas;
 using CidadeInteligente.Application.Queries.GetAllCourses;
 using CidadeInteligente.Application.Queries.GetAllUsers;
-using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CidadeInteligente.UI.Controllers;
 
 [Route("admin")]
-//[Authorize(Roles = "Teacher")]
+[Authorize(Roles = nameof(Role.Teacher))]
 public class AdministratorController(ILogger<AdministratorController> logger, IMediator mediator) : Controller {
     private readonly ILogger<AdministratorController> _logger = logger;
     private readonly IMediator _mediator = mediator;
@@ -23,21 +24,5 @@ public class AdministratorController(ILogger<AdministratorController> logger, IM
         this.ViewBag.Courses = await this._mediator.Send(getAllCoursesQuery);
 
         return this.View();
-    }
-
-    [HttpGet("areas")]
-    public async Task<ViewResult> Areas() {
-        GetAllAreasQuery getAllAreasQuery = new();
-        List<Area> areas = await this._mediator.Send(getAllAreasQuery);
-
-        return this.View(areas);
-    }
-
-    [HttpGet("courses")]
-    public async Task<ViewResult> Courses() {
-        GetAllCoursesQuery getAllCoursesQuery = new();
-        List<Course> courses = await this._mediator.Send(getAllCoursesQuery);
-
-        return this.View(courses);
     }
 }

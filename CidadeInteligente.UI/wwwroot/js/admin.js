@@ -60,7 +60,7 @@ $(document).ready(() => {
                     courseId: +$("select[name=courseId]").val(),
                     role: +$("select[name=role]").val()
                 });
-                window.onbeforeunload = () => { };
+                toggleExitConfirmation(false);
 
                 if (status == 201) {
                     await resetDataTable();
@@ -79,7 +79,7 @@ $(document).ready(() => {
                     courseId: +$("select[name=courseId]").val(),
                     role: +$("select[name=role]").val()
                 });
-                window.onbeforeunload = () => { }; // Desativa o alert de confirmação de saída
+                toggleExitConfirmation(false);
 
                 if (status == 204) {
                     await resetDataTable();
@@ -94,7 +94,7 @@ $(document).ready(() => {
                 sweetAlertAwait("Salvando registro...");
                 const description = $("input[name=description]").val().trim();
                 const { status } = await api.post(`admin/${entityName}`, { description });
-                window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+                toggleExitConfirmation(false);
 
                 if (status == 201) {
                     await resetDataTable();
@@ -108,7 +108,7 @@ $(document).ready(() => {
                 sweetAlertAwait("Salvando alterações");
                 const [entityId, description] = $(".modal form#entityForm input").toArray().map(input => input.value.trim());
                 const { status } = await api.patch(`admin/${entityName}/${+entityId}`, { description });
-                window.onbeforeunload = () => {};
+                toggleExitConfirmation(false);
 
                 if (status == 204) {
                     await resetDataTable();
@@ -163,7 +163,7 @@ $(document).ready(() => {
         }
 
         swal.close();
-        window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+        toggleExitConfirmation(false);
     });
 
     $("tbody").on("click", ".btn-delete", async function() {
@@ -182,7 +182,7 @@ $(document).ready(() => {
 
             sweetAlertAwait("Apagando registro...");
             const { status } = await api.delete(`admin/${getCurrentEntityName()}/${$(this).attr("id")}`);
-            window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+            toggleExitConfirmation(false);
 
             if (status == 204) {
                 await resetDataTable();

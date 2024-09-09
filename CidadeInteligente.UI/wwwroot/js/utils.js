@@ -16,7 +16,7 @@ const sweetAlert = (icon, msg) => Swal.fire({
 });
 
 const sweetAlertAwait = msg => {
-    window.onbeforeunload = () => true; // Ativa o alert de confirmação de saída
+    toggleExitConfirmation();
     return Swal.fire({
         icon: "info",
         html: `<div class="qrCode mb-1 d-flex justify-content-center"></div><h2 style="color:white;">${msg}, aguarde...</h2>`,
@@ -25,6 +25,8 @@ const sweetAlertAwait = msg => {
         showConfirmButton: false
     });
 }
+
+const toggleExitConfirmation = (enabled = true) => window.onbeforeunload = enabled ? () => true : null;
 
 const formHasEmptyField = form => {
     for (let i = 0; i < form.length; i++)

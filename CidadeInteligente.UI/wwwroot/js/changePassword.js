@@ -13,7 +13,7 @@ $(document).ready(() => {
                 password: $("input[name=password]").val(),
                 token: $("input[name=token]").val()
             });
-            window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+            toggleExitConfirmation(false);
     
             if (icon == "success") {
                 sweetAlert(icon, message);

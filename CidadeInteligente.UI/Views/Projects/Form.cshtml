@@ -1,6 +1,4 @@
 ﻿@using CidadeInteligente.Application.ViewModels;
-@using CidadeInteligente.Core.Entities
-@model PaginatedView<ProjectViewModel>
 
 @{
     this.ViewData["Title"] = "Criar Projeto";
@@ -35,7 +33,7 @@
                                     <label>Área do projeto</label>
                                     <select class="form-control" name="areaId">
                                         <option value="">SELECIONE A ÁREA</option>
-                                        @foreach (Area area in this.ViewBag.Areas) {
+                                        @foreach (AreaViewModel area in this.ViewBag.Areas) {
                                             <option value=@area.AreaId>@area.Description</option>
                                         }
                                     </select>
@@ -46,7 +44,7 @@
                                     <label for="my-select">Curso do projeto</label>
                                     <select id="my-select" class="form-control" name="courseId">
                                         <option value="">SELECIONE O CURSO</option>
-                                        @foreach (Course course in this.ViewBag.Courses) {
+                                        @foreach (CourseViewModel course in this.ViewBag.Courses) {
                                             <option value=@course.CourseId>@course.Description</option>
                                         }
                                     </select>
@@ -70,9 +68,9 @@
                         <div class="form-group">
                             <label for="my-select">Pessoas Envolvidas</label>
                             <div class="users">
-                                @foreach (User user in this.ViewBag.Users) {
+                                @foreach (UserViewModel user in this.ViewBag.Users) {
                                     <div class="user" id=@user.UserId>
-                                        <span>@(user.Name.Length > 58 ? user.Name[0..58] : user.Name)</span>
+                                        <span>@user.MinorName</span>
                                     </div>
                                 }
                             </div>

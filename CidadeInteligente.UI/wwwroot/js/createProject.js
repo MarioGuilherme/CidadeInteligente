@@ -42,7 +42,7 @@ $(document).ready(() => {
      
         sweetAlertAwait("Criando projeto...");
         const { status, headers } = await api.post("projects", project);
-        window.onbeforeunload = () => {};
+        toggleExitConfirmation(false);
 
         if (status == 201) {
             Swal.fire({

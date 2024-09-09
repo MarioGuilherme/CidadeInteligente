@@ -1,5 +1,5 @@
 ﻿using CidadeInteligente.Application.Commands.LoginUser;
-using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Application.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +16,7 @@ public class UsersAPIController(ILogger<UsersAPIController> logger, IMediator me
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginUserCommand command) {
-        User? user = await this._mediator.Send(command);
+        UserViewModel? user = await this._mediator.Send(command);
 
         if (user is null) return this.NotFound();
 

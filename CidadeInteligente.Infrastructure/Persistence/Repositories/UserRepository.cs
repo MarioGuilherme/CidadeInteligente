@@ -1,4 +1,5 @@
 ﻿using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Models;
 using CidadeInteligente.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,11 +23,11 @@ public class UserRepository (CidadeInteligenteDbContext dbContext) : IUserReposi
         .AsNoTracking()
         .ToListAsync();
 
-    public async Task<List<Project>> GetCreatedProjectsFromUser(long userId) => (await this._dbContext.Users
-        .Include(u => u.CreatedProjects)
+    public async Task<PaginationResult<Project>> GetInvolvedProjectsFromUser(long userId, int page) => (await this._dbContext.Users
+        .Include(u => u.InvolvedProjects)
         .ThenInclude(a => a.Medias)
         .AsNoTracking()
-        .FirstAsync(u => u.UserId == userId)).CreatedProjects;
+        .FirstAsync(u => u.UserId == userId)).InvolvedProjects.GetPaged(page);
 
     public Task<User?> GetByIdAsync(long userId, bool tracking = false) => tracking
         ? this._dbContext.Users.FirstOrDefaultAsync(c => c.UserId == userId)

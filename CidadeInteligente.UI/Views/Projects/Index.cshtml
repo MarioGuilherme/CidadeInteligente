@@ -1,5 +1,6 @@
 ﻿@using CidadeInteligente.Application.ViewModels;
-@model PaginatedView<ProjectViewModel>
+@using CidadeInteligente.Core.Models;
+@model PaginationResult<ProjectViewModel>;
 
 @{
     this.ViewData["Title"] = "Projetos";
@@ -67,13 +68,7 @@
                             </div>
                             <div class="card-body">
                                 <h4 class="card-title">@project.Title</h4>
-                                <p class="card-text">
-                                    @if (project.Description is not null) {
-                                        @(project.Description.Length < 125 ? project.Description : $"{project.Description[0..125]}...")
-                                    } else {
-                                        <small>Sem descrição</small>
-                                    }
-                                </p>
+                                <p class="card-text">@project.Description</p>
                                 <a href="/ver-projeto/@project.ProjectId" target="_blank" class="btn btn-default-red btn-block">
                                     Ver Mais Sobre
                                 </a>

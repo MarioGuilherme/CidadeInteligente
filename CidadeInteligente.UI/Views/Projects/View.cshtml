@@ -1,5 +1,5 @@
-﻿@using CidadeInteligente.Core.Entities
-@model Project;
+﻿@using CidadeInteligente.Application.ViewModels;
+@model ProjectDetailsViewModel;
 
 @{
     this.ViewData["Title"] = $"Projeto - {this.Model.ProjectId}";
@@ -27,7 +27,7 @@
             <div class="col-12 col-md-12 col-lg-12">
                 <h5 class="font-weight-bold text-center default-color">Pessoas envolvidas</h5>
                 <div class="row justify-content-center align-items-center text-center m-1 p-1">
-                    @foreach (User user in this.Model.InvolvedUsers) {
+                    @foreach (ProjectUserViewModel user in this.Model.InvolvedUsers) {
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3"><p>@user.Name</p></div>
                     }
                 </div>
@@ -36,11 +36,11 @@
         <div class="row mt-5 text-center">
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Área</h5>
-                <p>@this.Model.AreaId</p>
+                <p>@this.Model.Area</p>
             </div>
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Curso</h5>
-                <p>@this.Model.CourseId</p>
+                <p>@this.Model.Course</p>
             </div>
         </div>
         <div class="row mt-5 text-center">
@@ -57,16 +57,12 @@
         <div class="row mt-4">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                 <h5 class="font-weight-bold text-center default-color" style=word-break:break-all>Descrição</h5>
-                @if (this.Model.Description is null) {
-                    <p style=text-align:center>Nenhuma descrição</p>
-                } else {
-                    <p style=text-align:justify>@this.Model.Description</p>
-                }
+                @this.Model.Description
             </div>
         </div>
         <hr>
         <div class="row justify-content-center align-items-center m-1 p-1">
-            @foreach (Media media in this.Model.Medias) {
+            @foreach (MediaDetailsViewModel media in this.Model.Medias) {
                 <div class="col-12 col-sm-12 col-lg-3 col-md-3 mt-2">
                     <div class="card">
                         <div class="card-body text-center">

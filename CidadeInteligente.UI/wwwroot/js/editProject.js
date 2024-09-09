@@ -51,7 +51,7 @@ $(document).ready(() => {
    
         sweetAlertAwait("Salvando alterações...");
         const { status } = await api.patch(`projects/${+$("input[name=projectId]").val()}`, project);
-        window.onbeforeunload = () => {}; // Desativa o alert de confirmação de saída
+        toggleExitConfirmation(false);
 
         switch (status) {
             case 204:

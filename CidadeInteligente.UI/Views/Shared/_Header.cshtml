@@ -18,10 +18,10 @@
                         Galeria
                     </a>
                     @if (this.User.Identity!.IsAuthenticated && this.User.IsInRole(nameof(Role.Teacher))) {
-                        <a class="dropdown-item" href="/criar-projeto">
+                        <a class="dropdown-item@(this.Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
                             Criar
                         </a>
-                        <a class="dropdown-item" href="/meus-projetos">
+                        <a class="dropdown-item@(this.Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
                             Meus Projetos
                         </a>
                     }

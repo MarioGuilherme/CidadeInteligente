@@ -21,10 +21,10 @@
                         <a class="dropdown-item@(this.Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
                             Criar
                         </a>
-                        <a class="dropdown-item@(this.Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
-                            Meus Projetos
-                        </a>
                     }
+                    <a class="dropdown-item@(this.Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
+                        Meus Projetos
+                    </a>
                 </div>
             </li>
             @if (this.User.Identity!.IsAuthenticated & this.User.IsInRole(nameof(Role.Teacher))) {

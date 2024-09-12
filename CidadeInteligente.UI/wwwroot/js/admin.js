@@ -24,13 +24,13 @@ $(document).ready(() => {
         entities.forEach(entity => {
             let row;
             if (entity.hasOwnProperty("userId")) {
-                const { userId, name, email, course, role } = entity;
+                const { userId, name, email, course, roleDescription } = entity;
                 row = [
                     userId,
                     name,
                     email,
                     course,
-                    role,
+                    roleDescription,
                     btns(userId)
                 ];
             } else {
@@ -62,13 +62,20 @@ $(document).ready(() => {
                 });
                 toggleExitConfirmation(false);
 
-                if (status == 201) {
-                    await resetDataTable();
-                    sweetAlert("success", "Usuário cadastrado com sucesso!");
-                    cleanAllFields();
-                    $(".modal").modal("hide");
-                } else
-                    sweetAlert("error", "Erro ao cadastrar o usuário!");
+                switch (status) {
+                    case 201:
+                        await resetDataTable();
+                        sweetAlert("success", "Usuário cadastrado com sucesso!");
+                        cleanAllFields();
+                        $(".modal").modal("hide");
+                        break;
+                    case 409:
+                        sweetAlert("warning", "Este e-mail já está em uso!");
+                        break;
+                    case 500:
+                        sweetAlert("error", "Um erro desconhecido ocorreu ao cadastrar o usuário!");
+                        break;
+                }
             } else {
                 sweetAlertAwait("Salvando alterações");
                 const userId = +$("input[name=userId]").val();
@@ -166,7 +173,7 @@ $(document).ready(() => {
         toggleExitConfirmation(false);
     });
 
-    $("tbody").on("click", ".btn-delete", async function() {
+    $("tbody").on("click", ".btn-delete", async function () {
         Swal.fire({
             html: `<h2 style="color: white">Deseja mesmo excluir este registro?</h2>`,
             background: "rgb(70, 5, 7)",
@@ -181,14 +188,35 @@ $(document).ready(() => {
             if (!value) return;
 
             sweetAlertAwait("Apagando registro...");
-            const { status } = await api.delete(`admin/${getCurrentEntityName()}/${$(this).attr("id")}`);
+            const entityName = getCurrentEntityName();
+            const { status } = await api.delete(`admin/${entityName}/${$(this).attr("id")}`);
             toggleExitConfirmation(false);
 
-            if (status == 204) {
-                await resetDataTable();
-                sweetAlert("success", "Registro apagado com sucesso!");
-            } else
-                sweetAlert("error", "Erro ao apagar registro!");
+            switch (status) {
+                case 204:
+                    await resetDataTable();
+                    sweetAlert("success", "Registro apagado com sucesso!");
+                    break;
+                case 404:
+                    sweetAlert("warning", "Este registro não existe mais!");
+                    break;
+                case 409:
+                    switch (entityName) {
+                        case "users":
+                            sweetAlert("warning", "Este usuário está vinculado á um ou mais projetos como criador ou pessoa envolvida!");
+                            break;
+                        case "areas":
+                            sweetAlert("warning", "Esta área está vinculada à um ou mais projetos!");
+                            break;
+                        default:
+                            sweetAlert("warning", "Este curso está vinculado à um ou mais projetos!");
+                            break;
+                    }
+                    break;
+                default:
+                    sweetAlert("error", "Um erro desconhecido ocorreu ao apagar este registro!");
+                    break;
+            }
         });
     });
 });

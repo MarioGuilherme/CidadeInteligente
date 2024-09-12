@@ -1,18 +1,21 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Repositories;
+using CidadeInteligente.Core.Exceptions;
+using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.DeleteCourseById;
 
-public class DeleteCourseByIdCommandHandler(ICourseRepository courseRpository) : IRequestHandler<DeleteCourseByIdCommand, Unit?> {
-    private readonly ICourseRepository _courseRpository = courseRpository;
+public class DeleteCourseByIdCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteCourseByIdCommand, Unit> {
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Unit?> Handle(DeleteCourseByIdCommand request, CancellationToken cancellationToken) {
-        Course? course = await this._courseRpository.GetByIdAsync(request.CourseId);
+    public async Task<Unit> Handle(DeleteCourseByIdCommand request, CancellationToken cancellationToken) {
+        Course course = await this._unitOfWork.Courses.GetByIdAsync(request.CourseId) ?? throw new CourseNotExistException();
 
-        if (course is null) return null;
+        if (await this._unitOfWork.Courses.HaveProjectsAsync(request.CourseId))
+            throw new CourseWithDepedentProjectsException();
 
-        await this._courseRpository.DeleteByIdAsync(course);
+        this._unitOfWork.Courses.Delete(course);
+        await this._unitOfWork.CompleteAsync();
 
         return Unit.Value;
     }

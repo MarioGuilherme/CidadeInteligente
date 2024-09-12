@@ -9,17 +9,16 @@ public class Media(string title, string? description, string fileName, long size
     public string FileName { get; private set; } = fileName;
     public long Size { get; private set; } = size;
     public string Extension => System.IO.Path.GetExtension(this.FileName);
-    public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBaseURL")}{Environment.GetEnvironmentVariable("AzureStorageContainerName")}/{this.FileName}";
+    public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBlobURL")}/{this.FileName}";
 
     public void Update(string title, string? description) {
         this.Title = title;
         this.Description = description;
     }
 
-    public void Update(string title, string? description, string fileName, long size) {
+    public void Update(string title, string? description, long size) {
         this.Title = title;
         this.Description = description;
-        this.FileName = fileName;
         this.Size = size;
     }
 }

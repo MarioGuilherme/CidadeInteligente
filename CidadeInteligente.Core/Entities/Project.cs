@@ -24,4 +24,8 @@ public class Project(long creatorUserId, long areaId, long courseId, string titl
         this.StartedAt = startedAt;
         this.FinishedAt = finishedAt;
     }
+
+    public override bool Equals(object? obj) => obj is Project project && this.ProjectId == project.ProjectId;
+
+    public override int GetHashCode() => HashCode.Combine(this.ProjectId);
 }

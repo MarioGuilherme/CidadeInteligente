@@ -2,5 +2,5 @@
 
 public interface IFileStorage {
     Task DeleteFileAsync(string fileName);
-    Task<string> UploadFileAsync(string extension, byte[] bytes);
+    Task<string> UploadOrUpdateFileAsync(string extension, byte[] bytes);
 }

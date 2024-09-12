@@ -14,16 +14,21 @@ using AutoMapper;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.UI.Extensions;
+using Azure.Storage.Blobs;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-Environment.SetEnvironmentVariable("AzureStorageConnectionString", builder.Configuration["AzureStorage:ConnectionString"]!);
-Environment.SetEnvironmentVariable("AzureStorageContainerName", builder.Configuration["AzureStorage:ContainerName"]!);
-Environment.SetEnvironmentVariable("AzureStorageBaseURL", builder.Configuration["AzureStorage:BaseURL"]!);
+Environment.SetEnvironmentVariable("AzureStorageBlobURL", $"{builder.Configuration["AzureStorage:BaseURL"]!}/{builder.Configuration["AzureStorage:ContainerName"]!}");
 
 builder.Services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CidadeInteligenteDb")));
 
-builder.Services.AddScoped<IFileStorage, AzureStorageService>();
+builder.Services.AddSingleton<IFileStorage, AzureStorageService>(f => {
+    string connectionString = builder.Configuration["AzureStorage:ConnectionString"]!;
+    string containerName = builder.Configuration["AzureStorage:ContainerName"]!;
+    BlobContainerClient blobContainerClient = new(connectionString, containerName);
+    blobContainerClient.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+    return new(connectionString, containerName);
+});
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -34,6 +39,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton(new MapperConfiguration(config => {
     config.CreateMap<User, UserViewModel>()
           .ForMember(uvm => uvm.Course, o => o.MapFrom(u => u.Course.Description))
+          .ForMember(uvm => uvm.RoleDescription, o => o.MapFrom(u => u.Role.GetDescription()));
+    config.CreateMap<User, LoginViewModel>()
           .ForMember(uvm => uvm.Role, o => o.MapFrom(u => u.Role.GetDescription()));
 
     config.CreateMap<Project, ProjectDetailsViewModel>()
@@ -58,8 +65,13 @@ builder.Services.AddMediatR(opt => opt.RegisterServicesFromAssemblyContaining(ty
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services
-    .AddAuthentication("CookieAuth")
-    .AddCookie("CookieAuth", options => options.LoginPath = "/login");
+    .AddAuthentication()
+    .AddCookie("Cookie", options =>
+    {
+        options.LoginPath = "/login";
+        options.LogoutPath = "/logout";
+        options.AccessDeniedPath = "/sem-permissao";
+    });
 
 WebApplication app = builder.Build();
 

@@ -1,20 +1,20 @@
 ﻿using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.Core.Repositories;
+using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.UpdateArea;
 
-public class UpdateAreaCommandHandler(IAreaRepository areaRepository) : IRequestHandler<UpdateAreaCommand, Unit?> {
-    private readonly IAreaRepository _areaRepository = areaRepository;
+public class UpdateAreaCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateAreaCommand, Unit> {
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Unit?> Handle(UpdateAreaCommand request, CancellationToken cancellationToken) {
-        Area? area = await this._areaRepository.GetByIdAsync(request.AreaId, true);
-
-        if (area is null) return null;
+    public async Task<Unit> Handle(UpdateAreaCommand request, CancellationToken cancellationToken) {
+        Area area = await this._unitOfWork.Areas.GetByIdAsync(request.AreaId, true) ?? throw new AreaNotExistException();
 
         area.Update(request.Description);
 
-        await this._areaRepository.SaveChangesAsync();
+        await this._unitOfWork.CompleteAsync();
         return Unit.Value;
     }
 }

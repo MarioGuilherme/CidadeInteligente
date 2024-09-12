@@ -1,9 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using CidadeInteligente.Core.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CidadeInteligente.Infrastructure.Persistence;
-public class UnitOfWork(CidadeInteligenteDbContext dbContext) : IUnitOfWork {
+
+public class UnitOfWork(
+    CidadeInteligenteDbContext dbContext,
+    IAreaRepository areas,
+    ICourseRepository courses,
+    IProjectRepository projects,
+    IUserRepository users) : IUnitOfWork {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
     private IDbContextTransaction? _transaction;
+
+    public IAreaRepository Areas { get; } = areas;
+    public ICourseRepository Courses { get; } = courses;
+    public IProjectRepository Projects { get; } = projects;
+    public IUserRepository Users { get; } = users;
 
     public Task<int> CompleteAsync() => this._dbContext.SaveChangesAsync();
 

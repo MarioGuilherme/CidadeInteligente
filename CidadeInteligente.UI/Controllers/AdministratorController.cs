@@ -2,6 +2,7 @@
 using CidadeInteligente.Application.Queries.GetAllCourses;
 using CidadeInteligente.Application.Queries.GetAllUsers;
 using CidadeInteligente.Core.Enums;
+using CidadeInteligente.UI.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +16,19 @@ public class AdministratorController(ILogger<AdministratorController> logger, IM
     private readonly IMediator _mediator = mediator;
 
     public async Task<ViewResult> Index() {
-        GetAllUsersQuery getAllUsersQuery = new();
-        GetAllAreasQuery getAllAreasQuery = new();
-        GetAllCoursesQuery getAllCoursesQuery = new();
+		try {
+            GetAllUsersQuery getAllUsersQuery = new();
+            GetAllAreasQuery getAllAreasQuery = new();
+            GetAllCoursesQuery getAllCoursesQuery = new();
 
-        this.ViewBag.Users = await this._mediator.Send(getAllUsersQuery);
-        this.ViewBag.Areas = await this._mediator.Send(getAllAreasQuery);
-        this.ViewBag.Courses = await this._mediator.Send(getAllCoursesQuery);
+            this.ViewBag.Users = await this._mediator.Send(getAllUsersQuery);
+            this.ViewBag.Areas = await this._mediator.Send(getAllAreasQuery);
+            this.ViewBag.Courses = await this._mediator.Send(getAllCoursesQuery);
 
-        return this.View();
+            return this.View();
+        } catch (Exception ex) {
+            this._logger.LogError("{Message}", ex.Message);
+            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+        }
     }
 }

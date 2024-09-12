@@ -1,12 +1,12 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Core.Services;
+using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateProject;
 
-public class CreateProjectCommandHandler(IProjectRepository projectRepository, IFileStorage fileStorage) : IRequestHandler<CreateProjectCommand, long> {
-    private readonly IProjectRepository _projectRepository = projectRepository;
+public class CreateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<CreateProjectCommand, long> {
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IFileStorage _fileStorage = fileStorage;
 
     public async Task<long> Handle(CreateProjectCommand request, CancellationToken cancellationToken) {
@@ -25,11 +25,12 @@ public class CreateProjectCommandHandler(IProjectRepository projectRepository, I
         request.Medias.ForEach(m => project.Medias.Add(new(
             m.Title,
             m.Description,
-            this._fileStorage.UploadFileAsync($"{Guid.NewGuid():N}.{m.Extension}", m.Base64).Result,
+            this._fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{m.Extension}", m.Base64).Result,
             m.Size
         )));
 
-        await this._projectRepository.AddAsync(project);
+        await this._unitOfWork.Projects.AddAsync(project);
+        await this._unitOfWork.CompleteAsync();
 
         return project.ProjectId;
     }

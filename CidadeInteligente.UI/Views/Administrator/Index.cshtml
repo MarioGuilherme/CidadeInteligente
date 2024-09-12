@@ -89,7 +89,7 @@
                                                 <td>@user.Name</td>
                                                 <td>@user.Email</td>
                                                 <td>@user.Course</td>
-                                                <td>@user.Role</td>
+                                                <td>@user.RoleDescription</td>
                                                 <td>
                                                     <button id=@user.UserId class="btn btn-edit btn-strong-gray">
                                                         <i class="fa fa-solid fa-pencil"></i> Editar
@@ -229,7 +229,7 @@
                         <label class="text-dark">Curso</label>
                         <div class="form-group">
                             <select id="my-select" class="form-control" name="courseId">
-                                <option value="">SELECIONE O CURSO DO USUÁRIO</option>
+                                <option selected>SELECIONE O CURSO DO USUÁRIO</option>
                                 @foreach (CourseViewModel course in this.ViewBag.Courses) {
                                     <option value=@course.CourseId>@course.Description</option>
                                 }
@@ -239,7 +239,7 @@
                     <div class="form-group">
                         <label>Tipo de Usuário</label>
                         <select class="form-control" name="role">
-                            <option value="">SELECIONE A PERMISSÃO DO USUÁRIO</option>
+                            <option selected>SELECIONE A PERMISSÃO DO USUÁRIO</option>
                             <option value=@((byte)Role.Teacher)>@Role.Teacher.GetDescription()</option>
                             <option value=@((byte)Role.Student)>@Role.Student.GetDescription()</option>
                         </select>

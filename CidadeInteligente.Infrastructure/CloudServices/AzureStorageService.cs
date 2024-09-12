@@ -3,20 +3,14 @@ using CidadeInteligente.Core.Services;
 
 namespace CidadeInteligente.Infrastructure.CloudServices;
 
-public class AzureStorageService : IFileStorage {
-    private readonly string _connectionString = Environment.GetEnvironmentVariable("AzureStorageConnectionString")!;
-    private readonly string _containerName = Environment.GetEnvironmentVariable("AzureStorageContainerName")!;
+public class AzureStorageService(string connectionString, string containerName) : IFileStorage {
+    private readonly BlobContainerClient _blobContainerClient = new(connectionString, containerName);
 
-    public async Task DeleteFileAsync(string fileName) {
-        BlobContainerClient blobContainerClient = new(this._connectionString, this._containerName);
-        await blobContainerClient.DeleteBlobIfExistsAsync(fileName);
-    }
+    public async Task DeleteFileAsync(string fileName) => await this._blobContainerClient.DeleteBlobIfExistsAsync(fileName);
 
-    public async Task<string> UploadFileAsync(string fileName, byte[] bytes) {
-        BlobContainerClient blobContainerClient = new(this._connectionString, this._containerName);
-        await blobContainerClient.CreateIfNotExistsAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-        await blobContainerClient.UploadBlobAsync(fileName, new BinaryData(bytes));
-
+    public async Task<string> UploadOrUpdateFileAsync(string fileName, byte[] bytes) {
+        BlobClient blobClient = this._blobContainerClient.GetBlobClient(fileName);
+        await blobClient.UploadAsync(new BinaryData(bytes), overwrite: true);
         return fileName;
     }
 }

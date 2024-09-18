@@ -22,7 +22,7 @@ public class User {
         this.Role = role;
     }
 
-    public User(long userId)  => this.UserId = userId;
+    public User(long userId) => this.UserId = userId;
 
     public void Update(long courseId, string name, string email, Role role) {
         this.CourseId = courseId;

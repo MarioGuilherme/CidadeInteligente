@@ -3,7 +3,6 @@ using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.Core.Models;
-using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
@@ -16,7 +15,7 @@ public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitO
     public async Task<PaginationResult<ProjectViewModel>> Handle(GetInvolvedAndCreatedProjectsFromUserQuery request, CancellationToken cancellationToken) {
         if (!await this._unitOfWork.Users.UserIdExistAsync(request.UserId))
             throw new UserNotExistException();
-        
+
         PaginationResult<Project> paginationResult = await this._unitOfWork.Users.GetInvolvedAndCreatedProjectsFromUser(request.UserId, request.Page);
 
         if (paginationResult.Data.Count == 0)

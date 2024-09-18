@@ -1,8 +1,6 @@
 ﻿using CidadeInteligente.Core.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -28,15 +26,15 @@ public class AuthService(IConfiguration configuration) : IAuthService {
         string issuer = this._configuration["JWTConfigs:Issuer"]!;
         string audience = this._configuration["JWTConfigs:Audience"]!;
         string key = this._configuration["JWTConfigs:Key"]!;
-        
+
         SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(key));
         SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256);
-        
+
         List<Claim> claims = [
             new("email", email),
             new(ClaimTypes.Role, role),
         ];
-        
+
         JwtSecurityToken token = new(
             issuer: issuer,
             audience: audience,
@@ -44,11 +42,11 @@ public class AuthService(IConfiguration configuration) : IAuthService {
             signingCredentials: credentials,
             claims: claims
         );
-        
+
         JwtSecurityTokenHandler tokenHandler = new();
-        
+
         string stringToken = tokenHandler.WriteToken(token);
-        
+
         return stringToken;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 

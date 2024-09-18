@@ -16,7 +16,7 @@ public class AdministratorController(ILogger<AdministratorController> logger, IM
     private readonly IMediator _mediator = mediator;
 
     public async Task<ViewResult> Index() {
-		try {
+        try {
             GetAllUsersQuery getAllUsersQuery = new();
             GetAllAreasQuery getAllAreasQuery = new();
             GetAllCoursesQuery getAllCoursesQuery = new();

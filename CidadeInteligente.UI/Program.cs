@@ -1,20 +1,20 @@
-using CidadeInteligente.UI.Filters;
+using AutoMapper;
+using Azure.Storage.Blobs;
 using CidadeInteligente.Application.Queries.GetAllProjects;
 using CidadeInteligente.Application.Validators;
+using CidadeInteligente.Application.ViewModels;
+using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
-using CidadeInteligente.Infrastructure.Persistence;
-using CidadeInteligente.Infrastructure.Persistence.Repositories;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
 using CidadeInteligente.Core.Services;
 using CidadeInteligente.Infrastructure.Auth;
 using CidadeInteligente.Infrastructure.CloudServices;
-using AutoMapper;
-using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Application.ViewModels;
+using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Infrastructure.Persistence.Repositories;
 using CidadeInteligente.UI.Extensions;
-using Azure.Storage.Blobs;
+using CidadeInteligente.UI.Filters;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -66,8 +66,7 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services
     .AddAuthentication()
-    .AddCookie("Cookie", options =>
-    {
+    .AddCookie("Cookie", options => {
         options.LoginPath = "/login";
         options.LogoutPath = "/logout";
         options.AccessDeniedPath = "/sem-permissao";

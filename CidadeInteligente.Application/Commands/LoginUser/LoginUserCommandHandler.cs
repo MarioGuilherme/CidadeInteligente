@@ -2,7 +2,6 @@
 using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
-using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using static BCrypt.Net.BCrypt;

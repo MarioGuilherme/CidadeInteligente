@@ -5,6 +5,10 @@ namespace CidadeInteligente.Application.Validators;
 
 public class UpdateAreaCommandValidator : AbstractValidator<UpdateAreaCommand> {
     public UpdateAreaCommandValidator() {
+        this.RuleFor(a => a.AreaId)
+            .NotEmpty().WithMessage("É necessário informar a área!")
+            .GreaterThan(0).WithMessage("Informe um identificador válido!");
+
         this.RuleFor(a => a.Description)
             .NotNull().WithMessage("É necessário informar a descrição da área!")
             .NotEmpty().WithMessage("A descrição da área não pode estar em branco!")

@@ -1,9 +1,5 @@
-﻿using CidadeInteligente.Application.Commands.CreateMedia;
-using CidadeInteligente.Application.Commands.UpdateMedia;
-using CidadeInteligente.Application.Commands.UpdateProject;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
-using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Core.Services;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
@@ -18,7 +14,7 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
         Project projectDb = await this._unitOfWork.Projects.GetByIdAsync(request.ProjectId, true) ?? throw new ProjectNotExistException();
 
         if (request.UserIdEditor is not null &&
-            !(request.UserIdEditor == project.CreatorUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
+            !(request.UserIdEditor == projectDb.CreatorUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
             throw new UserIsReadOnlyException();
 
         projectDb.Update(
@@ -41,7 +37,6 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             await this._fileStorage.DeleteFileAsync(mediaDb.FileName);
             this._unitOfWork.Projects.DeleteMedia(mediaDb);
         }
-        await this._unitOfWork.CompleteAsync();
 
         projectDb.Medias.Clear();
         foreach (UpdateMediaCommand media in request.Medias) {
@@ -61,7 +56,11 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             if (media.Base64 is null)
                 mediaDb.Update(media.Title, media.Description);
             else {
-                await this._fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, media.Base64);
+                string fileName = $"{Guid.NewGuid():N}.{media.Extension}";
+                await Task.WhenAll(
+                    this._fileStorage.DeleteFileAsync(mediaDb.FileName),
+                    this._fileStorage.UploadOrUpdateFileAsync(fileName, media.Base64)
+                );
                 mediaDb.Update(media.Title, media.Description, (long)media.Size!);
             }
             projectDb.Medias.Add(mediaDb);

@@ -1,6 +1,5 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
-using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
@@ -11,6 +10,9 @@ public class UpdateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
     public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken) {
         User user = await this._unitOfWork.Users.GetByIdAsync(request.UserId, true) ?? throw new UserNotExistException();
+
+        if (await this._unitOfWork.Users.IsEmailInUse(request.Email))
+            throw new EmailAlreadyInUseException();
 
         user.Update(request.CourseId, request.Name, request.Email, request.Role);
 

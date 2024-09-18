@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CidadeInteligente.Applicati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CidadeInteligente.UI", "CidadeInteligente.UI\CidadeInteligente.UI.csproj", "{812E2266-1C1D-457B-9D83-35FA351805C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CidadeInteligente.UnitTests", "CidadeInteligente.UnitTests\CidadeInteligente.UnitTests.csproj", "{5DC2B721-8DD9-472D-A83A-16349EDCD75B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{812E2266-1C1D-457B-9D83-35FA351805C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{812E2266-1C1D-457B-9D83-35FA351805C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{812E2266-1C1D-457B-9D83-35FA351805C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DC2B721-8DD9-472D-A83A-16349EDCD75B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DC2B721-8DD9-472D-A83A-16349EDCD75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DC2B721-8DD9-472D-A83A-16349EDCD75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DC2B721-8DD9-472D-A83A-16349EDCD75B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

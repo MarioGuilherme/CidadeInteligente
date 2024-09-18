@@ -78,6 +78,8 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
             command.UserId = userId;
             await this._mediator.Send(command);
             return this.NoContent();
+        } catch (EmailAlreadyInUseException) {
+            return this.Conflict();
         } catch (UserNotExistException) {
             return this.NotFound();
         } catch (Exception ex) {

@@ -29,7 +29,7 @@ public class AuthAPIController(ILogger<AuthAPIController> logger, IMediator medi
             await this.HttpContext.SignInAsync("Cookie", new ClaimsPrincipal(claimsIdentity), authProperties);
             return this.Created();
         } catch (EmailOrPasswordNotMatchException) {
-            return this.StatusCode(400);
+            return this.NotFound();
         } catch (Exception ex) {
             this._logger.LogError("{Message}", ex.Message);
             return this.StatusCode(500);

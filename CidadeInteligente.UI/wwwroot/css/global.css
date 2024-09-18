@@ -1,11 +1,12 @@
 body {
     margin: 0;
-    padding: 0;
+    padding: 0
 }
 
 main {
     margin-top: 90px
 }
+
 main#noSpaceHeader {
     margin-top: 0px
 }
@@ -23,41 +24,41 @@ main#noSpaceHeader {
 
 * {
     font-family: "Poppins", sans-serif;
-    box-sizing: border-box;
+    box-sizing: border-box
 }
 
 .btn-default-red {
     background: #b11116;
-    color: white;
+    color: white
 }
 
 .btn-default-red:hover {
     background: #7d0c0f;
-    color: white !important;
+    color: white !important
 }
 
 .btn-strong-red {
     background: #720909;
-    color: white !important;
+    color: white !important
 }
 
 .qrCode > img {
     padding: 5px;
-    background-color: white;
+    background-color: white
 }
 
 .btn-strong-gray {
     background: #494949;
-    color: white !important;
+    color: white !important
 }
 
 .default-color {
-    color: #b11116;
+    color: #b11116
 }
 
 a {
     text-decoration: none !important;
-    color: #ffffff;
+    color: #ffffff
 }
 
 a:hover {
@@ -65,72 +66,72 @@ a:hover {
 }
 
 td {
-    vertical-align: middle !important;
+    vertical-align: middle !important
 }
 
 thead {
     background: #b11116;
     color: white;
-    border-radius: 20px;
+    border-radius: 20px
 }
 
 footer {
     background: #212529;
     color: #fff;
-    padding-top: 25px;
+    padding-top: 25px
 }
 
 footer p {
-    font-size: 12px;
+    font-size: 12px
 }
 
 .dropdown-menu {
-    position: absolute !important;
+    position: absolute !important
 }
 
 .dropdown-menu li {
-    position: relative;
+    position: relative
 }
 
 .dropdown-menu .dropdown-submenu {
     display: none;
     position: absolute;
     left: 100%;
-    top: -7px;
+    top: -7px
 }
 
 .dropdown-menu .dropdown-submenu-left {
     right: 100%;
-    left: auto;
+    left: auto
 }
 
 .dropdown-menu>li:hover>.dropdown-submenu {
-    display: block;
+    display: block
 }
 
 .navbar-toggler {
     width: 50px;
     height: 35px;
     background: #b11116;
-    color: #fff;
+    color: #fff
 }
 
 .devs {
     background: #1c2024;
     padding: 10px;
     padding-bottom: 0;
-    color: #777777;
+    color: #777777
 }
 
 .img-card{
     max-width: 100%;  
     max-height: 300px;
     height: 220px !important;
-    object-fit: cover;
+    object-fit: cover
 }
 
 @media screen and (max-width: 600px) {
     h3 {
-        font-size: 1.5em;
+        font-size: 1.5em
     }
 }

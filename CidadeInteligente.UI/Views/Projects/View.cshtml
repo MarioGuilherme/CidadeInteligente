@@ -81,5 +81,16 @@
     </div>
 </main>
 
-<script src="~/js/qrcode.min.js"></script>
-<script src="~/js/viewProject.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    $(document).ready(() => {
+        $(".btn-generate-qrcode").click(() => {
+            Swal.fire({
+                html: `<div class="qrCode mb-1 d-flex justify-content-center"></div>`,
+                background: "rgb(70, 5, 7)",
+                showConfirmButton: false
+            });
+            new QRCode(document.querySelector(".qrCode"), window.location.href);
+        });
+    })
+</script>

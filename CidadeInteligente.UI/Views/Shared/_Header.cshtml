@@ -17,14 +17,16 @@
                     <a class="dropdown-item@(this.Context.Request.Path == "/" ? " disabledItemDropDown" : string.Empty)" href="/">
                         Galeria
                     </a>
-                    @if (this.User.Identity!.IsAuthenticated && this.User.IsInRole(nameof(Role.Teacher))) {
-                        <a class="dropdown-item@(this.Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
-                            Criar
+                    @if (this.User.Identity!.IsAuthenticated) {
+                        if (this.User.IsInRole(nameof(Role.Teacher))) {
+                            <a class="dropdown-item@(this.Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
+                                Criar
+                            </a>
+                        }
+                        <a class="dropdown-item@(this.Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
+                            Meus Projetos
                         </a>
                     }
-                    <a class="dropdown-item@(this.Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
-                        Meus Projetos
-                    </a>
                 </div>
             </li>
             @if (this.User.Identity!.IsAuthenticated & this.User.IsInRole(nameof(Role.Teacher))) {

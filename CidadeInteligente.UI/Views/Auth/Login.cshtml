@@ -3,7 +3,7 @@
     this.TempData["ignoreFooter"] = true;
 }
 
-<link rel="stylesheet" href="~/css/auth.css">
+<link rel="stylesheet" href="~/css/auth.css" />
 
 <div class="limiter">
     <div class="container-login100">
@@ -22,6 +22,13 @@
                                 <input type="password" name="password" class="form-input" placeholder="Digite a sua senha">
                                 <i class="mdi mdi-key"></i>
                             </div>
+                            <div class="row mt-3">
+                                <div class="col-12 col-md-12 mt-2 mb-2 text-left">
+                                    <a href="recuperar-senha" class="forget-password">
+                                        Esqueceu a senha?
+                                    </a>
+                                </div>
+                            </div>
                         </form>
                         <button type="button" class="btn mb-2 btn-block btn-strong-red btn-login">Entrar</button>
                         <div class="text-center font-weight-bold mt-3">&copy; @DateTime.Now.Year</div>
@@ -32,4 +39,32 @@
     </div>
 </div>
 
-<script src="~/js/login.js"></script>
+<script>
+    $(document).ready(() => {
+        $(".btn-login").click(async () => {
+            formHasEmptyField($("form").serializeArray());
+
+            sweetAlertAwait("Fazendo login...");
+            const { status, body } = await restAPI.post("auth/login", {
+                email: $("input[name=email]").val().trim(),
+                password: $("input[name=password]").val().trim()
+            });
+            toggleExitConfirmation(false);
+
+            switch (status) {
+                case 204:
+                    sweetAlert("success", "Login efetuado!").then(({ value }) => value && $(location).attr("href", "/"));
+                    break;
+                case 400:
+                    handleBadRequest(body);
+                    break;
+                case 404:
+                    sweetAlert("error", "E-mail e/ou senha não coincidem!");
+                    break;
+                default:
+                    sweetAlert("error", "Um erro desconhecido ocorreu durante o seu login!");
+                    break;
+            }
+        });
+    });
+</script>

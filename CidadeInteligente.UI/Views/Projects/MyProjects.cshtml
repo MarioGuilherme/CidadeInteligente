@@ -8,7 +8,70 @@
 }
 
 <link rel="stylesheet" href="~/css/header.css" />
-<link rel="stylesheet" href="~/css/myProjects.css" />
+
+<style>
+    .title-my-projetos {
+        background: #b11116;
+        color: white;
+        width: 100%;
+        margin-bottom: 0;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 6px 6px rgba(92, 92, 92, 0.4)
+    }
+
+    .btn-edit-project {
+        background: rgb(80, 80, 80);
+        color: white;
+        border: none
+    }
+
+    .btn-edit-project:hover {
+        background: rgb(51, 51, 51);
+        color: white;
+        border: none
+    }
+
+    .btn-delete-project {
+        background: #b11116;
+        color: white;
+        border: none
+    }
+
+    .btn-delete-project:hover {
+        background: #7d0c0f;
+        color: white;
+        border: none
+    }
+
+    .btn-view-project {
+        background: rgb(53, 83, 100);
+        color: white;
+        border: none
+    }
+
+    .btn-view-project:hover {
+        background: rgb(51, 51, 51);
+        color: white;
+        border: none
+    }
+
+    .navbar-toggler {
+        background: #b11116
+    }
+
+    .mdi-menu {
+        color: aliceblue;
+        font-size: 24px
+    }
+
+    .card-projeto {
+        padding: 10px;
+        box-shadow: 0 0 1em rgb(114 114 114)
+    }
+</style>
 
 <partial name="_Header" />
 
@@ -62,4 +125,44 @@
     </div>
 </main>
 
-<script src="~/js/myProjects.js"></script>
+<script>
+    $(document).ready(() => {
+        $(".btn-delete-project").click(function () {
+            Swal.fire({
+                html: `<h2 style="color: white;">Deseja mesmo excluir este projeto?</h2>`,
+                background: "rgb(70, 5, 7)",
+                icon: "question",
+                showCancelButton: true,
+                allowOutsideClick: false,
+                confirmButtonText: "Sim",
+                confirmButtonColor: "#d9534f",
+                cancelButtonText: "Não",
+                cancelButtonColor: "#f0ad4e"
+            }).then(async ({ value }) => {
+                if (!value) return;
+
+                sweetAlertAwait("Apagando projeto");
+                const { status } = await restAPI.delete(`projects/${$(this).attr("id")}`);
+                toggleExitConfirmation(false);
+
+                switch (status) {
+                    case 204:
+                        sweetAlert("success", "Projeto apagado com sucesso!");
+                        $(this).parents("div.col-12").hide(500);
+                        setTimeout(() => {
+                            $(this).parents("div.col-12").remove();
+                            if ($(".myProjects").find("div.col-12").length == 0 && $(".pages").find("a").length == 0) // Se há não mais projetos nestá única página, aparece uma mensagem de que não há projetos
+                                $(".myProjects").html("<h3 class='text-center'>Você não está participando de nenhum projeto ainda.</h3>");
+
+                            if ($(".myProjects").find("div.col-12").length == 0 && $(".pages").find("a").length > 0) // Se há não hour mais projetos nesta página, vai para a página anterior
+                                [...$(".pages a")].at(-1).click();
+                        }, 500);
+                        break;
+                    case 404:
+                        sweetAlert("error", "Este projeto não existe mais!");
+                        break;
+                }
+            });
+        })
+    });
+</script>

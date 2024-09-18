@@ -8,9 +8,9 @@ const setDataTable = () => {
     });
 }
 
-const sweetAlert = (icon, msg) => Swal.fire({
+const sweetAlert = (icon, msg, text = null) => Swal.fire({
     icon,
-    html: `<h2 style=color:white>${msg}</h2>`,
+    html: `<h2 style=color:white>${msg}</h2>${text ? `<div style=color:white>${text}</div>` : ""}`,
     background: "rgb(70, 5, 7)",
     allowOutsideClick: false
 });
@@ -62,3 +62,5 @@ const fileIsValidWithAlertReturn = ({ size, type }) => {
 
     return true;
 }
+
+const handleBadRequest = errors => sweetAlert("warning", "Campos inválidos", `<ul>${errors.map(v => `<li>${v}</li>`).join("")}</ul>`);

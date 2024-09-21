@@ -142,7 +142,7 @@
                 if (!value) return;
 
                 sweetAlertAwait("Apagando projeto");
-                const { status } = await restAPI.delete(`projects/${$(this).attr("id")}`);
+                const { status } = await restAPI.delete(`admin/projects/${$(this).attr("id")}`);
                 toggleExitConfirmation(false);
 
                 switch (status) {

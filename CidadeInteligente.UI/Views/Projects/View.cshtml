@@ -57,7 +57,7 @@
         <div class="row mt-4">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                 <h5 class="font-weight-bold text-center default-color" style=word-break:break-all>Descrição</h5>
-                @this.Model.Description
+                @(this.Model.Description ?? "Sem descrição")
             </div>
         </div>
         <hr>

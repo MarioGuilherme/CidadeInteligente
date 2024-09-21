@@ -72,10 +72,9 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
         }
     }
 
-    [HttpPatch("users/{userId}")]
-    public async Task<ActionResult> UpdateUser(long userId, [FromBody] UpdateUserCommand command) {
+    [HttpPatch("users")]
+    public async Task<ActionResult> UpdateUser([FromBody] UpdateUserCommand command) {
         try {
-            command.UserId = userId;
             await this._mediator.Send(command);
             return this.NoContent();
         } catch (EmailAlreadyInUseException) {
@@ -143,10 +142,9 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
         }
     }
 
-    [HttpPatch("areas/{areaId}")]
-    public async Task<ActionResult> UpdateArea(long areaId, [FromBody] UpdateAreaCommand command) {
+    [HttpPatch("areas")]
+    public async Task<ActionResult> UpdateArea([FromBody] UpdateAreaCommand command) {
         try {
-            command.AreaId = areaId;
             await this._mediator.Send(command);
             return this.NoContent();
         } catch (AreaNotExistException) {
@@ -212,10 +210,9 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
         }
     }
 
-    [HttpPatch("courses/{courseId}")]
-    public async Task<ActionResult> UpdateCourse(long courseId, [FromBody] UpdateCourseCommand command) {
+    [HttpPatch("courses")]
+    public async Task<ActionResult> UpdateCourse([FromBody] UpdateCourseCommand command) {
         try {
-            command.CourseId = courseId;
             await this._mediator.Send(command);
             return this.NoContent();
         } catch (CourseNotExistException) {
@@ -257,10 +254,9 @@ public class AdministratorAPIController(ILogger<AdministratorAPIController> logg
         }
     }
 
-    [HttpPatch("projects/{projectId}")]
-    public async Task<ActionResult> UpdateProject(long projectId, [FromBody] UpdateProjectCommand command) {
+    [HttpPatch("projects")]
+    public async Task<ActionResult> UpdateProject([FromBody] UpdateProjectCommand command) {
         try {
-            command.ProjectId = projectId;
             await this._mediator.Send(command);
             return this.NoContent();
         } catch (ProjectNotExistException) {

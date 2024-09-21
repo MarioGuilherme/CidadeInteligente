@@ -310,6 +310,11 @@
                 dataTable.row.add(row).draw();
             });
         }
+        const refreshCoursesInUserForm = async () => {
+            const courses = await restAPI.get("admin/courses");
+            $("select[name=courseId] option").remove();
+            $("select[name=courseId]").append(courses.reduce((acc, { courseId, description }) => acc + `<option value=${courseId}>${description}</option>`, ""));
+        }
 
         $(".btn-save").click(async () => {
             const entityName = getCurrentEntityName();
@@ -354,10 +359,10 @@
 
                 sweetAlertAwait("Salvando alterações");
                 const userId = +$("input[name=userId]").val();
-                const { status, body } = await restAPI.patch(`admin/users/${userId}`, {
+                const { status, body } = await restAPI.patch("admin/users", {
                     userId,
-                    name: $("input[name=name]").val(),
-                    email: $("input[name=email]").val(),
+                    name: $("input[name=name]").val().trim(),
+                    email: $("input[name=email]").val().trim(),
                     courseId: +$("select[name=courseId]").val(),
                     role: +$("select[name=role]").val()
                 });
@@ -396,6 +401,8 @@
                         sweetAlert("success", "Registro salvo com sucesso!");
                         cleanAllFields();
                         $(".modal").modal("hide");
+                        if (entityName == "courses")
+                            refreshCoursesInUserForm();
                         break;
                     case 400:
                         handleBadRequest(body);
@@ -409,15 +416,21 @@
 
             sweetAlertAwait("Salvando alterações");
             const [entityId, description] = $(".modal form#entityForm input").toArray().map(input => input.value.trim());
-            const { status, body } = await restAPI.patch(`admin/${entityName}/${+entityId}`, { description });
+            const data = { description };
+            entityName == "areas"
+                ? data.areaId = +entityId
+                : data.courseId = +entityId;
+            const { status, body } = await restAPI.patch(`admin/${entityName}`, data);
             toggleExitConfirmation(false);
 
             switch (status) {
-                case 201:
+                case 204:
                     await resetDataTable();
                     sweetAlert("success", "Registro atualizado com sucesso!");
                     cleanAllFields();
                     $(".modal").modal("hide");
+                    if (entityName == "courses")
+                        refreshCoursesInUserForm();
                     break;
                 case 400:
                     handleBadRequest(body);
@@ -496,6 +509,8 @@
                     case 204:
                         await resetDataTable();
                         sweetAlert("success", "Registro apagado com sucesso!");
+                        if (entityName == "courses")
+                            refreshCoursesInUserForm();
                         break;
                     case 404:
                         sweetAlert("warning", "Este registro não existe mais!");

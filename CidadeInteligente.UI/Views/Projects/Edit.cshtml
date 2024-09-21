@@ -216,7 +216,7 @@
                             <label for="my-select">Pessoas Envolvidas</label>
                             <div class="users">
                                 @foreach (UserViewModel user in this.ViewBag.Users) {
-                                    <div class="user" id=@user.UserId involved=@this.Model.InvolvedUsers.Any(u => u.UserId == user.UserId)>
+                                    <div class="user" id=@user.UserId involved=@(this.Model.InvolvedUsers.Any(u => u.UserId == user.UserId) ? "true" : "false")>
                                         <span>@user.MinorName</span>
                                     </div>
                                 }
@@ -297,17 +297,17 @@
 <script>
     const project = {
         projectId: +$("input[name=projectId]").val(),
-        title: $("input[name=title]").val(),
+        title: $("input[name=title]").val().trim(),
         startedAt: $("input[name=startedAt]").val(),
         finishedAt: $("input[name=finishedAt]").val() || null,
-        description: $("textarea[name=description]").val() || null,
+        description: $("textarea[name=description]").val()?.trim() || null,
         areaId: +$("select[name=areaId]").val(),
         courseId: +$("select[name=courseId]").val(),
-        involvedUsers: $(".user[involved]").toArray().map(e => +$(e).attr("id")),
+        involvedUsers: $(".user[involved=true]").toArray().map(e => +$(e).attr("id")),
         medias: $(".media").toArray().map(e => ({
             mediaId: +$(e).attr("id"),
-            title: $(e).find("input").val(),
-            description: $(e).find("textarea").val() || null,
+            title: $(e).find("input").val().trim(),
+            description: $(e).find("textarea").val()?.trim() || null,
             extension: $(e).find("img, video").attr("src").split(".").at(-1),
             path: $(e).find("img, video").attr("src")
         }))
@@ -347,7 +347,7 @@
             }
 
             sweetAlertAwait("Salvando alterações...");
-            const { status, body } = await restAPI.patch(`admin/projects/${+$("input[name=projectId]").val()}`, project);
+            const { status, body } = await restAPI.patch("admin/projects", project);
             toggleExitConfirmation(false);
 
             switch (status) {

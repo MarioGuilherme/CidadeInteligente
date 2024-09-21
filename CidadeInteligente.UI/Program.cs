@@ -45,8 +45,7 @@ builder.Services.AddSingleton(new MapperConfiguration(config => {
 
     config.CreateMap<Project, ProjectDetailsViewModel>()
           .ForMember(pvm => pvm.Area, o => o.MapFrom(p => p.Area.Description))
-          .ForMember(pvm => pvm.Course, o => o.MapFrom(p => p.Course.Description))
-          .ForMember(pvm => pvm.Description, o => o.MapFrom(p => p.Description ?? "Sem descrição"));
+          .ForMember(pvm => pvm.Course, o => o.MapFrom(p => p.Course.Description));
 
     config.CreateMap<User, ProjectUserViewModel>();
     config.CreateMap<Area, AreaViewModel>();
@@ -57,7 +56,7 @@ builder.Services.AddSingleton(new MapperConfiguration(config => {
 }).CreateMapper());
 
 builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidationFilter)));
-builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationAutoValidation(opt => opt.DisableDataAnnotationsValidation = true);
 builder.Services.AddValidatorsFromAssemblyContaining<CreateAreaCommandValidator>();
 
 builder.Services.AddMediatR(opt => opt.RegisterServicesFromAssemblyContaining(typeof(GetAllProjectsQuery)));

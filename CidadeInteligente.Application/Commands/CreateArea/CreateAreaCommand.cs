@@ -2,6 +2,6 @@
 
 namespace CidadeInteligente.Application.Commands.CreateArea;
 
-public class CreateAreaCommand : IRequest<long> {
-    public string Description { get; set; } = null!;
+public class CreateAreaCommand(string description) : IRequest<long> {
+    public string Description { get; private set; } = description;
 }

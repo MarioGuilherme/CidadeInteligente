@@ -2,6 +2,6 @@
 
 namespace CidadeInteligente.Application.Commands.CreateCourse;
 
-public class CreateCourseCommand : IRequest<long> {
-    public string Description { get; set; } = null!;
+public class CreateCourseCommand(string description) : IRequest<long> {
+    public string Description { get; private set; } = description;
 }

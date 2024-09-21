@@ -17,6 +17,7 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             !(request.UserIdEditor == projectDb.CreatorUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
             throw new UserIsReadOnlyException();
 
+        await this._unitOfWork.BeginTransactionAsync();
         projectDb.Update(
             request.AreaId,
             request.CourseId,
@@ -56,17 +57,14 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             if (media.Base64 is null)
                 mediaDb.Update(media.Title, media.Description);
             else {
-                string fileName = $"{Guid.NewGuid():N}.{media.Extension}";
-                await Task.WhenAll(
-                    this._fileStorage.DeleteFileAsync(mediaDb.FileName),
-                    this._fileStorage.UploadOrUpdateFileAsync(fileName, media.Base64)
-                );
+                await this._fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, media.Base64);
                 mediaDb.Update(media.Title, media.Description, (long)media.Size!);
             }
             projectDb.Medias.Add(mediaDb);
         }
 
         await this._unitOfWork.CompleteAsync();
+        await this._unitOfWork.CommitAsync();
         return Unit.Value;
     }
 }

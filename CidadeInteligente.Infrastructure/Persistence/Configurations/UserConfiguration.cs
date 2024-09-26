@@ -13,6 +13,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User> {
         builder.Property(u => u.Email).HasMaxLength(60);
         builder.Property(u => u.Password).HasMaxLength(255);
 
+        builder.Property(u => u.TokenRecoverPassword).HasMaxLength(156);
+
         builder.HasOne(u => u.Course);
 
         builder.HasMany(u => u.CreatedProjects)

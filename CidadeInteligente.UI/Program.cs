@@ -6,7 +6,6 @@ using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Core.Services;
-using CidadeInteligente.Infrastructure.Auth;
 using CidadeInteligente.Infrastructure.CloudServices;
 using CidadeInteligente.Infrastructure.Persistence;
 using CidadeInteligente.Infrastructure.Persistence.Repositories;
@@ -29,7 +28,6 @@ builder.Services.AddSingleton<IFileStorage, AzureStorageService>(f => {
     blobContainerClient.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
     return new(connectionString, containerName);
 });
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAreaRepository, AreaRepository>();
@@ -42,6 +40,8 @@ builder.Services.AddSingleton(new MapperConfiguration(config => {
           .ForMember(uvm => uvm.RoleDescription, o => o.MapFrom(u => u.Role.GetDescription()));
     config.CreateMap<User, LoginViewModel>()
           .ForMember(uvm => uvm.Role, o => o.MapFrom(u => u.Role.GetDescription()));
+    config.CreateMap<User, UserFormChangePassword>()
+        .ConstructUsing(u => new(u.Name, u.TokenRecoverPassword!));
 
     config.CreateMap<Project, ProjectDetailsViewModel>()
           .ForMember(pvm => pvm.Area, o => o.MapFrom(p => p.Area.Description))

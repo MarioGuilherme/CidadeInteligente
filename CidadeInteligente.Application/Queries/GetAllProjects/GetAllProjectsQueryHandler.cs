@@ -14,7 +14,7 @@ public class GetAllProjectsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) 
     public async Task<PaginationResult<ProjectViewModel>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken) {
         PaginationResult<Project> paginationResult = await this._unitOfWork.Projects.GetAllAsync(request.Page);
 
-        if (paginationResult.Data.Count == 0)
+        if (paginationResult.Data.Count == 0 && request.Page != 1)
             paginationResult = await this._unitOfWork.Projects.GetAllAsync(paginationResult.TotalPages);
 
         return new(

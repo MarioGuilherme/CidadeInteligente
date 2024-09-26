@@ -19,13 +19,15 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         .AsNoTracking()
         .ToListAsync();
 
-    public Task<User?> GetByEmailAsync(string email) => this._dbContext.Users
-        .AsNoTracking()
-        .FirstOrDefaultAsync(u => u.Email == email);
+    public Task<User?> GetByEmailAsync(string email, bool tracking = false) => tracking
+        ? this._dbContext.Users.FirstOrDefaultAsync(u => u.Email == email)
+        : this._dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
 
     public Task<User?> GetByIdAsync(long userId, bool tracking = false) => tracking
         ? this._dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId)
         : this._dbContext.Users.Include(u => u.Course).AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
+
+    public Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword) => this._dbContext.Users.FirstOrDefaultAsync(u => u.TokenRecoverPassword == tokenRecoverPassword);
 
     public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page) {
         User user = await this._dbContext.Users

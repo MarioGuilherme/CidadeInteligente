@@ -7,8 +7,9 @@ public interface IUserRepository {
     Task AddAsync(User user);
     void Delete(User user);
     Task<List<User>> GetAllAsync();
-    Task<User?> GetByEmailAsync(string email);
+    Task<User?> GetByEmailAsync(string email, bool tracking = false);
     Task<User?> GetByIdAsync(long userId, bool tracking = false);
+    Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword);
     Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page);
     Task<bool> IsEmailInUse(string email);
     Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId);

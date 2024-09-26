@@ -1,4 +1,6 @@
-﻿using CidadeInteligente.Application.Commands.LoginUser;
+﻿using CidadeInteligente.Application.Commands.ChangePasswordCommand;
+using CidadeInteligente.Application.Commands.LoginUser;
+using CidadeInteligente.Application.Commands.SendEmailRecover;
 using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Exceptions;
 using MediatR;
@@ -30,6 +32,32 @@ public class AuthAPIController(ILogger<AuthAPIController> logger, IMediator medi
             return this.Created();
         } catch (EmailOrPasswordNotMatchException) {
             return this.NotFound();
+        } catch (Exception ex) {
+            this._logger.LogError("{Message}", ex.Message);
+            return this.StatusCode(500);
+        }
+    }
+
+    [HttpPatch("sendEmailRecover")]
+    public async Task<IActionResult> SendEmailRecover([FromBody] SendEmailRecoverCommand command) {
+        try {
+            await this._mediator.Send(command);
+            return this.NoContent();
+        } catch (Exception ex) {
+            this._logger.LogError("{Message}", ex.Message);
+            return this.StatusCode(500);
+        }
+    }
+
+    [HttpPatch("changePassword")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command) {
+        try {
+            await this._mediator.Send(command);
+            return this.NoContent();
+        } catch (UserNotExistException) {
+            return this.NotFound();
+        } catch (TokenRecoverPasswordExpiredException) {
+            return this.StatusCode(410);
         } catch (Exception ex) {
             this._logger.LogError("{Message}", ex.Message);
             return this.StatusCode(500);

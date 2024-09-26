@@ -23,7 +23,7 @@
 
     @this.RenderBody()
 
-    @if (!bool.TryParse(this.TempData["ignoreFooter"]?.ToString(), out bool ignoreFooter)) {
+    @if (!bool.TryParse(this.ViewData["ignoreFooter"]?.ToString(), out bool ignoreFooter)) {
         <partial name="_Footer" />
     }
 

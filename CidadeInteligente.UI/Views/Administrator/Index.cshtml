@@ -322,15 +322,15 @@
                 if ($("input[name=userId]").val().trim() == "") {
                     formHasEmptyField($("form#userForm").serializeArray().slice(1, -1));
 
-                    if ($($("input[type=password")[0]).val().trim() != $($("input[type=password")[1]).val().trim()) {
+                    if ($($("input[type=password")[0]).val() != $($("input[type=password")[1]).val()) {
                         sweetAlert("error", "As senhas não conferem");
                         return;
                     }
 
                     sweetAlertAwait("Cadastrando usuário");
                     const { status, body } = await restAPI.post("admin/users", {
-                        name: $("input[name=name]").val(),
-                        email: $("input[name=email]").val(),
+                        name: $("input[name=name]").val().trim(),
+                        email: $("input[name=email]").val().trim(),
                         password: $("input[name=password]").val(),
                         courseId: +$("select[name=courseId]").val(),
                         role: +$("select[name=role]").val()

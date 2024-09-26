@@ -1,0 +1,80 @@
+﻿@using CidadeInteligente.Application.ViewModels;
+@model UserFormChangePassword;
+
+@{
+    this.ViewData["Title"] = "Alterar Senha";
+    this.ViewData["ignoreFooter"] = true;
+}
+
+<link rel="stylesheet" href="~/css/auth.css">
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="main">
+            <div class="container">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-12 col-md-5 painel">
+                        <div class="img-logo-cidade">
+                            <img src="img/iconAuth.png">
+                        </div>
+                        <h3 class="text-center title mb-3">Alteração de Senha</h3>
+                        <form id="formulario" class="form">
+                            <input type="hidden" name="token" value=@this.Model.Token>
+                            <label class="text-dark">Olá <b>@this.Model.UserName</b>, digite sua nova senha:</label>
+                            <div class="inputIcon">
+                                <input type="password" name="password" class="form-input" placeholder="Digite a sua nova senha">
+                                <i class="mdi mdi-key"></i>
+                            </div>
+                            <div class="inputIcon">
+                                <input type="password" name="password" class="form-input" placeholder="Confirme a sua nova senha">
+                                <i class="mdi mdi-key"></i>
+                            </div>
+                        </form>
+                        <button type="button" class="btn mb-2 btn-strong-red btn-block btn-changePassword">Alterar Senha</button>
+                        <div class="text-center font-weight-bold mt-3">&copy; @DateTime.Now.Year</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(() => {
+        $(".btn-changePassword").click(async () => {
+            formHasEmptyField($("form").serializeArray());
+
+            if ($("input[type=password]:eq(0)").val() != $("input[type=password]:eq(1)").val()) {
+                sweetAlert("error", "As senhas não conferem");
+                return;
+            }
+
+            sweetAlertAwait("Enviando email de recuperação");
+            const { status, body } = await restAPI.patch("auth/changePassword", {
+                newPassword: $("input[type=password]:eq(0)").val(),
+                confirmNewPassword: $("input[type=password]:eq(1)").val(),
+                token: $("input[name=token]").val()
+            });
+            toggleExitConfirmation(false);
+
+            switch (status) {
+                case 204:
+                    await sweetAlert("success", "Senha redefinida com sucesso!");
+                    $(location).attr("href", "/");
+                    break;
+                case 400:
+                    handleBadRequest(body);
+                    break;
+                case 404:
+                    sweetAlert("warning", "Este token não pertence mais à nenhuma solicitação de redefinição de senha!");
+                    break;
+                case 410:
+                    sweetAlert("warning", "O token de redefinição de senha acabou expirando!");
+                    break;
+                default:
+                    sweetAlert("error", "Um erro desconhecido ocorreu durante a redefinição de sua senha!");
+                    break;
+            }
+        });
+    });
+</script>

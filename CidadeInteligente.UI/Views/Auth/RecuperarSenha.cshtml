@@ -1,0 +1,61 @@
+﻿@{
+    this.ViewData["Title"] = "Enviar email de recuperação de senha";
+    this.ViewData["ignoreFooter"] = true;
+}
+
+<link rel="stylesheet" href="~/css/auth.css">
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="main">
+            <div class="container">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-12 col-md-5 painel">
+                        <div class="img-logo-cidade">
+                            <img src="img/iconAuth.png">
+                        </div>
+                        <h3 class="text-center title mb-3">Recuperação de Senha</h3>
+                        <form id="formulario" class="form">
+                            <label class="text-dark">Digite o Email de sua conta</label>
+                            <div class="inputIcon">
+                                <input type="email" name="email" class="form-input" aria-describedby="emailHelp" placeholder="Digite o email">
+                                <i class="mdi mdi-email-check"></i>
+                            </div>
+                        </form>
+                        <button type="button" class="btn mb-2 btn-strong-red btn-block btn-recover">
+                            Enviar Email de Recuperação
+                        </button>
+                        <a href="login" class="forget-password">Voltar ao Login</a>
+                        <div class="text-center font-weight-bold mt-3">
+                            &copy; @DateTime.Now.Year
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(() => {
+        $(".btn-recover").click(async() => {
+            formHasEmptyField($("form").serializeArray());
+
+            sweetAlertAwait("Enviando email de recuperação");
+            const { status, body } = await restAPI.patch("auth/sendEmailRecover", { email: $("input[name=email]").val().trim() });
+            toggleExitConfirmation(false);
+
+            switch (status) {
+                case 204:
+                    sweetAlert("success", "Se este e-mail pertencer à uma conta, será feito o envio das instruções para redefinição de senha!").then(({ value }) => value && $(location).attr("href", "/login"));
+                    break;
+                case 400:
+                    handleBadRequest(body);
+                    break;
+                default:
+                    sweetAlert("error", "Um erro desconhecido ocorreu durante o seu envio de e-mail para redefinição de senha!");
+                    break;
+            }
+        });
+    });
+</script>

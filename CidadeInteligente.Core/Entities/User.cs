@@ -1,4 +1,5 @@
 ﻿using CidadeInteligente.Core.Enums;
+using System.Security.Cryptography;
 using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Core.Entities;
@@ -11,6 +12,8 @@ public class User {
     public string Email { get; private set; }
     public string Password { get; private set; }
     public Role Role { get; private set; }
+    public string? TokenRecoverPassword { get; private set; }
+    public DateTime? TokenRecoverPasswordExpiration { get; private set; }
     public List<Project> InvolvedProjects { get; private set; } = [];
     public List<Project> CreatedProjects { get; private set; } = [];
 
@@ -29,6 +32,26 @@ public class User {
         this.Name = name;
         this.Email = email;
         this.Role = role;
+    }
+
+    public void UpdatePassword(string newPassword) {
+        this.Password = HashPassword(newPassword);
+        this.RemovePasswordResetTokenInformation();
+    }
+
+    public void RemovePasswordResetTokenInformation() {
+        this.TokenRecoverPassword = null;
+        this.TokenRecoverPasswordExpiration = null;
+    }
+
+    public void SaveNewTokenToRecoverPassword() {
+        byte[] randomBytes = new byte[78];
+        using (RandomNumberGenerator rng = RandomNumberGenerator.Create()) {
+            rng.GetBytes(randomBytes);
+        }
+
+        this.TokenRecoverPassword = BitConverter.ToString(randomBytes).Replace("-", "").ToLower();
+        this.TokenRecoverPasswordExpiration = DateTime.Now.AddMinutes(60);
     }
 
     public override bool Equals(object? obj) => obj is User user && this.UserId == user.UserId;

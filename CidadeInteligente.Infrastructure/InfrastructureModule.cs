@@ -1,20 +1,12 @@
-﻿using CidadeInteligente.Core.Repositories;
-using CidadeInteligente.Infrastructure.Persistence.Repositories;
-using CidadeInteligente.Infrastructure.Persistence;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
+using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Core.Services;
 using CidadeInteligente.Infrastructure.CloudServices;
+using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Infrastructure.Persistence.Repositories;
 using CidadeInteligente.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CidadeInteligente.Infrastructure;

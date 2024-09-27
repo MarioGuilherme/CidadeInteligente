@@ -7,7 +7,8 @@ public class ValidationFilter : IActionFilter {
     public void OnActionExecuted(ActionExecutedContext context) { }
 
     public void OnActionExecuting(ActionExecutingContext context) {
-        if (context.ModelState.IsValid) return;
+        if (context.ModelState.IsValid)
+            return;
 
         IEnumerable<string> messages = context.ModelState
             .SelectMany(ms => ms.Value!.Errors)

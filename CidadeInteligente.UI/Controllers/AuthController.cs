@@ -1,8 +1,6 @@
-﻿using CidadeInteligente.Application.Queries.GetAllProjects;
-using CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
+﻿using CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
 using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Exceptions;
-using CidadeInteligente.Core.Models;
 using CidadeInteligente.UI.ViewModels;
 using FluentValidation;
 using MediatR;
@@ -25,7 +23,8 @@ public class AuthController(ILogger<AuthController> logger, IMediator mediator) 
     [HttpGet("alterar-senha")]
     public async Task<IActionResult> AlterarSenha(string token) {
         try {
-            if (this.User.Identity?.IsAuthenticated ?? false) return this.Redirect("/");
+            if (this.User.Identity?.IsAuthenticated ?? false)
+                return this.Redirect("/");
             GetUserByTokenRecoverPasswordQuery getUserByTokenRecoverPasswordQuery = new(token);
             UserDataChangePassword userFormChangePassword = await this._mediator.Send(getUserByTokenRecoverPasswordQuery);
             return this.View(userFormChangePassword);

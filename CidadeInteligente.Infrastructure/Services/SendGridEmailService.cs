@@ -1,7 +1,7 @@
-﻿using CidadeInteligente.Core.Services;
-using SendGrid.Helpers.Mail;
+﻿using CidadeInteligente.Core.Exceptions;
+using CidadeInteligente.Core.Services;
 using SendGrid;
-using CidadeInteligente.Core.Exceptions;
+using SendGrid.Helpers.Mail;
 
 namespace CidadeInteligente.Infrastructure.Services;
 
@@ -15,6 +15,7 @@ public class SendGridEmailService(string apiKey, string senderEmail) : IEmailSer
         EmailAddress recipientEmailAddress = new(recipient);
         SendGridMessage sendGridMessage = MailHelper.CreateSingleEmail(from, recipientEmailAddress, subject, string.Empty, htmlContent);
         Response response = await client.SendEmailAsync(sendGridMessage);
-        if (!response.IsSuccessStatusCode) throw new SendEmailException();
+        if (!response.IsSuccessStatusCode)
+            throw new SendEmailException();
     }
 }

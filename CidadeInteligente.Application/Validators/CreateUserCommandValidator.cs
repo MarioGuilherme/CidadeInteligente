@@ -1,7 +1,5 @@
 ﻿using CidadeInteligente.Application.Commands.CreateUser;
-using CidadeInteligente.Core.Enums;
 using FluentValidation;
-using System.Data;
 
 namespace CidadeInteligente.Application.Validators;
 

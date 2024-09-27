@@ -1,5 +1,4 @@
-﻿using CidadeInteligente.Application.ViewModels;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Services;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
@@ -21,7 +20,7 @@ public class SendEmailRecoverCommandHandler(IUnitOfWork unitOfWork, IEmailServic
         user.SaveNewTokenToRecoverPassword();
 
         string rawHtmlBody = await File.ReadAllTextAsync("./Views/Auth/BodyEmail.html", cancellationToken);
-        
+
         StringBuilder stringBuilder = new(rawHtmlBody);
 
         stringBuilder = stringBuilder

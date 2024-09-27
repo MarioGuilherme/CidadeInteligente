@@ -24,7 +24,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CidadeInteligente.API;
+namespace CidadeInteligente.UI.Controllers;
 
 [Route("API/admin")]
 [Authorize(Roles = nameof(Role.Teacher))]

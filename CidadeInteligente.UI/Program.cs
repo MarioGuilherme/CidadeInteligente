@@ -1,83 +1,19 @@
-using AutoMapper;
-using Azure.Storage.Blobs;
-using CidadeInteligente.Application.Queries.GetAllProjects;
-using CidadeInteligente.Application.Validators;
-using CidadeInteligente.Application.ViewModels;
-using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Repositories;
-using CidadeInteligente.Core.Services;
-using CidadeInteligente.Infrastructure.CloudServices;
-using CidadeInteligente.Infrastructure.Persistence;
-using CidadeInteligente.Infrastructure.Persistence.Repositories;
-using CidadeInteligente.Infrastructure.Services;
-using CidadeInteligente.UI.Extensions;
+using CidadeInteligente.Application;
+using CidadeInteligente.Infrastructure;
 using CidadeInteligente.UI.Filters;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-Environment.SetEnvironmentVariable("AzureStorageBlobURL", $"{builder.Configuration["AzureStorage:BaseURL"]!}/{builder.Configuration["AzureStorage:ContainerName"]!}");
-
-builder.Services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CidadeInteligenteDb")));
-
-builder.Services.AddSingleton<IFileStorage, AzureStorageService>(_ => {
-    string connectionString = builder.Configuration["AzureStorage:ConnectionString"]!;
-    string containerName = builder.Configuration["AzureStorage:ContainerName"]!;
-    BlobContainerClient blobContainerClient = new(connectionString, containerName);
-    blobContainerClient.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-    return new(connectionString, containerName);
-});
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAreaRepository, AreaRepository>();
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IRazorViewRenderer, RazorViewRenderer>();
-builder.Services.AddSingleton<IEmailService, SendGridEmailService>(_ => {
-    string apiKey = builder.Configuration["SendGrid:ApiKey"]!;
-    string senderEmail = builder.Configuration["SendGrid:SenderEmail"]!;
-    return new(apiKey, senderEmail);
-});
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddSingleton(new MapperConfiguration(config => {
-    config.CreateMap<User, UserViewModel>()
-          .ForMember(uvm => uvm.Course, o => o.MapFrom(u => u.Course.Description))
-          .ForMember(uvm => uvm.RoleDescription, o => o.MapFrom(u => u.Role.GetDescription()));
-    config.CreateMap<User, LoginViewModel>()
-          .ForMember(uvm => uvm.Role, o => o.MapFrom(u => u.Role.GetDescription()));
-    config.CreateMap<User, UserDataChangePassword>()
-        .ConstructUsing(u => new(u.Name, u.TokenRecoverPassword!));
-
-    config.CreateMap<Project, ProjectDetailsViewModel>()
-          .ForMember(pvm => pvm.Area, o => o.MapFrom(p => p.Area.Description))
-          .ForMember(pvm => pvm.Course, o => o.MapFrom(p => p.Course.Description));
-
-    config.CreateMap<User, ProjectUserViewModel>();
-    config.CreateMap<Area, AreaViewModel>();
-    config.CreateMap<Course, CourseViewModel>();
-    config.CreateMap<Project, ProjectViewModel>();
-    config.CreateMap<Media, MediaViewModel>();
-    config.CreateMap<Media, MediaDetailsViewModel>();
-}).CreateMapper());
+builder.Services
+    .AddInfrastructure(builder.Configuration)
+    .AddApplication();
 
 builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidationFilter)));
-builder.Services.AddFluentValidationAutoValidation(opt => opt.DisableDataAnnotationsValidation = true);
-builder.Services.AddValidatorsFromAssemblyContaining<CreateAreaCommandValidator>();
-
-builder.Services.AddMediatR(opt => opt.RegisterServicesFromAssemblyContaining(typeof(GetAllProjectsQuery)));
-
+#if DEBUG
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-
-builder.Services
-    .AddAuthentication()
-    .AddCookie("Cookie", options => {
-        options.LoginPath = "/login";
-        options.LogoutPath = "/logout";
-        options.AccessDeniedPath = "/sem-permissao";
-    });
+#else
+builder.Services.AddControllersWithViews();
+#endif
 
 WebApplication app = builder.Build();
 

@@ -11,7 +11,7 @@ public interface IUserRepository {
     Task<User?> GetByIdAsync(long userId, bool tracking = false);
     Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword);
     Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page);
-    Task<bool> IsEmailInUse(string email);
+    Task<bool> IsEmailInUseExceptByUserId(string email, long userId = default);
     Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId);
     Task<bool> UserIdExistAsync(long userId);
 }

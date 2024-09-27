@@ -41,7 +41,7 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         return user.CreatedProjects.Concat(user.InvolvedProjects).Distinct().GetPaged(page);
     }
 
-    public Task<bool> IsEmailInUse(string email) => this._dbContext.Users.AnyAsync(u => u.Email == email);
+    public Task<bool> IsEmailInUseExceptByUserId(string email, long userId = default) => this._dbContext.Users.AnyAsync(u => u.Email == email && u.UserId != userId);
 
     public async Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId) {
         User user = await this._dbContext.Users
@@ -50,7 +50,7 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
             .AsNoTracking()
             .FirstAsync(u => u.UserId == userId);
 
-        return user.InvolvedProjects.Count != 0 || user.InvolvedProjects.Count != 0;
+        return user.InvolvedProjects.Count != 0 || user.CreatedProjects.Count != 0;
     }
 
     public Task<bool> UserIdExistAsync(long userId) => this._dbContext.Users.AnyAsync(u => u.UserId == userId);

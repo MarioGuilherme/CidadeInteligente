@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 
-namespace CidadeInteligente.UI.Extensions;
+namespace CidadeInteligente.Application.Extensions;
 
 public static class EnumExtensions {
     public static string GetDescription(this Enum value) {

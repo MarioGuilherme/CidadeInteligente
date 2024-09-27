@@ -11,7 +11,7 @@ public class UpdateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
     public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken) {
         User user = await this._unitOfWork.Users.GetByIdAsync(request.UserId, true) ?? throw new UserNotExistException();
 
-        if (await this._unitOfWork.Users.IsEmailInUse(request.Email))
+        if (await this._unitOfWork.Users.IsEmailInUseExceptByUserId(request.Email, user.UserId))
             throw new EmailAlreadyInUseException();
 
         user.Update(request.CourseId, request.Name, request.Email, request.Role);

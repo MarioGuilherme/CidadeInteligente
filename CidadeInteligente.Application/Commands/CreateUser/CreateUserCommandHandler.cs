@@ -9,7 +9,7 @@ public class CreateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<long> Handle(CreateUserCommand request, CancellationToken cancellationToken) {
-        if (await this._unitOfWork.Users.IsEmailInUse(request.Email))
+        if (await this._unitOfWork.Users.IsEmailInUseExceptByUserId(request.Email))
             throw new EmailAlreadyInUseException();
 
         User user = new(

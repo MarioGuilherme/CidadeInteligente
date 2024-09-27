@@ -1,6 +1,6 @@
 ﻿@using CidadeInteligente.Application.ViewModels;
 @using CidadeInteligente.Core.Enums;
-@using CidadeInteligente.UI.Extensions;
+@using CidadeInteligente.Application.Extensions;
 
 @{
     this.ViewData["Title"] = "Administrativo";
@@ -236,7 +236,6 @@
                         <label class="text-dark">Curso</label>
                         <div class="form-group">
                             <select id="my-select" class="form-control" name="courseId">
-                                <option selected>SELECIONE O CURSO DO USUÁRIO</option>
                                 @foreach (CourseViewModel course in this.ViewBag.Courses) {
                                     <option value=@course.CourseId>@course.Description</option>
                                 }
@@ -246,7 +245,6 @@
                     <div class="form-group">
                         <label>Tipo de Usuário</label>
                         <select class="form-control" name="role">
-                            <option selected>SELECIONE A PERMISSÃO DO USUÁRIO</option>
                             <option value=@((byte)Role.Teacher)>@Role.Teacher.GetDescription()</option>
                             <option value=@((byte)Role.Student)>@Role.Student.GetDescription()</option>
                         </select>
@@ -369,7 +367,7 @@
                 toggleExitConfirmation(false);
 
                 switch (status) {
-                    case 201:
+                    case 204:
                         await resetDataTable();
                         sweetAlert("success", "Usuário atualizado com sucesso!");
                         cleanAllFields();

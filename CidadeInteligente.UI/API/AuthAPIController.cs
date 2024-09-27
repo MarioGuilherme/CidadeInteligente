@@ -43,6 +43,8 @@ public class AuthAPIController(ILogger<AuthAPIController> logger, IMediator medi
         try {
             await this._mediator.Send(command);
             return this.NoContent();
+        } catch (SendEmailException) {
+            return this.StatusCode(424);
         } catch (Exception ex) {
             this._logger.LogError("{Message}", ex.Message);
             return this.StatusCode(500);

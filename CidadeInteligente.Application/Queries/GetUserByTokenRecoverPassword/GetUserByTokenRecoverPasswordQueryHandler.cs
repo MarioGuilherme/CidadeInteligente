@@ -9,11 +9,11 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
 
-public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, UserFormChangePassword> {
+public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, UserDataChangePassword> {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<UserFormChangePassword> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken) {
+    public async Task<UserDataChangePassword> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken) {
         await new GetUserByTokenRecoverPasswordQueryValidator().ValidateAndThrowAsync(request, cancellationToken);
 
         User? user = await this._unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
@@ -24,6 +24,6 @@ public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork, I
             throw new TokenRecoverPasswordExpiredException();
         }
 
-        return this._mapper.Map<UserFormChangePassword>(user);
+        return this._mapper.Map<UserDataChangePassword>(user);
     }
 }

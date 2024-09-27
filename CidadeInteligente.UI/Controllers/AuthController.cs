@@ -27,7 +27,7 @@ public class AuthController(ILogger<AuthController> logger, IMediator mediator) 
         try {
             if (this.User.Identity?.IsAuthenticated ?? false) return this.Redirect("/");
             GetUserByTokenRecoverPasswordQuery getUserByTokenRecoverPasswordQuery = new(token);
-            UserFormChangePassword userFormChangePassword = await this._mediator.Send(getUserByTokenRecoverPasswordQuery);
+            UserDataChangePassword userFormChangePassword = await this._mediator.Send(getUserByTokenRecoverPasswordQuery);
             return this.View(userFormChangePassword);
         } catch (Exception ex) when (ex is UserNotExistException || ex is TokenRecoverPasswordExpiredException || ex is ValidationException) {
             return this.Redirect("/");

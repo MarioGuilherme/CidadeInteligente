@@ -1,0 +1,62 @@
+﻿@using CidadeInteligente.Application.ViewModels
+@model UserDataChangePassword;
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: "Poppins", sans-serif
+    }
+
+    @@media screen and (max-width: 600px) {
+        h2 {
+            font-size: 20px
+        }
+
+        h3 {
+            font-size: 15px
+        }
+
+        a {
+            font-size: 10px
+        }
+
+        h1 {
+            font-size: 22px;
+            width: 97%;
+            margin-top: 2em
+        }
+
+        div {
+            width: 100%
+        }
+    }
+</style>
+<h1 style="background:#b11116;color:white;width:70%;margin-bottom:0;margin-left:auto;margin-right:auto;padding:20px;margin-top:2em;box-shadow: 0 6px 6px rgba(92, 92, 92, 0.4);text-align:center">
+    Recuperação de senha
+</h1>
+<div style=background:#c5c5c55e;width:70%;margin-left:auto;margin-right:auto;margin-top:0;padding:10px;text-align:center>
+    <h2>
+        Olá, @this.Model.UserName!
+    </h2>
+    <h3>
+        Você solicitou a recuperação de sua senha.
+    </h3>
+    <a href="@this.ViewData["AppUrl"]/alterar-senha?token=@this.Model.Token" style=color:white;background:#b11116;padding:10px;text-decoration:none;text-transform:uppercase>
+        Clique para redefinir a sua senha
+    </a>
+    <p style="color:rgb(63, 63, 63)">
+        Não compartilhe esse link com ninguém!
+    </p>
+    <p style="color:rgb(63, 63, 63)">
+        Este link irá expirar em 1 hora.
+    </p>
+    <p style="color:rgb(92, 92, 92)">
+        Caso não tenha solicitado a recuperação de senha, por favor, ignore este email.
+    </p>
+    <br>
+    <p style=font-size:12px>Atenciosamente</p>
+    <p style=font-size:12px>Equipe Cidade Inteligente</p>
+</div>

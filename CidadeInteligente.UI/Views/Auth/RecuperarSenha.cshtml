@@ -52,6 +52,9 @@
                 case 400:
                     handleBadRequest(body);
                     break;
+                case 424:
+                    sweetAlert("warning", "Houve um erro no serviço de envio de e-mail, por favor, tente novamente mais tarde!");
+                    break;
                 default:
                     sweetAlert("error", "Um erro desconhecido ocorreu durante o seu envio de e-mail para redefinição de senha!");
                     break;

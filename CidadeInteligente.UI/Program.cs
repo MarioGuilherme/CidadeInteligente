@@ -9,6 +9,7 @@ using CidadeInteligente.Core.Services;
 using CidadeInteligente.Infrastructure.CloudServices;
 using CidadeInteligente.Infrastructure.Persistence;
 using CidadeInteligente.Infrastructure.Persistence.Repositories;
+using CidadeInteligente.Infrastructure.Services;
 using CidadeInteligente.UI.Extensions;
 using CidadeInteligente.UI.Filters;
 using FluentValidation;
@@ -21,7 +22,7 @@ Environment.SetEnvironmentVariable("AzureStorageBlobURL", $"{builder.Configurati
 
 builder.Services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CidadeInteligenteDb")));
 
-builder.Services.AddSingleton<IFileStorage, AzureStorageService>(f => {
+builder.Services.AddSingleton<IFileStorage, AzureStorageService>(_ => {
     string connectionString = builder.Configuration["AzureStorage:ConnectionString"]!;
     string containerName = builder.Configuration["AzureStorage:ContainerName"]!;
     BlobContainerClient blobContainerClient = new(connectionString, containerName);
@@ -33,6 +34,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAreaRepository, AreaRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRazorViewRenderer, RazorViewRenderer>();
+builder.Services.AddSingleton<IEmailService, SendGridEmailService>(_ => {
+    string apiKey = builder.Configuration["SendGrid:ApiKey"]!;
+    string senderEmail = builder.Configuration["SendGrid:SenderEmail"]!;
+    return new(apiKey, senderEmail);
+});
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton(new MapperConfiguration(config => {
     config.CreateMap<User, UserViewModel>()
@@ -40,7 +48,7 @@ builder.Services.AddSingleton(new MapperConfiguration(config => {
           .ForMember(uvm => uvm.RoleDescription, o => o.MapFrom(u => u.Role.GetDescription()));
     config.CreateMap<User, LoginViewModel>()
           .ForMember(uvm => uvm.Role, o => o.MapFrom(u => u.Role.GetDescription()));
-    config.CreateMap<User, UserFormChangePassword>()
+    config.CreateMap<User, UserDataChangePassword>()
         .ConstructUsing(u => new(u.Name, u.TokenRecoverPassword!));
 
     config.CreateMap<Project, ProjectDetailsViewModel>()

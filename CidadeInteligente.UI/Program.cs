@@ -1,5 +1,6 @@
 using CidadeInteligente.Application;
 using CidadeInteligente.Infrastructure;
+using CidadeInteligente.UI.ExceptionHandler;
 using CidadeInteligente.UI.Filters;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication();
+
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidationFilter)));
 #if DEBUG
@@ -21,6 +25,8 @@ if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

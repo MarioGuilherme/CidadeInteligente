@@ -5,9 +5,6 @@ namespace CidadeInteligente.Application.Validators;
 
 public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand> {
     public UpdateUserCommandValidator() {
-        this.RuleFor(u => u.UserId)
-            .GreaterThan(0).WithMessage("É necessário informar o usuário!");
-
         this.RuleFor(u => u.CourseId)
             .GreaterThan(0).WithMessage("É necessário informar o curso do usuário!");
 

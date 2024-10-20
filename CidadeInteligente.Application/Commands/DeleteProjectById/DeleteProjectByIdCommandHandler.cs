@@ -13,8 +13,7 @@ public class DeleteProjectByIdCommandHandler(IUnitOfWork unitOfWork, IFileStorag
     public async Task<Unit> Handle(DeleteProjectByIdCommand request, CancellationToken cancellationToken) {
         Project project = await this._unitOfWork.Projects.GetByIdAsync(request.ProjectId) ?? throw new ProjectNotExistException();
 
-        if (request.UserIdEditor is not null &&
-            !(request.UserIdEditor == project.CreatorUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
+        if (!(request.UserIdEditor == project.CreatorUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
             throw new UserIsReadOnlyException();
 
         foreach (Media media in project.Medias)

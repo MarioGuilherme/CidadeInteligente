@@ -13,8 +13,7 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
     public async Task<Unit> Handle(UpdateProjectCommand request, CancellationToken cancellationToken) {
         Project projectDb = await this._unitOfWork.Projects.GetByIdAsync(request.ProjectId, true) ?? throw new ProjectNotExistException();
 
-        if (request.UserIdEditor is not null &&
-            !(request.UserIdEditor == projectDb.CreatorUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
+        if (!(request.UserIdEditor == projectDb.CreatorUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
             throw new UserIsReadOnlyException();
 
         await this._unitOfWork.BeginTransactionAsync();

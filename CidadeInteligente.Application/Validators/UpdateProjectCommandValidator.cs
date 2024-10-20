@@ -5,9 +5,6 @@ namespace CidadeInteligente.Application.Validators;
 
 public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectCommand> {
     public UpdateProjectCommandValidator() {
-        this.RuleFor(p => p.ProjectId)
-            .GreaterThan(0).WithMessage("É necessário informar o projeto!");
-
         this.RuleFor(p => p.Title)
             .NotEmpty().WithMessage("É necessário informar o título do projeto!")
             .MaximumLength(100).WithMessage("O título do projeto não pode exceder 100 caracteres!");

@@ -347,7 +347,7 @@
             }
 
             sweetAlertAwait("Salvando alterações...");
-            const { status, body } = await restAPI.patch("admin/projects", project);
+            const { status, body } = await restAPI.patch(`admin/projects/${project.projectId}`, project);
             toggleExitConfirmation(false);
 
             switch (status) {

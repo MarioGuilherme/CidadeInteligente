@@ -158,8 +158,14 @@
                                 [...$(".pages a")].at(-1).click();
                         }, 500);
                         break;
+                    case 403:
+                        sweetAlert("warning", "Você não está envolvido e nem é o criador deste projeto!");
+                        break;
                     case 404:
                         sweetAlert("error", "Este projeto não existe mais!");
+                        break;
+                    default:
+                        sweetAlert("error", "Erro ao apagar projeto!");
                         break;
                 }
             });

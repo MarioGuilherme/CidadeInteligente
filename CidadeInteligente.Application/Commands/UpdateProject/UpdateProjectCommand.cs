@@ -1,9 +1,9 @@
 ﻿using MediatR;
 
 namespace CidadeInteligente.Application.Commands.UpdateProject {
-    public class UpdateProjectCommand(long? userIdEditor, long projectId, string title, long areaId, long courseId, string? description, DateOnly startedAt, DateOnly? finishedAt, List<long> involvedUsers, List<UpdateMediaCommand> medias) : IRequest<Unit> {
-        public long? UserIdEditor { get; private set; } = userIdEditor;
-        public long ProjectId { get; private set; } = projectId;
+    public class UpdateProjectCommand(string title, long areaId, long courseId, string? description, DateOnly startedAt, DateOnly? finishedAt, List<long> involvedUsers, List<UpdateMediaCommand> medias) : IRequest<Unit> {
+        public long ProjectId { get; set; }
+        public long? UserIdEditor { get; set; }
         public string Title { get; private set; } = title;
         public long AreaId { get; private set; } = areaId;
         public long CourseId { get; private set; } = courseId;

@@ -356,9 +356,7 @@
                 }
 
                 sweetAlertAwait("Salvando alterações");
-                const userId = +$("input[name=userId]").val();
-                const { status, body } = await restAPI.patch("admin/users", {
-                    userId,
+                const { status, body } = await restAPI.patch(`admin/users/${+$("input[name=userId]").val()}`, {
                     name: $("input[name=name]").val().trim(),
                     email: $("input[name=email]").val().trim(),
                     courseId: +$("select[name=courseId]").val(),
@@ -414,11 +412,7 @@
 
             sweetAlertAwait("Salvando alterações");
             const [entityId, description] = $(".modal form#entityForm input").toArray().map(input => input.value.trim());
-            const data = { description };
-            entityName == "areas"
-                ? data.areaId = +entityId
-                : data.courseId = +entityId;
-            const { status, body } = await restAPI.patch(`admin/${entityName}`, data);
+            const { status, body } = await restAPI.patch(`admin/${entityName}/${+entityId}`, { description });
             toggleExitConfirmation(false);
 
             switch (status) {

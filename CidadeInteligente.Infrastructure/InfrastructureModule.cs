@@ -26,8 +26,8 @@ public static class InfrastructureModule {
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration) {
         var connectionString = configuration.GetConnectionString("DevFreelaCs");
 
-        services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("CidadeInteligenteDb")));
-        // builder.Services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseInMemoryDatabase("CidadeInteligenteDb")); // Banco em memória
+        // services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("CidadeInteligenteDb")));
+        services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseInMemoryDatabase("CidadeInteligenteDb")); // Banco em memória
 
         return services;
     }

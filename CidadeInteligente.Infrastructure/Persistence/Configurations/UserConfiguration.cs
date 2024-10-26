@@ -29,5 +29,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User> {
                    u => u.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey("UserId"),
                    k => k.HasKey("UserId", "ProjectId")
                );
+
+        // Login com email e senha: 'demo@demo.com' e 'demo'
+        builder.HasData([
+            new(1, 1, "Usuário de Demonstração", "demo@demo.com", "demo", Core.Enums.Role.Teacher)
+        ]);
     }
 }

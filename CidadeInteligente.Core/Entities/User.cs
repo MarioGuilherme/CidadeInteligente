@@ -25,6 +25,15 @@ public class User {
         this.Role = role;
     }
 
+    public User(long userId, long courseId, string name, string email, string password, Role role) {
+        this.UserId = userId;
+        this.CourseId = courseId;
+        this.Name = name;
+        this.Email = email;
+        this.Password = HashPassword(password);
+        this.Role = role;
+    }
+
     public User(long userId) => this.UserId = userId;
 
     public void Update(long courseId, string name, string email, Role role) {

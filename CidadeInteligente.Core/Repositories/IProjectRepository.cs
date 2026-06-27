@@ -3,7 +3,8 @@ using CidadeInteligente.Core.Models;
 
 namespace CidadeInteligente.Core.Repositories;
 
-public interface IProjectRepository {
+public interface IProjectRepository
+{
     Task AddAsync(Project project);
     void DeleteMedia(Media media);
     void DeleteProject(Project project);

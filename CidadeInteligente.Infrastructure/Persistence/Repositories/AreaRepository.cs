@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
-public class AreaRepository(CidadeInteligenteDbContext dbContext) : IAreaRepository {
+public class AreaRepository(CidadeInteligenteDbContext dbContext) : IAreaRepository
+{
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(Area area) {
+    public async Task AddAsync(Area area)
+    {
         await this._dbContext.Areas.AddAsync(area);
     }
 

@@ -3,8 +3,10 @@ using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
-public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand> {
-    public ChangePasswordCommandValidator() {
+public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
+{
+    public ChangePasswordCommandValidator()
+    {
         this.RuleFor(c => c.NewPassword)
             .NotEmpty().WithMessage("É necessário informar a nova senha!");
 

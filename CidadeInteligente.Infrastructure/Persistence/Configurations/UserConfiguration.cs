@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User> {
-    public void Configure(EntityTypeBuilder<User> builder) {
+public class UserConfiguration : IEntityTypeConfiguration<User>
+{
+    public void Configure(EntityTypeBuilder<User> builder)
+    {
         builder.HasKey(u => u.UserId);
         builder.HasIndex(u => u.Email).IsUnique();
 
@@ -32,7 +34,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User> {
 
         // Login com email e senha: 'demo@demo.com' e 'demo'
         builder.HasData([
-            new(1, 1, "Usuário de Demonstração", "demo@demo.com", "demo", Core.Enums.Role.Teacher)
-        ]);
+            new(1, 1, "Usuário de Demonstração", "demo@demo.com", "demo", Core.Enums.Role.Teacher)]);
     }
 }

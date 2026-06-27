@@ -7,10 +7,12 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetInvolvedAndCreatedProjectsFromUser;
 
-public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetInvolvedAndCreatedProjectsFromUserQuery, PaginationResult<ProjectViewModel>> {
+public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetInvolvedAndCreatedProjectsFromUserQuery, PaginationResult<ProjectViewModel>>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<PaginationResult<ProjectViewModel>> Handle(GetInvolvedAndCreatedProjectsFromUserQuery request, CancellationToken cancellationToken) {
+    public async Task<PaginationResult<ProjectViewModel>> Handle(GetInvolvedAndCreatedProjectsFromUserQuery request, CancellationToken cancellationToken)
+    {
         if (!await this._unitOfWork.Users.UserIdExistAsync(request.UserId))
             throw new UserNotExistException();
 

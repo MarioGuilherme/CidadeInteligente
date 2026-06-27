@@ -3,8 +3,10 @@ using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
-public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand> {
-    public UpdateUserCommandValidator() {
+public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
+{
+    public UpdateUserCommandValidator()
+    {
         this.RuleFor(u => u.CourseId)
             .GreaterThan(0).WithMessage("É necessário informar o curso do usuário!");
 

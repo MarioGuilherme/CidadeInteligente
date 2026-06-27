@@ -44,7 +44,7 @@
 
     .form-control option {
         background: rgb(228, 228, 228);
-    }
+        }
 
     .btn-add-media {
         background: rgb(80, 80, 80);
@@ -118,7 +118,7 @@
         width: 100%;
     }
 
-    .inputIcon input:focus+i {
+    .inputIcon input:focus + i {
         color: rgb(255, 255, 255);
     }
 
@@ -147,9 +147,11 @@
             width: 97%;
             margin-top: 2em;
         }
+
         .conteudo {
             width: 100%;
         }
+
         h3 {
             font-size: 1.5em;
         }
@@ -181,7 +183,8 @@
                                 <div class="form-group">
                                     <label>Área do projeto</label>
                                     <select class="form-control" name="areaId">
-                                        @foreach (AreaViewModel area in this.ViewBag.Areas) {
+                                        @foreach (AreaViewModel area in this.ViewBag.Areas)
+                                        {
                                             <option selected="@(this.Model.AreaId == area.AreaId)" value=@area.AreaId>@area.Description</option>
                                         }
                                     </select>
@@ -191,7 +194,8 @@
                                 <div class="form-group">
                                     <label for="my-select">Curso do projeto</label>
                                     <select id="my-select" class="form-control" name="courseId">
-                                        @foreach (CourseViewModel course in this.ViewBag.Courses) {
+                                        @foreach (CourseViewModel course in this.ViewBag.Courses)
+                                        {
                                             <option selected="@(this.Model.CourseId == course.CourseId)" value=@course.CourseId>@course.Description</option>
                                         }
                                     </select>
@@ -215,7 +219,8 @@
                         <div class="form-group">
                             <label for="my-select">Pessoas Envolvidas</label>
                             <div class="users">
-                                @foreach (UserViewModel user in this.ViewBag.Users) {
+                                @foreach (UserViewModel user in this.ViewBag.Users)
+                                {
                                     <div class="user" id=@user.UserId involved=@(this.Model.InvolvedUsers.Any(u => u.UserId == user.UserId) ? "true" : "false")>
                                         <span>@user.MinorName</span>
                                     </div>
@@ -247,13 +252,17 @@
                     </div>
                 </div>
                 <div class="medias row align-items-center">
-                    @foreach (MediaDetailsViewModel media in this.Model.Medias) {
+                    @foreach (MediaDetailsViewModel media in this.Model.Medias)
+                    {
                         <div class="col-12 col-sm-12 col-lg-3 col-md-3 my-3">
                             <div class="card media" id=@media.MediaId>
                                 <div class="card-body">
-                                    @if (media.Extension == ".mp4") {
+                                    @if (media.Extension == ".mp4")
+                                    {
                                         <video class="d-block" style="width:100%" preload="metadata" controls src=@media.Path size=@media.Size></video>
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         <img class="d-block w-100 img-card" src=@media.Path size=@media.Size>
                                     }
                                     <div class="row my-1">
@@ -294,6 +303,7 @@
 </main>
 
 <script src="~/js/projectForm.js"></script>
+
 <script>
     const project = {
         projectId: +$("input[name=projectId]").val(),

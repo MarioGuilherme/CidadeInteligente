@@ -3,7 +3,8 @@ using CidadeInteligente.Core.Models;
 
 namespace CidadeInteligente.Core.Repositories;
 
-public interface IUserRepository {
+public interface IUserRepository
+{
     Task AddAsync(User user);
     void Delete(User user);
     Task<List<User>> GetAllAsync();

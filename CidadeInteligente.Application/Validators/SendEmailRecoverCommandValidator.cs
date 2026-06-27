@@ -3,8 +3,10 @@ using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
-public class SendEmailRecoverCommandValidator : AbstractValidator<SendEmailRecoverCommand> {
-    public SendEmailRecoverCommandValidator() {
+public class SendEmailRecoverCommandValidator : AbstractValidator<SendEmailRecoverCommand>
+{
+    public SendEmailRecoverCommandValidator()
+    {
         this.RuleFor(s => s.Email)
             .NotEmpty().WithMessage("É necessário informar o e-mail do usuário!")
             .EmailAddress().WithMessage("Informe um e-mail válido!")

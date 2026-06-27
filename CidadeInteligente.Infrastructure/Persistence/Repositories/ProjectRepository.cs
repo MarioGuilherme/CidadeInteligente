@@ -5,17 +5,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
-public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectRepository {
+public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectRepository
+{
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(Project project) {
+    public async Task AddAsync(Project project)
+    {
         await this._dbContext.Projects.AddAsync(project);
         this._dbContext.Users.AttachRange(project.InvolvedUsers);
     }
 
     public void DeleteMedia(Media media) => this._dbContext.Medias.Remove(media);
 
-    public void DeleteProject(Project project) {
+    public void DeleteProject(Project project)
+    {
         this._dbContext.Medias.RemoveRange(project.Medias);
         this._dbContext.Projects.Remove(project);
     }

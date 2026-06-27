@@ -5,10 +5,12 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.DeleteUserById;
 
-public class DeleteUserByIdCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteUserByIdCommand, Unit> {
+public class DeleteUserByIdCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteUserByIdCommand, Unit>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Unit> Handle(DeleteUserByIdCommand request, CancellationToken cancellationToken) {
+    public async Task<Unit> Handle(DeleteUserByIdCommand request, CancellationToken cancellationToken)
+    {
         User user = await this._unitOfWork.Users.GetByIdAsync(request.UserId)
             ?? throw new UserNotExistException();
 

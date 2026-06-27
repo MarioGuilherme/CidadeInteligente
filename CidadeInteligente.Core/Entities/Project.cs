@@ -1,6 +1,7 @@
 ﻿namespace CidadeInteligente.Core.Entities;
 
-public class Project(long creatorUserId, long areaId, long courseId, string title, string? description, DateOnly registeredAt, DateOnly startedAt, DateOnly? finishedAt) {
+public class Project(long creatorUserId, long areaId, long courseId, string title, string? description, DateOnly registeredAt, DateOnly startedAt, DateOnly? finishedAt)
+{
     public long CreatorUserId { get; private set; } = creatorUserId;
     public User CreatorUser { get; private set; }
     public long ProjectId { get; private set; }
@@ -16,7 +17,8 @@ public class Project(long creatorUserId, long areaId, long courseId, string titl
     public List<User> InvolvedUsers { get; set; } = [];
     public List<Media> Medias { get; private set; } = [];
 
-    public void Update(long areaId, long courseId, string title, string? description, DateOnly startedAt, DateOnly? finishedAt) {
+    public void Update(long areaId, long courseId, string title, string? description, DateOnly startedAt, DateOnly? finishedAt)
+    {
         this.AreaId = areaId;
         this.CourseId = courseId;
         this.Title = title;

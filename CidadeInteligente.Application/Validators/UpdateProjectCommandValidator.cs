@@ -3,8 +3,10 @@ using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
-public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectCommand> {
-    public UpdateProjectCommandValidator() {
+public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectCommand>
+{
+    public UpdateProjectCommandValidator()
+    {
         this.RuleFor(p => p.Title)
             .NotEmpty().WithMessage("É necessário informar o título do projeto!")
             .MaximumLength(100).WithMessage("O título do projeto não pode exceder 100 caracteres!");
@@ -37,8 +39,10 @@ public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectComm
             .SetValidator(new UpdateMediaCommandValidator());
     }
 
-    public class UpdateMediaCommandValidator : AbstractValidator<UpdateMediaCommand> {
-        public UpdateMediaCommandValidator() {
+    public class UpdateMediaCommandValidator : AbstractValidator<UpdateMediaCommand>
+    {
+        public UpdateMediaCommandValidator()
+        {
             this.RuleFor(m => m.MediaId)
                 .GreaterThan(0).WithMessage("É necessário informar a mídia!");
 
@@ -52,7 +56,8 @@ public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectComm
             this.RuleFor(m => m.Extension)
                 .NotEmpty().WithMessage("É necessário informar a extensão da mídia!");
 
-            this.When(m => m.Path is null, () => {
+            this.When(m => m.Path is null, () =>
+            {
                 this.RuleFor(m => m.Base64)
                     .NotEmpty().WithMessage("É necessário anexar o arquivo da mídia!");
             }).Otherwise(() => this.RuleFor(m => m.Path).NotEmpty().WithMessage("É necessário informar a URL da mídias!"));

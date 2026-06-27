@@ -7,10 +7,12 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetUserById;
 
-public class GetUserByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByIdQuery, UserViewModel> {
+public class GetUserByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByIdQuery, UserViewModel>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<UserViewModel> Handle(GetUserByIdQuery request, CancellationToken cancellationToken) {
+    public async Task<UserViewModel> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    {
         User user = await this._unitOfWork.Users.GetByIdAsync(request.UserId) ?? throw new UserNotExistException();
         return new(user.UserId,
             user.Name,

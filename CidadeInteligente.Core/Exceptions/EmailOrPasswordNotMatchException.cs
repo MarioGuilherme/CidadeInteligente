@@ -1,5 +1,6 @@
 ﻿namespace CidadeInteligente.Core.Exceptions;
 
-public class EmailOrPasswordNotMatchException : Exception {
+public class EmailOrPasswordNotMatchException : Exception
+{
     public EmailOrPasswordNotMatchException() : base() { }
 }

@@ -4,7 +4,8 @@ using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Core.Entities;
 
-public class User {
+public class User
+{
     public long UserId { get; private set; }
     public long CourseId { get; set; }
     public Course Course { get; private set; } = null!;
@@ -17,7 +18,8 @@ public class User {
     public List<Project> InvolvedProjects { get; private set; } = [];
     public List<Project> CreatedProjects { get; private set; } = [];
 
-    public User(long courseId, string name, string email, string password, Role role) {
+    public User(long courseId, string name, string email, string password, Role role)
+    {
         this.CourseId = courseId;
         this.Name = name;
         this.Email = email;
@@ -25,7 +27,8 @@ public class User {
         this.Role = role;
     }
 
-    public User(long userId, long courseId, string name, string email, string password, Role role) {
+    public User(long userId, long courseId, string name, string email, string password, Role role)
+    {
         this.UserId = userId;
         this.CourseId = courseId;
         this.Name = name;
@@ -36,26 +39,31 @@ public class User {
 
     public User(long userId) => this.UserId = userId;
 
-    public void Update(long courseId, string name, string email, Role role) {
+    public void Update(long courseId, string name, string email, Role role)
+    {
         this.CourseId = courseId;
         this.Name = name;
         this.Email = email;
         this.Role = role;
     }
 
-    public void UpdatePassword(string newPassword) {
+    public void UpdatePassword(string newPassword)
+    {
         this.Password = HashPassword(newPassword);
         this.RemovePasswordResetTokenInformation();
     }
 
-    public void RemovePasswordResetTokenInformation() {
+    public void RemovePasswordResetTokenInformation()
+    {
         this.TokenRecoverPassword = null;
         this.TokenRecoverPasswordExpiration = null;
     }
 
-    public void SaveNewTokenToRecoverPassword() {
+    public void SaveNewTokenToRecoverPassword()
+    {
         byte[] randomBytes = new byte[78];
-        using (RandomNumberGenerator rng = RandomNumberGenerator.Create()) {
+        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+        {
             rng.GetBytes(randomBytes);
         }
 

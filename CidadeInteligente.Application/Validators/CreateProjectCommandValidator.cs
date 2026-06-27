@@ -1,9 +1,12 @@
 ﻿using CidadeInteligente.Application.Commands.CreateProject;
 using FluentValidation;
 
-namespace CidadeInteligente.Application.Validators {
-    public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand> {
-        public CreateProjectCommandValidator() {
+namespace CidadeInteligente.Application.Validators
+{
+    public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
+    {
+        public CreateProjectCommandValidator()
+        {
             this.RuleFor(p => p.Title)
                 .NotEmpty().WithMessage("É necessário informar o título do projeto!")
                 .MaximumLength(100).WithMessage("O título do projeto não pode exceder 100 caracteres!");
@@ -37,8 +40,10 @@ namespace CidadeInteligente.Application.Validators {
         }
     }
 
-    public class CreateMediaCommandValidator : AbstractValidator<CreateMediaCommand> {
-        public CreateMediaCommandValidator() {
+    public class CreateMediaCommandValidator : AbstractValidator<CreateMediaCommand>
+    {
+        public CreateMediaCommandValidator()
+        {
             this.RuleFor(m => m.Title)
                 .NotEmpty().WithMessage("É necessário informar o título da mídia!")
                 .MaximumLength(60).WithMessage("O título da mídia não pode exceder 60 caracteres!");

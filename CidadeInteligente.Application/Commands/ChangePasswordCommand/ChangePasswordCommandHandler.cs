@@ -5,13 +5,16 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.ChangePasswordCommand;
 
-public class ChangePasswordCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<ChangePasswordCommand, Unit> {
+public class ChangePasswordCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<ChangePasswordCommand, Unit>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Unit> Handle(ChangePasswordCommand request, CancellationToken cancellationToken) {
+    public async Task<Unit> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+    {
         User? user = await this._unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
 
-        if (DateTime.Now > user.TokenRecoverPasswordExpiration) {
+        if (DateTime.Now > user.TokenRecoverPasswordExpiration)
+        {
             user.RemovePasswordResetTokenInformation();
             await this._unitOfWork.CompleteAsync();
             throw new TokenRecoverPasswordExpiredException();

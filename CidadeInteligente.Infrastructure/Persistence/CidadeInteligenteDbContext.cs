@@ -4,7 +4,8 @@ using System.Reflection;
 
 namespace CidadeInteligente.Infrastructure.Persistence;
 
-public class CidadeInteligenteDbContext(DbContextOptions<CidadeInteligenteDbContext> options) : DbContext(options) {
+public class CidadeInteligenteDbContext(DbContextOptions<CidadeInteligenteDbContext> options) : DbContext(options)
+{
     public DbSet<User> Users { get; set; }
     public DbSet<Project> Projects { get; set; }
     public DbSet<Media> Medias { get; set; }

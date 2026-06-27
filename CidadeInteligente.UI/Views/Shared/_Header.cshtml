@@ -17,8 +17,10 @@
                     <a class="dropdown-item@(this.Context.Request.Path == "/" ? " disabledItemDropDown" : string.Empty)" href="/">
                         Galeria
                     </a>
-                    @if (this.User.Identity!.IsAuthenticated) {
-                        if (this.User.IsInRole(nameof(Role.Teacher))) {
+                    @if (this.User.Identity!.IsAuthenticated)
+                    {
+                        if (this.User.IsInRole(nameof(Role.Teacher)))
+                        {
                             <a class="dropdown-item@(this.Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
                                 Criar
                             </a>
@@ -29,19 +31,23 @@
                     }
                 </div>
             </li>
-            @if (this.User.Identity!.IsAuthenticated & this.User.IsInRole(nameof(Role.Teacher))) {
+            @if (this.User.Identity!.IsAuthenticated & this.User.IsInRole(nameof(Role.Teacher)))
+            {
                 <a class="nav-link@(this.Context.Request.Path == "/admin" ? " disabledItem" : string.Empty)" href="/admin">
                     Admin
                 </a>
             }
-            @if (this.User.Identity.IsAuthenticated) {
+            @if (this.User.Identity.IsAuthenticated)
+            {
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">
                         Sair
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
-            } else {
+            }
+            else
+            {
                 <li class="nav-item">
                     <a class="nav-link btn btn-default-red" href="/login">
                         LOGIN

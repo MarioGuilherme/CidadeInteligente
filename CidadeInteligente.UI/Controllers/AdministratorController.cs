@@ -11,12 +11,15 @@ namespace CidadeInteligente.UI.Controllers;
 
 [Route("admin")]
 [Authorize(Roles = nameof(Role.Teacher))]
-public class AdministratorController(ILogger<AdministratorController> logger, IMediator mediator) : Controller {
+public class AdministratorController(ILogger<AdministratorController> logger, IMediator mediator) : Controller
+{
     private readonly ILogger<AdministratorController> _logger = logger;
     private readonly IMediator _mediator = mediator;
 
-    public async Task<ViewResult> Index() {
-        try {
+    public async Task<ViewResult> Index()
+    {
+        try
+        {
             GetAllUsersQuery getAllUsersQuery = new();
             GetAllAreasQuery getAllAreasQuery = new();
             GetAllCoursesQuery getAllCoursesQuery = new();
@@ -26,7 +29,9 @@ public class AdministratorController(ILogger<AdministratorController> logger, IM
             this.ViewBag.Courses = await this._mediator.Send(getAllCoursesQuery);
 
             return this.View();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             this._logger.LogError("{Message}", ex.Message);
             return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }

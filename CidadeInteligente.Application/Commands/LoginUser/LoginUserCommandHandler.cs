@@ -8,10 +8,12 @@ using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.LoginUser;
 
-public class LoginUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<LoginUserCommand, LoginViewModel> {
+public class LoginUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<LoginUserCommand, LoginViewModel>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<LoginViewModel> Handle(LoginUserCommand request, CancellationToken cancellationToken) {
+    public async Task<LoginViewModel> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    {
         User possibleUser = await this._unitOfWork.Users.GetByEmailAsync(request.Email) ?? throw new EmailOrPasswordNotMatchException();
 
         if (!Verify(request.Password, possibleUser.Password))

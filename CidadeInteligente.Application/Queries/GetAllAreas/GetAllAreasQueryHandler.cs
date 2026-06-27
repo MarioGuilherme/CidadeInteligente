@@ -5,10 +5,12 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetAllAreas;
 
-public class GetAllAreasQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllAreasQuery, List<AreaViewModel>> {
+public class GetAllAreasQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllAreasQuery, List<AreaViewModel>>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<List<AreaViewModel>> Handle(GetAllAreasQuery request, CancellationToken cancellationToken) {
+    public async Task<List<AreaViewModel>> Handle(GetAllAreasQuery request, CancellationToken cancellationToken)
+    {
         List<Area> areas = await this._unitOfWork.Areas.GetAllAsync();
         return [.. areas.Select(a => new AreaViewModel(a.AreaId, a.Description))];
     }

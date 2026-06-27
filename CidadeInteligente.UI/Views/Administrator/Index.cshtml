@@ -18,9 +18,7 @@
     th, td {
         text-align: center !important
     }
-</style>
 
-<style>
     .tab-content .container-fluid {
         border-right: 1px solid #b11116;
         border-left: 1px solid #b11116;
@@ -92,7 +90,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (UserViewModel user in this.ViewBag.Users) {
+                                        @foreach (UserViewModel user in this.ViewBag.Users)
+                                        {
                                             <tr role="row">
                                                 <td>@user.UserId</td>
                                                 <td>@user.Name</td>
@@ -136,7 +135,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (AreaViewModel area in this.ViewBag.Areas) {
+                                        @foreach (AreaViewModel area in this.ViewBag.Areas)
+                                        {
                                             <tr role="row">
                                                 <td>@area.AreaId</td>
                                                 <td>@area.Description</td>
@@ -177,7 +177,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (CourseViewModel course in this.ViewBag.Courses) {
+                                        @foreach (CourseViewModel course in this.ViewBag.Courses)
+                                        {
                                             <tr role="row">
                                                 <td>@course.CourseId</td>
                                                 <td>@course.Description</td>
@@ -271,13 +272,13 @@
 
         const getCurrentEntityName = () => $("main a.active").attr("id").split("-")[0];
         const btns = id => `
-                <button id=${id} class="btn btn-edit btn-strong-gray">
-                    <i class="fa fa-solid fa-pencil"></i> Editar
-                </button>
-                <button id=${id} class="btn btn-delete btn-strong-red">
-                    <i class="fa fa-solid fa-trash"></i> Apagar
-                </button>
-            `;
+            <button id=${id} class="btn btn-edit btn-strong-gray">
+                <i class="fa fa-solid fa-pencil"></i> Editar
+            </button>
+            <button id=${id} class="btn btn-delete btn-strong-red">
+                <i class="fa fa-solid fa-trash"></i> Apagar
+            </button>
+        `;
         const resetDataTable = async () => {
             const entityName = getCurrentEntityName();
             const entities = await restAPI.get(`admin/${entityName}`);

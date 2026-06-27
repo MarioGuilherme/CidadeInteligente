@@ -1,5 +1,6 @@
 ﻿namespace CidadeInteligente.Core.Exceptions;
 
-public class CourseNotExistException : Exception {
+public class CourseNotExistException : Exception
+{
     public CourseNotExistException() : base() { }
 }

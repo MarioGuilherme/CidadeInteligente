@@ -106,35 +106,47 @@
 <main id="noSpaceHeader">
     <div class="galery">
         <div class="row justify-content-center mt-3">
-            @if (this.Model.Data.Count == 0) {
+            @if (this.Model.Data.Count == 0)
+            {
                 <h3 class="text-center">Nenhum projeto cadastrado</h3>
-            } else {
-                @foreach (ProjectViewModel project in this.Model.Data) {
+            }
+            else
+            {
+                @foreach (ProjectViewModel project in this.Model.Data)
+                {
                     <div class="col-12 col-sm-12 col-lg-3 col-md-3 mb-2">
                         <div class="card">
                             <div id="mediaIndicators-@project.ProjectId" class="carousel slide" data-ride="carousel">
                                 <ol class="carousel-indicators">
                                     <li data-target="#mediaIndicators-@project.ProjectId" data-slide-to=@project.Medias.First().MediaId class="active"></li>
-                                    @for (int i = 1; i < project.Medias.Count; i++) {
+                                    @for (int i = 1; i < project.Medias.Count; i++)
+                                    {
                                         <li data-target="#mediaIndicators-@project.ProjectId" data-slide-to=@project.Medias[i].MediaId></li>
                                     }
                                 </ol>
                                 <div class="carousel-inner">
-                                    @if (project.Medias.First().Extension == ".mp4") {
+                                    @if (project.Medias.First().Extension == ".mp4")
+                                    {
                                         <div class="carousel-item active">
                                             <video class="d-block" style="width:inherit" preload="metadata" src=@project.Medias.First().Path></video>
                                         </div>
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         <div class="carousel-item active">
                                             <img class="d-block w-100 img-card" src=@project.Medias.First().Path>
                                         </div>
                                     }
-                                    @for (int i = 1; i < project.Medias.Count; i++) {
-                                        if (project.Medias[i].Extension == ".mp4") {
+                                    @for (int i = 1; i < project.Medias.Count; i++)
+                                    {
+                                        if (project.Medias[i].Extension == ".mp4")
+                                        {
                                             <div class="carousel-item">
                                                 <video class="d-block" style="width:inherit" preload="metadata" src=@project.Medias[i].Path></video>
                                             </div>
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             <div class="carousel-item">
                                                 <img class="d-block w-100 img-card" src=@project.Medias[i].Path>
                                             </div>
@@ -163,12 +175,16 @@
             }
         </div>
         <div class="row justify-content-center mt-3">
-            @for (int i = 1; i <= this.Model.TotalPages; i++) {
-                if (i != this.Model.CurrentPage) {
+            @for (int i = 1; i <= this.Model.TotalPages; i++)
+            {
+                if (i != this.Model.CurrentPage)
+                {
                     <a href="/?page=@i">
                         <button class="btn btn-default-red m-1">@i</button>
                     </a>
-                } else {
+                }
+                else
+                {
                     <button class="btn btn-strong-red m-1" disabled>@i</button>
                 }
             }

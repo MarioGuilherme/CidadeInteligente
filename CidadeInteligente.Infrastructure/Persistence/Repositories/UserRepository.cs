@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
-public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserRepository {
+public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserRepository
+{
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(User user) {
+    public async Task AddAsync(User user)
+    {
         await this._dbContext.Users.AddAsync(user);
     }
 
@@ -29,7 +31,8 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
 
     public Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword) => this._dbContext.Users.FirstOrDefaultAsync(u => u.TokenRecoverPassword == tokenRecoverPassword);
 
-    public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page) {
+    public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page)
+    {
         User user = await this._dbContext.Users
             .Include(u => u.InvolvedProjects)
             .ThenInclude(p => p.Medias)
@@ -43,7 +46,8 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
 
     public Task<bool> IsEmailInUseExceptByUserId(string email, long userId = default) => this._dbContext.Users.AnyAsync(u => u.Email == email && u.UserId != userId);
 
-    public async Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId) {
+    public async Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId)
+    {
         User user = await this._dbContext.Users
             .Include(u => u.InvolvedProjects)
             .Include(u => u.CreatedProjects)

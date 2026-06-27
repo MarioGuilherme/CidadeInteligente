@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CidadeInteligente.UI.Controllers;
 
-public class AuthController(ILogger<AuthController> logger, IMediator mediator) : Controller {
+public class AuthController(ILogger<AuthController> logger, IMediator mediator) : Controller
+{
     private readonly ILogger<AuthController> _logger = logger;
     private readonly IMediator _mediator = mediator;
 
@@ -21,16 +22,22 @@ public class AuthController(ILogger<AuthController> logger, IMediator mediator) 
     public IActionResult RecuperarSenha() => !(this.User.Identity?.IsAuthenticated ?? false) ? this.View() : this.Redirect("/");
 
     [HttpGet("alterar-senha")]
-    public async Task<IActionResult> AlterarSenha(string token) {
-        try {
+    public async Task<IActionResult> AlterarSenha(string token)
+    {
+        try
+        {
             if (this.User.Identity?.IsAuthenticated ?? false)
                 return this.Redirect("/");
             GetUserByTokenRecoverPasswordQuery getUserByTokenRecoverPasswordQuery = new(token);
             UserDataChangePassword userFormChangePassword = await this._mediator.Send(getUserByTokenRecoverPasswordQuery);
             return this.View(userFormChangePassword);
-        } catch (Exception ex) when (ex is UserNotExistException || ex is TokenRecoverPasswordExpiredException || ex is ValidationException) {
+        }
+        catch (Exception ex) when (ex is UserNotExistException || ex is TokenRecoverPasswordExpiredException || ex is ValidationException)
+        {
             return this.Redirect("/");
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             this._logger.LogError("{Message}", ex.Message);
             return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
@@ -38,7 +45,8 @@ public class AuthController(ILogger<AuthController> logger, IMediator mediator) 
 
     [HttpGet("logout")]
     [Authorize]
-    public async Task<IActionResult> Logout() {
+    public async Task<IActionResult> Logout()
+    {
         await this.HttpContext.SignOutAsync();
         return this.Redirect("/");
     }

@@ -7,12 +7,14 @@ using System.Text;
 
 namespace CidadeInteligente.Application.Commands.SendEmailRecover;
 
-public class SendEmailRecoverCommandHandler(IUnitOfWork unitOfWork, IEmailService emailService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<SendEmailRecoverCommand, Unit> {
+public class SendEmailRecoverCommandHandler(IUnitOfWork unitOfWork, IEmailService emailService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<SendEmailRecoverCommand, Unit>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IEmailService _emailService = emailService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public async Task<Unit> Handle(SendEmailRecoverCommand request, CancellationToken cancellationToken) {
+    public async Task<Unit> Handle(SendEmailRecoverCommand request, CancellationToken cancellationToken)
+    {
         User? user = await this._unitOfWork.Users.GetByEmailAsync(request.Email, true);
 
         if (user is null) return Unit.Value;

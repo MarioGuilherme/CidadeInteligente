@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CidadeInteligente.UI.Filters;
 
-public class ValidationFilter : IActionFilter {
+public class ValidationFilter : IActionFilter
+{
     public void OnActionExecuted(ActionExecutedContext context) { }
 
-    public void OnActionExecuting(ActionExecutingContext context) {
+    public void OnActionExecuting(ActionExecutingContext context)
+    {
         if (context.ModelState.IsValid)
             return;
 

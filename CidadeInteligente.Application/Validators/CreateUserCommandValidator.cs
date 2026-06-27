@@ -3,8 +3,10 @@ using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
-public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand> {
-    public CreateUserCommandValidator() {
+public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+{
+    public CreateUserCommandValidator()
+    {
         this.RuleFor(u => u.CourseId).GreaterThan(0).WithMessage("É necessário informar um curso válido!");
 
         this.RuleFor(u => u.Name)

@@ -6,10 +6,12 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetAllProjects;
 
-public class GetAllProjectsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllProjectsQuery, PaginationResult<ProjectViewModel>> {
+public class GetAllProjectsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllProjectsQuery, PaginationResult<ProjectViewModel>>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<PaginationResult<ProjectViewModel>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken) {
+    public async Task<PaginationResult<ProjectViewModel>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken)
+    {
         PaginationResult<Project> paginationResult = await this._unitOfWork.Projects.GetAllAsync(request.Page);
 
         if (paginationResult.Data.Count == 0 && request.Page != 1)

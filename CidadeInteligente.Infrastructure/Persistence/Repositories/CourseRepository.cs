@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
-public class CourseRepository(CidadeInteligenteDbContext dbContext) : ICourseRepository {
+public class CourseRepository(CidadeInteligenteDbContext dbContext) : ICourseRepository
+{
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(Course course) {
+    public async Task AddAsync(Course course)
+    {
         await this._dbContext.Courses.AddAsync(course);
     }
 

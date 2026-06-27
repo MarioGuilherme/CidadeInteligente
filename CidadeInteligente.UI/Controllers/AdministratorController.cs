@@ -1,6 +1,6 @@
-﻿using CidadeInteligente.Application.Queries.GetAllAreas;
-using CidadeInteligente.Application.Queries.GetAllCourses;
-using CidadeInteligente.Application.Queries.GetAllUsers;
+﻿using CidadeInteligente.Application.Queries.GetCourses;
+using CidadeInteligente.Application.Queries.GetAreas;
+using CidadeInteligente.Application.Queries.GetUsers;
 using CidadeInteligente.Core.Enums;
 using CidadeInteligente.UI.ViewModels;
 using MediatR;
@@ -20,12 +20,12 @@ public class AdministratorController(ILogger<AdministratorController> logger, IM
     {
         try
         {
-            GetAllUsersQuery getAllUsersQuery = new();
-            GetAllAreasQuery getAllAreasQuery = new();
-            GetAllCoursesQuery getAllCoursesQuery = new();
+            GetUsersQuery getAllUsersQuery = new();
+            GetAreasQuery getAreasQuery = new();
+            GetCoursesQuery getAllCoursesQuery = new();
 
             ViewBag.Users = await _mediator.Send(getAllUsersQuery);
-            ViewBag.Areas = await _mediator.Send(getAllAreasQuery);
+            ViewBag.Areas = await _mediator.Send(getAreasQuery);
             ViewBag.Courses = await _mediator.Send(getAllCoursesQuery);
 
             return View();

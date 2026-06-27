@@ -23,13 +23,16 @@ public class CreateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             request.FinishedAt
         );
 
-        request.InvolvedUsers.ForEach(userId => project.InvolvedUsers.Add(new(userId)));
-        request.Medias.ForEach(m => project.Medias.Add(new(
-            m.Title,
-            m.Description,
-            _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{m.Extension}", m.Base64).Result,
-            m.Size
-        )));
+        project.InvolvedUsers.AddRange(request.InvolvedUsers.Select(involvedUserId => new User(involvedUserId)));
+
+        foreach (var media in request.Medias)
+        {
+            var fileName = await _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{media.Extension}", media.Base64);
+            project.Medias.Add(new Media(media.Title,
+                media.Description,
+                fileName,
+                media.Size));
+        }
 
         await _unitOfWork.Projects.AddAsync(project);
         await _unitOfWork.CompleteAsync();

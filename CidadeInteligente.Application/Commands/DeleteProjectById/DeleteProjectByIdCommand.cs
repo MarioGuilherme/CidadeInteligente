@@ -2,8 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.DeleteProjectById;
 
-public class DeleteProjectByIdCommand(long projectId) : IRequest<Unit>
-{
-    public long ProjectId { get; private set; } = projectId;
-    public long? UserIdEditor { get; set; }
-}
+public record DeleteProjectByIdCommand(long ProjectId, long? UserIdEditor) : IRequest<Unit> { }

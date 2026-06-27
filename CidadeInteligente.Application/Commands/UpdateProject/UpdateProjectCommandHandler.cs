@@ -37,13 +37,13 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
         }
         foreach (Media mediaDb in projectDb.Medias)
         {
-            if (request.Medias.Exists(mediaForm => mediaDb.MediaId == mediaForm.MediaId)) continue;
+            if (request.Medias.Any(mediaForm => mediaDb.MediaId == mediaForm.MediaId)) continue;
             await _fileStorage.DeleteFileAsync(mediaDb.FileName);
             _unitOfWork.Projects.DeleteMedia(mediaDb);
         }
 
         projectDb.Medias.Clear();
-        foreach (UpdateMediaCommand media in request.Medias)
+        foreach (UpdateProjectCommand.UpdateMediaCommand media in request.Medias)
         {
             if (media.MediaId is null)
             {

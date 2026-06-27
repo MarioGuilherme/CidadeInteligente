@@ -1,6 +1,6 @@
-﻿@using CidadeInteligente.Application.ViewModels;
-@using CidadeInteligente.Core.Enums
+﻿@using CidadeInteligente.Core.Enums
 @using CidadeInteligente.Core.Models;
+@using static CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser.GetRelatedProjectsFromUserQueryResult
 @model PaginationResult<ProjectViewModel>;
 
 @{
@@ -80,7 +80,7 @@
         <h3 class="title-my-projetos">Meus Projetos</h3>
         <hr>
         <div class="row justify-content-center mb-5 myProjects">
-            @if (Model.Data.Count == 0)
+            @if (!Model.Data.Any())
             {
                 <h3 class="text-center">Você não está participando de nenhum projeto.</h3>
             }

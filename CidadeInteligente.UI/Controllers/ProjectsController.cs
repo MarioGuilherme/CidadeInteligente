@@ -1,13 +1,11 @@
-using CidadeInteligente.Application.Queries.GetAllAreas;
-using CidadeInteligente.Application.Queries.GetAllCourses;
-using CidadeInteligente.Application.Queries.GetAllProjects;
-using CidadeInteligente.Application.Queries.GetAllUsers;
-using CidadeInteligente.Application.Queries.GetDetailsProjectById;
-using CidadeInteligente.Application.Queries.GetInvolvedAndCreatedProjectsFromUser;
-using CidadeInteligente.Application.ViewModels;
+using CidadeInteligente.Application.Queries.GetAreas;
+using CidadeInteligente.Application.Queries.GetCourses;
+using CidadeInteligente.Application.Queries.GetProjectDetailsById;
+using CidadeInteligente.Application.Queries.GetProjects;
+using CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
+using CidadeInteligente.Application.Queries.GetUsers;
 using CidadeInteligente.Core.Enums;
 using CidadeInteligente.Core.Exceptions;
-using CidadeInteligente.Core.Models;
 using CidadeInteligente.UI.Extensions;
 using CidadeInteligente.UI.ViewModels;
 using MediatR;
@@ -22,12 +20,12 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
-    public async Task<ViewResult> Index(GetAllProjectsQuery getAllProjectsQuery)
+    public async Task<ViewResult> Index(GetProjectsQuery getAllProjectsQuery)
     {
         try
         {
-            PaginationResult<ProjectViewModel> paginationResult = await _mediator.Send(getAllProjectsQuery);
-            return View(paginationResult);
+            GetProjectsQueryResult getProjectsQueryResult = await _mediator.Send(getAllProjectsQuery);
+            return View(getProjectsQueryResult);
         }
         catch (Exception ex)
         {
@@ -42,13 +40,9 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     {
         try
         {
-            GetAllUsersQuery getAllUsersQuery = new();
-            GetAllAreasQuery getAllAreasQuery = new();
-            GetAllCoursesQuery getAllCoursesQuery = new();
-
-            ViewBag.Users = await _mediator.Send(getAllUsersQuery);
-            ViewBag.Areas = await _mediator.Send(getAllAreasQuery);
-            ViewBag.Courses = await _mediator.Send(getAllCoursesQuery);
+            ViewBag.Users = await _mediator.Send(new GetUsersQuery());
+            ViewBag.Areas = await _mediator.Send(new GetAreasQuery());
+            ViewBag.Courses = await _mediator.Send(new GetCoursesQuery());
 
             return View();
         }
@@ -65,8 +59,8 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
         try
         {
             GetProjectDetailsByIdQuery getProjectDetailsByIdQuery = new(projectId);
-            ProjectDetailsViewModel project = await _mediator.Send(getProjectDetailsByIdQuery);
-            return View(project);
+            GetProjectDetailsByIdQueryResult getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
+            return View(getProjectDetailsByIdQueryResult);
         }
         catch (ProjectNotExistException)
         {
@@ -86,17 +80,17 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
         try
         {
             GetProjectDetailsByIdQuery getProjectDetailsByIdQuery = new(projectId, User.UserId());
-            ProjectDetailsViewModel project = await _mediator.Send(getProjectDetailsByIdQuery);
+            GetProjectDetailsByIdQueryResult getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
 
-            GetAllUsersQuery getAllUsersQuery = new();
-            GetAllAreasQuery getAllAreasQuery = new();
-            GetAllCoursesQuery getAllCoursesQuery = new();
+            GetUsersQuery getAllUsersQuery = new();
+            GetAreasQuery getAllAreasQuery = new();
+            GetCoursesQuery getAllCoursesQuery = new();
 
             ViewBag.Users = await _mediator.Send(getAllUsersQuery);
             ViewBag.Areas = await _mediator.Send(getAllAreasQuery);
             ViewBag.Courses = await _mediator.Send(getAllCoursesQuery);
 
-            return View(project);
+            return View(getProjectDetailsByIdQueryResult);
         }
         catch (ProjectNotExistException)
         {
@@ -119,9 +113,9 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     {
         try
         {
-            GetInvolvedAndCreatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId(), page);
-            PaginationResult<ProjectViewModel> paginationResult = await _mediator.Send(getInvolvedProjectsFromUserQuery);
-            return View(paginationResult);
+            GetRelatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId(), page);
+            GetRelatedProjectsFromUserQueryResult getRelatedProjectsFromUserQueryResult = await _mediator.Send(getInvolvedProjectsFromUserQuery);
+            return View(getRelatedProjectsFromUserQueryResult);
         }
         catch (Exception ex)
         {

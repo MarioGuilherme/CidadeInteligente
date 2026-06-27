@@ -1,5 +1,4 @@
 ﻿using CidadeInteligente.Application.Validators;
-using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.Infrastructure.Persistence;
@@ -8,11 +7,11 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
 
-public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, UserDataChangePassword>
+public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, GetUserByTokenRecoverPasswordQueryResult>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<UserDataChangePassword> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken)
+    public async Task<GetUserByTokenRecoverPasswordQueryResult> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken)
     {
         await new GetUserByTokenRecoverPasswordQueryValidator().ValidateAndThrowAsync(request, cancellationToken);
 

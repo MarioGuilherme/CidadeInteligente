@@ -1,9 +1,5 @@
-﻿using CidadeInteligente.Application.ViewModels;
-using MediatR;
+﻿using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetAreaById;
 
-public class GetAreaByIdQuery(long areaId) : IRequest<AreaViewModel>
-{
-    public long AreaId { get; private set; } = areaId;
-}
+public record GetAreaByIdQuery(long AreaId) : IRequest<GetAreaByIdQueryResult> { }

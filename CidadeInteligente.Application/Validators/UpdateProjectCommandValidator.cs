@@ -39,7 +39,7 @@ public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectComm
             .SetValidator(new UpdateMediaCommandValidator());
     }
 
-    public class UpdateMediaCommandValidator : AbstractValidator<UpdateMediaCommand>
+    public class UpdateMediaCommandValidator : AbstractValidator<UpdateProjectCommand.UpdateMediaCommand>
     {
         public UpdateMediaCommandValidator()
         {

@@ -1,4 +1,6 @@
-﻿@using CidadeInteligente.Application.ViewModels;
+﻿@using CidadeInteligente.Application.Queries.GetAreas
+@using CidadeInteligente.Application.Queries.GetCourses
+@using CidadeInteligente.Application.Queries.GetUsers
 
 @{
     ViewData["Title"] = "Criar Projeto";
@@ -190,7 +192,7 @@
                                     <label>Área do projeto</label>
                                     <select class="form-control" name="areaId">
                                         <option value="">SELECIONE A ÁREA</option>
-                                        @foreach (AreaViewModel area in ViewBag.Areas)
+                                        @foreach (GetAreasQueryResult.AreaViewModel area in ViewBag.Areas)
                                         {
                                             <option value=@area.AreaId>@area.Description</option>
                                         }
@@ -202,7 +204,7 @@
                                     <label for="my-select">Curso do projeto</label>
                                     <select id="my-select" class="form-control" name="courseId">
                                         <option value="">SELECIONE O CURSO</option>
-                                        @foreach (CourseViewModel course in ViewBag.Courses)
+                                        @foreach (GetCoursesQueryResult.CourseViewModel course in ViewBag.Courses)
                                         {
                                             <option value=@course.CourseId>@course.Description</option>
                                         }
@@ -227,7 +229,7 @@
                         <div class="form-group">
                             <label for="my-select">Pessoas Envolvidas</label>
                             <div class="users">
-                                @foreach (UserViewModel user in ViewBag.Users)
+                                @foreach (GetUsersQueryResult.UserViewModel user in ViewBag.Users)
                                 {
                                     <div class="user" id=@user.UserId>
                                         <span>@user.MinorName</span>

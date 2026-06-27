@@ -1,5 +1,9 @@
-﻿@using CidadeInteligente.Application.ViewModels
-@model ProjectDetailsViewModel;
+﻿@using CidadeInteligente.Application.Queries.GetProjectDetailsById
+@using static CidadeInteligente.Application.Queries.GetAreas.GetAreasQueryResult
+@using static CidadeInteligente.Application.Queries.GetCourses.GetCoursesQueryResult
+@using static CidadeInteligente.Application.Queries.GetProjectDetailsById.GetProjectDetailsByIdQueryResult
+@using static CidadeInteligente.Application.Queries.GetUsers.GetUsersQueryResult
+@model GetProjectDetailsByIdQueryResult;
 
 @{
     ViewData["Title"] = $"Editar Projeto - {Model.ProjectId}";

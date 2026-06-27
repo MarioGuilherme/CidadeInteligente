@@ -1,5 +1,4 @@
 ﻿using CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
-using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.UI.ViewModels;
 using FluentValidation;
@@ -29,8 +28,8 @@ public class AuthController(ILogger<AuthController> logger, IMediator mediator) 
             if (User.Identity?.IsAuthenticated ?? false)
                 return Redirect("/");
             GetUserByTokenRecoverPasswordQuery getUserByTokenRecoverPasswordQuery = new(token);
-            UserDataChangePassword userFormChangePassword = await _mediator.Send(getUserByTokenRecoverPasswordQuery);
-            return View(userFormChangePassword);
+            GetUserByTokenRecoverPasswordQueryResult getUserByTokenRecoverPasswordQueryResult = await _mediator.Send(getUserByTokenRecoverPasswordQuery);
+            return View(getUserByTokenRecoverPasswordQueryResult);
         }
         catch (Exception ex) when (ex is UserNotExistException || ex is TokenRecoverPasswordExpiredException || ex is ValidationException)
         {

@@ -1,7 +1,7 @@
 ﻿using CidadeInteligente.Application.Commands.ChangePasswordCommand;
 using CidadeInteligente.Application.Commands.LoginUser;
 using CidadeInteligente.Application.Commands.SendEmailRecover;
-using CidadeInteligente.Application.ViewModels;
+using CidadeInteligente.UI.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +16,13 @@ public class AuthAPIController(ILogger<AuthAPIController> logger, IMediator medi
     private readonly IMediator _mediator = mediator;
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
+    public async Task<IActionResult> Login([FromBody] AuthenticateUserRequest request)
     {
-        LoginViewModel user = await _mediator.Send(command);
+        LoginUserCommand loginUserCommand = new(request.Email, request.Password);
+        LoginUserCommandResult loginUserCommandResult = await _mediator.Send(loginUserCommand);
         ClaimsIdentity claimsIdentity = new([
-            new(nameof(user.UserId), user.UserId.ToString()),
-                new(ClaimTypes.Role, user.Role.ToString())
+            new(nameof(loginUserCommandResult.UserId), loginUserCommandResult.UserId.ToString()),
+            new(ClaimTypes.Role, loginUserCommandResult.Role.ToString())
         ], "Cookie");
         AuthenticationProperties authProperties = new()
         {

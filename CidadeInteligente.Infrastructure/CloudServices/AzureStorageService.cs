@@ -7,11 +7,11 @@ public class AzureStorageService(string connectionString, string containerName) 
 {
     private readonly BlobContainerClient _blobContainerClient = new(connectionString, containerName);
 
-    public async Task DeleteFileAsync(string fileName) => await this._blobContainerClient.DeleteBlobIfExistsAsync(fileName);
+    public async Task DeleteFileAsync(string fileName) => await _blobContainerClient.DeleteBlobIfExistsAsync(fileName);
 
     public async Task<string> UploadOrUpdateFileAsync(string fileName, byte[] bytes)
     {
-        BlobClient blobClient = this._blobContainerClient.GetBlobClient(fileName);
+        BlobClient blobClient = _blobContainerClient.GetBlobClient(fileName);
         await blobClient.UploadAsync(new BinaryData(bytes), overwrite: true);
         return fileName;
     }

@@ -11,7 +11,7 @@ public class CreateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
     public async Task<long> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        if (await this._unitOfWork.Users.IsEmailInUseExceptByUserId(request.Email))
+        if (await _unitOfWork.Users.IsEmailInUseExceptByUserId(request.Email))
             throw new EmailAlreadyInUseException();
 
         User user = new(
@@ -22,8 +22,8 @@ public class CreateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
             request.Role
         );
 
-        await this._unitOfWork.Users.AddAsync(user);
-        await this._unitOfWork.CompleteAsync();
+        await _unitOfWork.Users.AddAsync(user);
+        await _unitOfWork.CompleteAsync();
 
         return user.UserId;
     }

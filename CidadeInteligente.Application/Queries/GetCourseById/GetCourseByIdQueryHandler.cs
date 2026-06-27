@@ -12,7 +12,7 @@ public class GetCourseByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler
 
     public async Task<CourseViewModel> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        Course course = await this._unitOfWork.Courses.GetByIdAsync(request.CourseId) ?? throw new CourseNotExistException();
+        Course course = await _unitOfWork.Courses.GetByIdAsync(request.CourseId) ?? throw new CourseNotExistException();
         return new(course.CourseId, course.Description);
     }
 }

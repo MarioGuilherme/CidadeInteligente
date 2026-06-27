@@ -7,6 +7,6 @@ public class MediaDetailsViewModel(long mediaId, string title, string? descripti
     public string? Description { get; private set; } = description;
     public string FileName { get; private set; } = fileName;
     public long Size { get; private set; } = size;
-    public string Extension => System.IO.Path.GetExtension(this.FileName);
-    public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBlobURL")}/{this.FileName}";
+    public string Extension => System.IO.Path.GetExtension(FileName);
+    public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBlobURL")}/{FileName}";
 }

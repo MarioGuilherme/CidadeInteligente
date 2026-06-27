@@ -9,5 +9,5 @@ public class UserViewModel(long userId, string name, string email, string course
     public long CourseId { get; private set; } = courseId;
     public string RoleDescription { get; private set; } = roleDescription;
     public byte Role { get; private set; } = role;
-    public string MinorName => this.Name.Length > 58 ? this.Name[0..58] : this.Name;
+    public string MinorName => Name.Length > 58 ? Name[0..58] : Name;
 }

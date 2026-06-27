@@ -11,7 +11,7 @@ public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler
 
     public async Task<List<CourseViewModel>> Handle(GetAllCoursesQuery request, CancellationToken cancellationToken)
     {
-        List<Course> courses = await this._unitOfWork.Courses.GetAllAsync();
+        List<Course> courses = await _unitOfWork.Courses.GetAllAsync();
         return [.. courses.Select(c => new CourseViewModel(c.CourseId, c.Description))];
     }
 }

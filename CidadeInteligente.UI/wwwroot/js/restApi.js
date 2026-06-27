@@ -6,12 +6,12 @@ class RestAPI {
     BASE_URL = "/API";
 
     async get(url) {
-        return await fetch(`${this.BASE_URL}/${url}`, { method: "GET" })
+        return await fetch(`${BASE_URL}/${url}`, { method: "GET" })
             .then(response => response.json());
     }
 
     async post(url, data) {
-        const request = await fetch(`${this.BASE_URL}/${url}`, {
+        const request = await fetch(`${BASE_URL}/${url}`, {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
@@ -23,7 +23,7 @@ class RestAPI {
     }
 
     async patch(url, body) {
-        const request = await fetch(`${this.BASE_URL}/${url}`, {
+        const request = await fetch(`${BASE_URL}/${url}`, {
             method: "PATCH",
             body: JSON.stringify(body),
             headers: {
@@ -35,7 +35,7 @@ class RestAPI {
     }
 
     async delete(url) {
-        return await fetch(`${this.BASE_URL}/${url}`, { method: "DELETE" });
+        return await fetch(`${BASE_URL}/${url}`, { method: "DELETE" });
     }
 }
 

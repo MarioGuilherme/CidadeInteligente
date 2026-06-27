@@ -11,29 +11,29 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
 
     public async Task AddAsync(User user)
     {
-        await this._dbContext.Users.AddAsync(user);
+        await _dbContext.Users.AddAsync(user);
     }
 
-    public void Delete(User user) => this._dbContext.Users.Remove(user);
+    public void Delete(User user) => _dbContext.Users.Remove(user);
 
-    public Task<List<User>> GetAllAsync() => this._dbContext.Users
+    public Task<List<User>> GetAllAsync() => _dbContext.Users
         .Include(u => u.Course)
         .AsNoTracking()
         .ToListAsync();
 
     public Task<User?> GetByEmailAsync(string email, bool tracking = false) => tracking
-        ? this._dbContext.Users.FirstOrDefaultAsync(u => u.Email == email)
-        : this._dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
+        ? _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email)
+        : _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
 
     public Task<User?> GetByIdAsync(long userId, bool tracking = false) => tracking
-        ? this._dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId)
-        : this._dbContext.Users.Include(u => u.Course).AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
+        ? _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId)
+        : _dbContext.Users.Include(u => u.Course).AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
 
-    public Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword) => this._dbContext.Users.FirstOrDefaultAsync(u => u.TokenRecoverPassword == tokenRecoverPassword);
+    public Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword) => _dbContext.Users.FirstOrDefaultAsync(u => u.TokenRecoverPassword == tokenRecoverPassword);
 
     public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page)
     {
-        User user = await this._dbContext.Users
+        User user = await _dbContext.Users
             .Include(u => u.InvolvedProjects)
             .ThenInclude(p => p.Medias)
             .Include(u => u.CreatedProjects)
@@ -44,11 +44,11 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         return user.CreatedProjects.Concat(user.InvolvedProjects).Distinct().GetPaged(page);
     }
 
-    public Task<bool> IsEmailInUseExceptByUserId(string email, long userId = default) => this._dbContext.Users.AnyAsync(u => u.Email == email && u.UserId != userId);
+    public Task<bool> IsEmailInUseExceptByUserId(string email, long userId = default) => _dbContext.Users.AnyAsync(u => u.Email == email && u.UserId != userId);
 
     public async Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId)
     {
-        User user = await this._dbContext.Users
+        User user = await _dbContext.Users
             .Include(u => u.InvolvedProjects)
             .Include(u => u.CreatedProjects)
             .AsNoTracking()
@@ -57,5 +57,5 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         return user.InvolvedProjects.Count != 0 || user.CreatedProjects.Count != 0;
     }
 
-    public Task<bool> UserIdExistAsync(long userId) => this._dbContext.Users.AnyAsync(u => u.UserId == userId);
+    public Task<bool> UserIdExistAsync(long userId) => _dbContext.Users.AnyAsync(u => u.UserId == userId);
 }

@@ -16,12 +16,12 @@ public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork) :
     {
         await new GetUserByTokenRecoverPasswordQueryValidator().ValidateAndThrowAsync(request, cancellationToken);
 
-        User? user = await this._unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
+        User? user = await _unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
 
         if (DateTime.Now > user.TokenRecoverPasswordExpiration)
         {
             user.RemovePasswordResetTokenInformation();
-            await this._unitOfWork.CompleteAsync();
+            await _unitOfWork.CompleteAsync();
             throw new TokenRecoverPasswordExpiredException();
         }
 

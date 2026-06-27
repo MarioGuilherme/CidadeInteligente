@@ -11,7 +11,7 @@ public class GetAllAreasQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
     public async Task<List<AreaViewModel>> Handle(GetAllAreasQuery request, CancellationToken cancellationToken)
     {
-        List<Area> areas = await this._unitOfWork.Areas.GetAllAsync();
+        List<Area> areas = await _unitOfWork.Areas.GetAllAsync();
         return [.. areas.Select(a => new AreaViewModel(a.AreaId, a.Description))];
     }
 }

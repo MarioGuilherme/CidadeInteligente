@@ -18,7 +18,7 @@ public class AuthAPIController(ILogger<AuthAPIController> logger, IMediator medi
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
     {
-        LoginViewModel user = await this._mediator.Send(command);
+        LoginViewModel user = await _mediator.Send(command);
         ClaimsIdentity claimsIdentity = new([
             new(nameof(user.UserId), user.UserId.ToString()),
                 new(ClaimTypes.Role, user.Role.ToString())
@@ -29,21 +29,21 @@ public class AuthAPIController(ILogger<AuthAPIController> logger, IMediator medi
             ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
         };
 
-        await this.HttpContext.SignInAsync("Cookie", new ClaimsPrincipal(claimsIdentity), authProperties);
-        return this.Created();
+        await HttpContext.SignInAsync("Cookie", new ClaimsPrincipal(claimsIdentity), authProperties);
+        return Created();
     }
 
     [HttpPatch("sendEmailRecover")]
     public async Task<IActionResult> SendEmailRecover([FromBody] SendEmailRecoverCommand command)
     {
-        await this._mediator.Send(command);
-        return this.NoContent();
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpPatch("changePassword")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
     {
-        await this._mediator.Send(command);
-        return this.NoContent();
+        await _mediator.Send(command);
+        return NoContent();
     }
 }

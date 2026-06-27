@@ -6,16 +6,16 @@ public class Course
     public string Description { get; private set; }
     public List<Project> Projects { get; private set; } = [];
 
-    public Course(string description) => this.Description = description;
+    public Course(string description) => Description = description;
 
     public Course(long courseId, string description)
     {
-        this.CourseId = courseId;
-        this.Description = description;
+        CourseId = courseId;
+        Description = description;
     }
 
     public void Update(string description)
     {
-        this.Description = description;
+        Description = description;
     }
 }

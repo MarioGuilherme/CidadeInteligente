@@ -13,7 +13,7 @@ public class GetUserByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
     public async Task<UserViewModel> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        User user = await this._unitOfWork.Users.GetByIdAsync(request.UserId) ?? throw new UserNotExistException();
+        User user = await _unitOfWork.Users.GetByIdAsync(request.UserId) ?? throw new UserNotExistException();
         return new(user.UserId,
             user.Name,
             user.Email,

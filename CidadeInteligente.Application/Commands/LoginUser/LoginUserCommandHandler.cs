@@ -14,7 +14,7 @@ public class LoginUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<L
 
     public async Task<LoginViewModel> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        User possibleUser = await this._unitOfWork.Users.GetByEmailAsync(request.Email) ?? throw new EmailOrPasswordNotMatchException();
+        User possibleUser = await _unitOfWork.Users.GetByEmailAsync(request.Email) ?? throw new EmailOrPasswordNotMatchException();
 
         if (!Verify(request.Password, possibleUser.Password))
             throw new EmailOrPasswordNotMatchException();

@@ -26,13 +26,13 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     {
         try
         {
-            PaginationResult<ProjectViewModel> paginationResult = await this._mediator.Send(getAllProjectsQuery);
-            return this.View(paginationResult);
+            PaginationResult<ProjectViewModel> paginationResult = await _mediator.Send(getAllProjectsQuery);
+            return View(paginationResult);
         }
         catch (Exception ex)
         {
-            this._logger.LogError("{Message}", ex.Message);
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+            _logger.LogError("{Message}", ex.Message);
+            return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
 
@@ -46,16 +46,16 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
             GetAllAreasQuery getAllAreasQuery = new();
             GetAllCoursesQuery getAllCoursesQuery = new();
 
-            this.ViewBag.Users = await this._mediator.Send(getAllUsersQuery);
-            this.ViewBag.Areas = await this._mediator.Send(getAllAreasQuery);
-            this.ViewBag.Courses = await this._mediator.Send(getAllCoursesQuery);
+            ViewBag.Users = await _mediator.Send(getAllUsersQuery);
+            ViewBag.Areas = await _mediator.Send(getAllAreasQuery);
+            ViewBag.Courses = await _mediator.Send(getAllCoursesQuery);
 
-            return this.View();
+            return View();
         }
         catch (Exception ex)
         {
-            this._logger.LogError("{Message}", ex.Message);
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+            _logger.LogError("{Message}", ex.Message);
+            return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
 
@@ -65,17 +65,17 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
         try
         {
             GetProjectDetailsByIdQuery getProjectDetailsByIdQuery = new(projectId);
-            ProjectDetailsViewModel project = await this._mediator.Send(getProjectDetailsByIdQuery);
-            return this.View(project);
+            ProjectDetailsViewModel project = await _mediator.Send(getProjectDetailsByIdQuery);
+            return View(project);
         }
         catch (ProjectNotExistException)
         {
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
+            return View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
         }
         catch (Exception ex)
         {
-            this._logger.LogError("{Message}", ex.Message);
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+            _logger.LogError("{Message}", ex.Message);
+            return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
 
@@ -85,31 +85,31 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     {
         try
         {
-            GetProjectDetailsByIdQuery getProjectDetailsByIdQuery = new(projectId, this.User.UserId());
-            ProjectDetailsViewModel project = await this._mediator.Send(getProjectDetailsByIdQuery);
+            GetProjectDetailsByIdQuery getProjectDetailsByIdQuery = new(projectId, User.UserId());
+            ProjectDetailsViewModel project = await _mediator.Send(getProjectDetailsByIdQuery);
 
             GetAllUsersQuery getAllUsersQuery = new();
             GetAllAreasQuery getAllAreasQuery = new();
             GetAllCoursesQuery getAllCoursesQuery = new();
 
-            this.ViewBag.Users = await this._mediator.Send(getAllUsersQuery);
-            this.ViewBag.Areas = await this._mediator.Send(getAllAreasQuery);
-            this.ViewBag.Courses = await this._mediator.Send(getAllCoursesQuery);
+            ViewBag.Users = await _mediator.Send(getAllUsersQuery);
+            ViewBag.Areas = await _mediator.Send(getAllAreasQuery);
+            ViewBag.Courses = await _mediator.Send(getAllCoursesQuery);
 
-            return this.View(project);
+            return View(project);
         }
         catch (ProjectNotExistException)
         {
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
+            return View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
         }
         catch (UserIsReadOnlyException)
         {
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não está relacionado à este projeto para poder alterá-lo!"));
+            return View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não está relacionado à este projeto para poder alterá-lo!"));
         }
         catch (Exception ex)
         {
-            this._logger.LogError("{Message}", ex.Message);
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+            _logger.LogError("{Message}", ex.Message);
+            return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
 
@@ -119,14 +119,14 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     {
         try
         {
-            GetInvolvedAndCreatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(this.User.UserId(), page);
-            PaginationResult<ProjectViewModel> paginationResult = await this._mediator.Send(getInvolvedProjectsFromUserQuery);
-            return this.View(paginationResult);
+            GetInvolvedAndCreatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId(), page);
+            PaginationResult<ProjectViewModel> paginationResult = await _mediator.Send(getInvolvedProjectsFromUserQuery);
+            return View(paginationResult);
         }
         catch (Exception ex)
         {
-            this._logger.LogError("{Message}", ex.Message);
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+            _logger.LogError("{Message}", ex.Message);
+            return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
 }

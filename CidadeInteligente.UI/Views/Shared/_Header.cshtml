@@ -14,30 +14,30 @@
                     Projetos
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item@(this.Context.Request.Path == "/" ? " disabledItemDropDown" : string.Empty)" href="/">
+                    <a class="dropdown-item@(Context.Request.Path == "/" ? " disabledItemDropDown" : string.Empty)" href="/">
                         Galeria
                     </a>
-                    @if (this.User.Identity!.IsAuthenticated)
+                    @if (User.Identity!.IsAuthenticated)
                     {
-                        if (this.User.IsInRole(nameof(Role.Teacher)))
+                        if (User.IsInRole(nameof(Role.Teacher)))
                         {
-                            <a class="dropdown-item@(this.Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
+                            <a class="dropdown-item@(Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
                                 Criar
                             </a>
                         }
-                        <a class="dropdown-item@(this.Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
+                        <a class="dropdown-item@(Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
                             Meus Projetos
                         </a>
                     }
                 </div>
             </li>
-            @if (this.User.Identity!.IsAuthenticated & this.User.IsInRole(nameof(Role.Teacher)))
+            @if (User.Identity!.IsAuthenticated & User.IsInRole(nameof(Role.Teacher)))
             {
-                <a class="nav-link@(this.Context.Request.Path == "/admin" ? " disabledItem" : string.Empty)" href="/admin">
+                <a class="nav-link@(Context.Request.Path == "/admin" ? " disabledItem" : string.Empty)" href="/admin">
                     Admin
                 </a>
             }
-            @if (this.User.Identity.IsAuthenticated)
+            @if (User.Identity.IsAuthenticated)
             {
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">

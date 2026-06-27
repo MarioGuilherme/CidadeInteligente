@@ -12,8 +12,8 @@ public class CreateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandle
     {
         Course course = new(request.Description);
 
-        await this._unitOfWork.Courses.AddAsync(course);
-        await this._unitOfWork.CompleteAsync();
+        await _unitOfWork.Courses.AddAsync(course);
+        await _unitOfWork.CompleteAsync();
 
         return course.CourseId;
     }

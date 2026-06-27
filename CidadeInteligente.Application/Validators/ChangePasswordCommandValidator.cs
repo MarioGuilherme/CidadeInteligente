@@ -7,16 +7,16 @@ public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCo
 {
     public ChangePasswordCommandValidator()
     {
-        this.RuleFor(c => c.NewPassword)
+        RuleFor(c => c.NewPassword)
             .NotEmpty().WithMessage("É necessário informar a nova senha!");
 
-        this.RuleFor(c => c.ConfirmNewPassword)
+        RuleFor(c => c.ConfirmNewPassword)
             .NotEmpty().WithMessage("É necessário informar a confirmação da nova senha!");
 
-        this.RuleFor(c => c.ConfirmNewPassword)
+        RuleFor(c => c.ConfirmNewPassword)
             .Equal(c => c.NewPassword).WithMessage("As senhas não coincidem.");
 
-        this.RuleFor(c => c.Token)
+        RuleFor(c => c.Token)
             .NotEmpty().WithMessage("É necessário informar o token da redefinição da senha!")
             .Length(156).WithMessage("O token de redefinição de senha deve ter 156 caracteres!");
     }

@@ -12,7 +12,7 @@ public class GetProjectDetailsByIdQueryHandler(IUnitOfWork unitOfWork) : IReques
 
     public async Task<ProjectDetailsViewModel> Handle(GetProjectDetailsByIdQuery request, CancellationToken cancellationToken)
     {
-        Project project = await this._unitOfWork.Projects.GetDetailsById(request.ProjectId) ?? throw new ProjectNotExistException();
+        Project project = await _unitOfWork.Projects.GetDetailsById(request.ProjectId) ?? throw new ProjectNotExistException();
 
         if (request.UserIdEditor is not null && !(request.UserIdEditor == project.CreatorUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
             throw new UserIsReadOnlyException();

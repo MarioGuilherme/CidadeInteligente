@@ -24,16 +24,16 @@ public class AdministratorController(ILogger<AdministratorController> logger, IM
             GetAllAreasQuery getAllAreasQuery = new();
             GetAllCoursesQuery getAllCoursesQuery = new();
 
-            this.ViewBag.Users = await this._mediator.Send(getAllUsersQuery);
-            this.ViewBag.Areas = await this._mediator.Send(getAllAreasQuery);
-            this.ViewBag.Courses = await this._mediator.Send(getAllCoursesQuery);
+            ViewBag.Users = await _mediator.Send(getAllUsersQuery);
+            ViewBag.Areas = await _mediator.Send(getAllAreasQuery);
+            ViewBag.Courses = await _mediator.Send(getAllCoursesQuery);
 
-            return this.View();
+            return View();
         }
         catch (Exception ex)
         {
-            this._logger.LogError("{Message}", ex.Message);
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+            _logger.LogError("{Message}", ex.Message);
+            return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
 }

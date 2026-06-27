@@ -16,30 +16,30 @@ public class AuthController(ILogger<AuthController> logger, IMediator mediator) 
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("login")]
-    public IActionResult Login() => !(this.User.Identity?.IsAuthenticated ?? false) ? this.View() : this.Redirect("/");
+    public IActionResult Login() => !(User.Identity?.IsAuthenticated ?? false) ? View() : Redirect("/");
 
     [HttpGet("recuperar-senha")]
-    public IActionResult RecuperarSenha() => !(this.User.Identity?.IsAuthenticated ?? false) ? this.View() : this.Redirect("/");
+    public IActionResult RecuperarSenha() => !(User.Identity?.IsAuthenticated ?? false) ? View() : Redirect("/");
 
     [HttpGet("alterar-senha")]
     public async Task<IActionResult> AlterarSenha(string token)
     {
         try
         {
-            if (this.User.Identity?.IsAuthenticated ?? false)
-                return this.Redirect("/");
+            if (User.Identity?.IsAuthenticated ?? false)
+                return Redirect("/");
             GetUserByTokenRecoverPasswordQuery getUserByTokenRecoverPasswordQuery = new(token);
-            UserDataChangePassword userFormChangePassword = await this._mediator.Send(getUserByTokenRecoverPasswordQuery);
-            return this.View(userFormChangePassword);
+            UserDataChangePassword userFormChangePassword = await _mediator.Send(getUserByTokenRecoverPasswordQuery);
+            return View(userFormChangePassword);
         }
         catch (Exception ex) when (ex is UserNotExistException || ex is TokenRecoverPasswordExpiredException || ex is ValidationException)
         {
-            return this.Redirect("/");
+            return Redirect("/");
         }
         catch (Exception ex)
         {
-            this._logger.LogError("{Message}", ex.Message);
-            return this.View("~/Views/Error.cshtml", new ErrorViewModel(500));
+            _logger.LogError("{Message}", ex.Message);
+            return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
 
@@ -47,11 +47,11 @@ public class AuthController(ILogger<AuthController> logger, IMediator mediator) 
     [Authorize]
     public async Task<IActionResult> Logout()
     {
-        await this.HttpContext.SignOutAsync();
-        return this.Redirect("/");
+        await HttpContext.SignOutAsync();
+        return Redirect("/");
     }
 
     [HttpGet("sem-permissao")]
     [Authorize]
-    public ViewResult SemPermissao() => this.View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não tem permissão para acessar está página!"));
+    public ViewResult SemPermissao() => View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não tem permissão para acessar está página!"));
 }

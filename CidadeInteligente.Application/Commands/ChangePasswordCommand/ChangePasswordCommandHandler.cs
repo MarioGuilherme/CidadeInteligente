@@ -11,18 +11,18 @@ public class ChangePasswordCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
     public async Task<Unit> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        User? user = await this._unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
+        User? user = await _unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
 
         if (DateTime.Now > user.TokenRecoverPasswordExpiration)
         {
             user.RemovePasswordResetTokenInformation();
-            await this._unitOfWork.CompleteAsync();
+            await _unitOfWork.CompleteAsync();
             throw new TokenRecoverPasswordExpiredException();
         }
 
         user.UpdatePassword(request.NewPassword);
 
-        await this._unitOfWork.CompleteAsync();
+        await _unitOfWork.CompleteAsync();
 
         return Unit.Value;
     }

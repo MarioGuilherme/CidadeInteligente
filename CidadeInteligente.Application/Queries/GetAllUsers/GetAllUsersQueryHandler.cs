@@ -12,7 +12,7 @@ public class GetAllUsersQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
     public async Task<List<UserViewModel>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
-        List<User> users = await this._unitOfWork.Users.GetAllAsync();
+        List<User> users = await _unitOfWork.Users.GetAllAsync();
         return [.. users.Select(u => new UserViewModel(
             u.UserId,
             u.Name,

@@ -13,12 +13,12 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
 
     public async Task<Unit> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
-        Project projectDb = await this._unitOfWork.Projects.GetByIdAsync(request.ProjectId, true) ?? throw new ProjectNotExistException();
+        Project projectDb = await _unitOfWork.Projects.GetByIdAsync(request.ProjectId, true) ?? throw new ProjectNotExistException();
 
         if (!(request.UserIdEditor == projectDb.CreatorUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
             throw new UserIsReadOnlyException();
 
-        await this._unitOfWork.BeginTransactionAsync();
+        await _unitOfWork.BeginTransactionAsync();
         projectDb.Update(
             request.AreaId,
             request.CourseId,
@@ -31,15 +31,15 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
 
         foreach (long userId in request.InvolvedUsers)
         {
-            User? newUserInvolved = await this._unitOfWork.Users.GetByIdAsync(userId, true);
+            User? newUserInvolved = await _unitOfWork.Users.GetByIdAsync(userId, true);
             if (newUserInvolved is null) continue;
             projectDb.InvolvedUsers.Add(newUserInvolved);
         }
         foreach (Media mediaDb in projectDb.Medias)
         {
             if (request.Medias.Exists(mediaForm => mediaDb.MediaId == mediaForm.MediaId)) continue;
-            await this._fileStorage.DeleteFileAsync(mediaDb.FileName);
-            this._unitOfWork.Projects.DeleteMedia(mediaDb);
+            await _fileStorage.DeleteFileAsync(mediaDb.FileName);
+            _unitOfWork.Projects.DeleteMedia(mediaDb);
         }
 
         projectDb.Medias.Clear();
@@ -50,27 +50,27 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
                 projectDb.Medias.Add(new(
                     media.Title,
                     media.Description,
-                    this._fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{media.Extension}", media.Base64!).Result,
+                    _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{media.Extension}", media.Base64!).Result,
                     (long)media.Size!
                 ));
                 continue;
             }
 
-            Media? mediaDb = await this._unitOfWork.Projects.GetMediaById((long)media.MediaId);
+            Media? mediaDb = await _unitOfWork.Projects.GetMediaById((long)media.MediaId);
             if (mediaDb is null) continue;
 
             if (media.Base64 is null)
                 mediaDb.Update(media.Title, media.Description);
             else
             {
-                await this._fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, media.Base64);
+                await _fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, media.Base64);
                 mediaDb.Update(media.Title, media.Description, (long)media.Size!);
             }
             projectDb.Medias.Add(mediaDb);
         }
 
-        await this._unitOfWork.CompleteAsync();
-        await this._unitOfWork.CommitAsync();
+        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.CommitAsync();
         return Unit.Value;
     }
 }

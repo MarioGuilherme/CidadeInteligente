@@ -12,8 +12,8 @@ public class SendGridEmailService(string apiKey, string senderEmail) : IEmailSer
 
     public async Task SendEmailAsync(string recipient, string subject, string htmlContent)
     {
-        SendGridClient client = new(this._apiKey);
-        EmailAddress from = new(this._senderEmail);
+        SendGridClient client = new(_apiKey);
+        EmailAddress from = new(_senderEmail);
         EmailAddress recipientEmailAddress = new(recipient);
         SendGridMessage sendGridMessage = MailHelper.CreateSingleEmail(from, recipientEmailAddress, subject, string.Empty, htmlContent);
         Response response = await client.SendEmailAsync(sendGridMessage);

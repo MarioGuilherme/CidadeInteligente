@@ -27,12 +27,12 @@ public class CreateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
         request.Medias.ForEach(m => project.Medias.Add(new(
             m.Title,
             m.Description,
-            this._fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{m.Extension}", m.Base64).Result,
+            _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{m.Extension}", m.Base64).Result,
             m.Size
         )));
 
-        await this._unitOfWork.Projects.AddAsync(project);
-        await this._unitOfWork.CompleteAsync();
+        await _unitOfWork.Projects.AddAsync(project);
+        await _unitOfWork.CompleteAsync();
 
         return project.ProjectId;
     }

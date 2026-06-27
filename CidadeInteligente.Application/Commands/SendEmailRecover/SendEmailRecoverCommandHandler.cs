@@ -15,7 +15,7 @@ public class SendEmailRecoverCommandHandler(IUnitOfWork unitOfWork, IEmailServic
 
     public async Task<Unit> Handle(SendEmailRecoverCommand request, CancellationToken cancellationToken)
     {
-        User? user = await this._unitOfWork.Users.GetByEmailAsync(request.Email, true);
+        User? user = await _unitOfWork.Users.GetByEmailAsync(request.Email, true);
 
         if (user is null) return Unit.Value;
 
@@ -27,12 +27,12 @@ public class SendEmailRecoverCommandHandler(IUnitOfWork unitOfWork, IEmailServic
 
         stringBuilder = stringBuilder
             .Replace("{{ USERNAME }}", user.Name)
-            .Replace("{{ URL }}", $"{this._httpContextAccessor.HttpContext!.Request.Scheme}://{this._httpContextAccessor.HttpContext.Request.Host}")
+            .Replace("{{ URL }}", $"{_httpContextAccessor.HttpContext!.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}")
             .Replace("{{ TOKEN }}", user.TokenRecoverPassword);
 
         await Task.WhenAll(
-            this._unitOfWork.CompleteAsync(),
-            this._emailService.SendEmailAsync(user.Email, "Redefinição de Senha", stringBuilder.ToString())
+            _unitOfWork.CompleteAsync(),
+            _emailService.SendEmailAsync(user.Email, "Redefinição de Senha", stringBuilder.ToString())
         );
 
         return Unit.Value;

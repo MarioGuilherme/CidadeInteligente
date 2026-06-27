@@ -20,43 +20,43 @@ public class User
 
     public User(long courseId, string name, string email, string password, Role role)
     {
-        this.CourseId = courseId;
-        this.Name = name;
-        this.Email = email;
-        this.Password = HashPassword(password);
-        this.Role = role;
+        CourseId = courseId;
+        Name = name;
+        Email = email;
+        Password = HashPassword(password);
+        Role = role;
     }
 
     public User(long userId, long courseId, string name, string email, string password, Role role)
     {
-        this.UserId = userId;
-        this.CourseId = courseId;
-        this.Name = name;
-        this.Email = email;
-        this.Password = HashPassword(password);
-        this.Role = role;
+        UserId = userId;
+        CourseId = courseId;
+        Name = name;
+        Email = email;
+        Password = HashPassword(password);
+        Role = role;
     }
 
-    public User(long userId) => this.UserId = userId;
+    public User(long userId) => UserId = userId;
 
     public void Update(long courseId, string name, string email, Role role)
     {
-        this.CourseId = courseId;
-        this.Name = name;
-        this.Email = email;
-        this.Role = role;
+        CourseId = courseId;
+        Name = name;
+        Email = email;
+        Role = role;
     }
 
     public void UpdatePassword(string newPassword)
     {
-        this.Password = HashPassword(newPassword);
-        this.RemovePasswordResetTokenInformation();
+        Password = HashPassword(newPassword);
+        RemovePasswordResetTokenInformation();
     }
 
     public void RemovePasswordResetTokenInformation()
     {
-        this.TokenRecoverPassword = null;
-        this.TokenRecoverPasswordExpiration = null;
+        TokenRecoverPassword = null;
+        TokenRecoverPasswordExpiration = null;
     }
 
     public void SaveNewTokenToRecoverPassword()
@@ -67,11 +67,11 @@ public class User
             rng.GetBytes(randomBytes);
         }
 
-        this.TokenRecoverPassword = BitConverter.ToString(randomBytes).Replace("-", "").ToLower();
-        this.TokenRecoverPasswordExpiration = DateTime.Now.AddMinutes(60);
+        TokenRecoverPassword = BitConverter.ToString(randomBytes).Replace("-", "").ToLower();
+        TokenRecoverPasswordExpiration = DateTime.Now.AddMinutes(60);
     }
 
-    public override bool Equals(object? obj) => obj is User user && this.UserId == user.UserId;
+    public override bool Equals(object? obj) => obj is User user && UserId == user.UserId;
 
-    public override int GetHashCode() => HashCode.Combine(this.UserId);
+    public override int GetHashCode() => HashCode.Combine(UserId);
 }

@@ -11,11 +11,11 @@ public class UpdateAreaCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
     public async Task<Unit> Handle(UpdateAreaCommand request, CancellationToken cancellationToken)
     {
-        Area area = await this._unitOfWork.Areas.GetByIdAsync(request.AreaId, true) ?? throw new AreaNotExistException();
+        Area area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId, true) ?? throw new AreaNotExistException();
 
         area.Update(request.Description);
 
-        await this._unitOfWork.CompleteAsync();
+        await _unitOfWork.CompleteAsync();
         return Unit.Value;
     }
 }

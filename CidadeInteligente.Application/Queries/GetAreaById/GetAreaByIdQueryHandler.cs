@@ -12,7 +12,7 @@ public class GetAreaByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
     public async Task<AreaViewModel> Handle(GetAreaByIdQuery request, CancellationToken cancellationToken)
     {
-        Area area = await this._unitOfWork.Areas.GetByIdAsync(request.AreaId) ?? throw new AreaNotExistException();
+        Area area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId) ?? throw new AreaNotExistException();
         return new(area.AreaId, area.Description);
     }
 }

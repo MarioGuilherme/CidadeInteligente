@@ -3,7 +3,7 @@
 @model PaginationResult<ProjectViewModel>;
 
 @{
-    this.ViewData["Title"] = "Projetos";
+    ViewData["Title"] = "Projetos";
 }
 
 <style>
@@ -106,13 +106,13 @@
 <main id="noSpaceHeader">
     <div class="galery">
         <div class="row justify-content-center mt-3">
-            @if (this.Model.Data.Count == 0)
+            @if (Model.Data.Count == 0)
             {
                 <h3 class="text-center">Nenhum projeto cadastrado</h3>
             }
             else
             {
-                @foreach (ProjectViewModel project in this.Model.Data)
+                @foreach (ProjectViewModel project in Model.Data)
                 {
                     <div class="col-12 col-sm-12 col-lg-3 col-md-3 mb-2">
                         <div class="card">
@@ -175,9 +175,9 @@
             }
         </div>
         <div class="row justify-content-center mt-3">
-            @for (int i = 1; i <= this.Model.TotalPages; i++)
+            @for (int i = 1; i <= Model.TotalPages; i++)
             {
-                if (i != this.Model.CurrentPage)
+                if (i != Model.CurrentPage)
                 {
                     <a href="/?page=@i">
                         <button class="btn btn-default-red m-1">@i</button>

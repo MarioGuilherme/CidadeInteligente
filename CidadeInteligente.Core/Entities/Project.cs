@@ -19,15 +19,15 @@ public class Project(long creatorUserId, long areaId, long courseId, string titl
 
     public void Update(long areaId, long courseId, string title, string? description, DateOnly startedAt, DateOnly? finishedAt)
     {
-        this.AreaId = areaId;
-        this.CourseId = courseId;
-        this.Title = title;
-        this.Description = description;
-        this.StartedAt = startedAt;
-        this.FinishedAt = finishedAt;
+        AreaId = areaId;
+        CourseId = courseId;
+        Title = title;
+        Description = description;
+        StartedAt = startedAt;
+        FinishedAt = finishedAt;
     }
 
-    public override bool Equals(object? obj) => obj is Project project && this.ProjectId == project.ProjectId;
+    public override bool Equals(object? obj) => obj is Project project && ProjectId == project.ProjectId;
 
-    public override int GetHashCode() => HashCode.Combine(this.ProjectId);
+    public override int GetHashCode() => HashCode.Combine(ProjectId);
 }

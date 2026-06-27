@@ -3,7 +3,7 @@
 @using CidadeInteligente.Application.Extensions;
 
 @{
-    this.ViewData["Title"] = "Administrativo";
+    ViewData["Title"] = "Administrativo";
 }
 
 <partial name="_Header" />
@@ -90,7 +90,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (UserViewModel user in this.ViewBag.Users)
+                                        @foreach (UserViewModel user in ViewBag.Users)
                                         {
                                             <tr role="row">
                                                 <td>@user.UserId</td>
@@ -135,7 +135,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (AreaViewModel area in this.ViewBag.Areas)
+                                        @foreach (AreaViewModel area in ViewBag.Areas)
                                         {
                                             <tr role="row">
                                                 <td>@area.AreaId</td>
@@ -177,7 +177,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (CourseViewModel course in this.ViewBag.Courses)
+                                        @foreach (CourseViewModel course in ViewBag.Courses)
                                         {
                                             <tr role="row">
                                                 <td>@course.CourseId</td>
@@ -237,7 +237,7 @@
                         <label class="text-dark">Curso</label>
                         <div class="form-group">
                             <select id="my-select" class="form-control" name="courseId">
-                                @foreach (CourseViewModel course in this.ViewBag.Courses) {
+                                @foreach (CourseViewModel course in ViewBag.Courses) {
                                     <option value=@course.CourseId>@course.Description</option>
                                 }
                             </select>

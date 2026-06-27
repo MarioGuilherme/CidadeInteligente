@@ -12,9 +12,9 @@ public class PaginationResult<T>
 
     public PaginationResult(int page, int totalPages, int itemsCount, List<T> data)
     {
-        this.CurrentPage = page;
-        this.TotalPages = totalPages;
-        this.ItemsCount = itemsCount;
-        this.Data = data;
+        CurrentPage = page;
+        TotalPages = totalPages;
+        ItemsCount = itemsCount;
+        Data = data;
     }
 }

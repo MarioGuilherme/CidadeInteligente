@@ -10,18 +10,18 @@ public class CourseRepository(CidadeInteligenteDbContext dbContext) : ICourseRep
 
     public async Task AddAsync(Course course)
     {
-        await this._dbContext.Courses.AddAsync(course);
+        await _dbContext.Courses.AddAsync(course);
     }
 
-    public void Delete(Course course) => this._dbContext.Courses.Remove(course);
+    public void Delete(Course course) => _dbContext.Courses.Remove(course);
 
-    public Task<List<Course>> GetAllAsync() => this._dbContext.Courses.AsNoTracking().ToListAsync();
+    public Task<List<Course>> GetAllAsync() => _dbContext.Courses.AsNoTracking().ToListAsync();
 
     public Task<Course?> GetByIdAsync(long courseId, bool tracking = false) => tracking
-        ? this._dbContext.Courses.FirstOrDefaultAsync(c => c.CourseId == courseId)
-        : this._dbContext.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.CourseId == courseId);
+        ? _dbContext.Courses.FirstOrDefaultAsync(c => c.CourseId == courseId)
+        : _dbContext.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.CourseId == courseId);
 
-    public async Task<bool> HaveProjectsAsync(long courseId) => (await this._dbContext.Courses
+    public async Task<bool> HaveProjectsAsync(long courseId) => (await _dbContext.Courses
         .Include(c => c.Projects)
         .AsNoTracking()
         .FirstAsync(c => c.CourseId == courseId)).Projects.Count > 0;

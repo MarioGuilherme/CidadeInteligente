@@ -21,6 +21,6 @@ namespace CidadeInteligente.Application.Commands.CreateProject
         public string? Description { get; private set; } = description;
         public string Extension { get; private set; } = extension;
         public byte[] Base64 { get; private set; } = base64;
-        public long Size => this.Base64.Length;
+        public long Size => Base64.Length;
     }
 }

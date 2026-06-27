@@ -11,14 +11,14 @@ public class DeleteUserByIdCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
     public async Task<Unit> Handle(DeleteUserByIdCommand request, CancellationToken cancellationToken)
     {
-        User user = await this._unitOfWork.Users.GetByIdAsync(request.UserId)
+        User user = await _unitOfWork.Users.GetByIdAsync(request.UserId)
             ?? throw new UserNotExistException();
 
-        if (await this._unitOfWork.Users.IsInvolvedOrCreatedProjectsAsync(request.UserId))
+        if (await _unitOfWork.Users.IsInvolvedOrCreatedProjectsAsync(request.UserId))
             throw new UserWithDepedentProjectsException();
 
-        this._unitOfWork.Users.Delete(user);
-        await this._unitOfWork.CompleteAsync();
+        _unitOfWork.Users.Delete(user);
+        await _unitOfWork.CompleteAsync();
 
         return Unit.Value;
     }

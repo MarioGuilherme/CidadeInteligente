@@ -18,7 +18,7 @@ public class CreateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
             request.CourseId,
             request.Name,
             request.Email,
-            request.Password,
+            BCrypt.Net.BCrypt.HashPassword(request.Password),
             request.Role
         );
 

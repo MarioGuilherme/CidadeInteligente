@@ -20,7 +20,7 @@ public class ChangePasswordCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
             throw new TokenRecoverPasswordExpiredException();
         }
 
-        user.UpdatePassword(request.NewPassword);
+        user.UpdatePassword(BCrypt.Net.BCrypt.HashPassword(request.NewPassword));
 
         await _unitOfWork.CompleteAsync();
 

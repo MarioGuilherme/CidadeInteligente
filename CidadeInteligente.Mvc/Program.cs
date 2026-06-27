@@ -23,14 +23,24 @@ builder.Services.AddControllersWithViews();
 
 WebApplication app = builder.Build();
 
-#region Cria o banco de dados na inicialização
 using AsyncServiceScope asyncServiceScope = app.Services.CreateAsyncScope();
 IServiceProvider services = asyncServiceScope.ServiceProvider;
-CidadeInteligenteDbContext context = services.GetRequiredService<CidadeInteligenteDbContext>();
-await context.Database.MigrateAsync();
+
+#region Ensures the database is created at startup.
+try
+{
+    CidadeInteligenteDbContext context = services.GetRequiredService<CidadeInteligenteDbContext>();
+    if ((await context.Database.GetPendingMigrationsAsync()).Any())
+        await context.Database.MigrateAsync();
+}
+catch
+{
+    // TODO: Adicionar Log
+}
 #endregion
 
-if (!app.Environment.IsDevelopment()) {
+if (!app.Environment.IsDevelopment())
+{
     app.UseHsts();
 }
 

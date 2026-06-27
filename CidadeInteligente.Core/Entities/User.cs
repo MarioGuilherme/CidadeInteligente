@@ -1,6 +1,5 @@
 ﻿using CidadeInteligente.Core.Enums;
 using System.Security.Cryptography;
-using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Core.Entities;
 
@@ -23,7 +22,7 @@ public class User
         CourseId = courseId;
         Name = name;
         Email = email;
-        Password = HashPassword(password);
+        Password = password;
         Role = role;
     }
 
@@ -33,7 +32,7 @@ public class User
         CourseId = courseId;
         Name = name;
         Email = email;
-        Password = HashPassword(password);
+        Password = password;
         Role = role;
     }
 
@@ -49,7 +48,7 @@ public class User
 
     public void UpdatePassword(string newPassword)
     {
-        Password = HashPassword(newPassword);
+        Password = newPassword;
         RemovePasswordResetTokenInformation();
     }
 
@@ -67,7 +66,7 @@ public class User
             rng.GetBytes(randomBytes);
         }
 
-        TokenRecoverPassword = BitConverter.ToString(randomBytes).Replace("-", "").ToLower();
+        TokenRecoverPassword = Convert.ToHexStringLower(randomBytes);
         TokenRecoverPasswordExpiration = DateTime.Now.AddMinutes(60);
     }
 

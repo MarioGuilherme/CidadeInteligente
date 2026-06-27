@@ -6,9 +6,9 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.UpdateProject;
 
-public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<UpdateProjectCommand, Unit> {
+public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork/*, IFileStorage fileStorage*/) : IRequestHandler<UpdateProjectCommand, Unit> {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IFileStorage _fileStorage = fileStorage;
+    //private readonly IFileStorage _fileStorage = fileStorage;
 
     public async Task<Unit> Handle(UpdateProjectCommand request, CancellationToken cancellationToken) {
         Project projectDb = await this._unitOfWork.Projects.GetByIdAsync(request.ProjectId, true) ?? throw new ProjectNotExistException();
@@ -34,7 +34,7 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
         }
         foreach (Media mediaDb in projectDb.Medias) {
             if (request.Medias.Exists(mediaForm => mediaDb.MediaId == mediaForm.MediaId)) continue;
-            await this._fileStorage.DeleteFileAsync(mediaDb.FileName);
+            //await this._fileStorage.DeleteFileAsync(mediaDb.FileName);
             this._unitOfWork.Projects.DeleteMedia(mediaDb);
         }
 
@@ -44,7 +44,7 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
                 projectDb.Medias.Add(new(
                     media.Title,
                     media.Description,
-                    this._fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{media.Extension}", media.Base64!).Result,
+                    $"{Guid.NewGuid():N}.{media.Extension}",//this._fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{media.Extension}", media.Base64!).Result,
                     (long)media.Size!
                 ));
                 continue;
@@ -56,7 +56,7 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             if (media.Base64 is null)
                 mediaDb.Update(media.Title, media.Description);
             else {
-                await this._fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, media.Base64);
+                //await this._fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, media.Base64);
                 mediaDb.Update(media.Title, media.Description, (long)media.Size!);
             }
             projectDb.Medias.Add(mediaDb);

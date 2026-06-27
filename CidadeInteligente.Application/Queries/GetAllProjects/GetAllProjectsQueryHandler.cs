@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CidadeInteligente.Application.ViewModels;
+﻿using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Models;
 using CidadeInteligente.Infrastructure.Persistence;
@@ -7,9 +6,8 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetAllProjects;
 
-public class GetAllProjectsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetAllProjectsQuery, PaginationResult<ProjectViewModel>> {
+public class GetAllProjectsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllProjectsQuery, PaginationResult<ProjectViewModel>> {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
 
     public async Task<PaginationResult<ProjectViewModel>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken) {
         PaginationResult<Project> paginationResult = await this._unitOfWork.Projects.GetAllAsync(request.Page);
@@ -21,7 +19,13 @@ public class GetAllProjectsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) 
             paginationResult.CurrentPage,
             paginationResult.TotalPages,
             paginationResult.ItemsCount,
-            this._mapper.Map<List<ProjectViewModel>>(paginationResult.Data)
+            [.. paginationResult.Data.Select(p => new ProjectViewModel(
+                p.ProjectId,
+                p.Title,
+                p.Description,
+                [.. p.Medias.Select(m => new MediaViewModel(
+                    m.MediaId,
+                    m.FileName))]))]
         );
     }
 }

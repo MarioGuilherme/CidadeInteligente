@@ -6,9 +6,9 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.DeleteProjectById;
 
-public class DeleteProjectByIdCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<DeleteProjectByIdCommand, Unit> {
+public class DeleteProjectByIdCommandHandler(IUnitOfWork unitOfWork/*, IFileStorage fileStorage*/) : IRequestHandler<DeleteProjectByIdCommand, Unit> {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IFileStorage _fileStorage = fileStorage;
+    //private readonly IFileStorage _fileStorage = fileStorage;
 
     public async Task<Unit> Handle(DeleteProjectByIdCommand request, CancellationToken cancellationToken) {
         Project project = await this._unitOfWork.Projects.GetByIdAsync(request.ProjectId) ?? throw new ProjectNotExistException();
@@ -17,7 +17,8 @@ public class DeleteProjectByIdCommandHandler(IUnitOfWork unitOfWork, IFileStorag
             throw new UserIsReadOnlyException();
 
         foreach (Media media in project.Medias)
-            await this._fileStorage.DeleteFileAsync(media.FileName);
+            { }
+            //await this._fileStorage.DeleteFileAsync(media.FileName);
         this._unitOfWork.Projects.DeleteProject(project);
         await this._unitOfWork.CompleteAsync();
 

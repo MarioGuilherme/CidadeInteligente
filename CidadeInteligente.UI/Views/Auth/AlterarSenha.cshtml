@@ -2,8 +2,8 @@
 @model UserDataChangePassword;
 
 @{
-    this.ViewData["Title"] = "Alterar Senha";
-    this.ViewData["ignoreFooter"] = true;
+    ViewData["Title"] = "Alterar Senha";
+    ViewData["ignoreFooter"] = true;
 }
 
 <link rel="stylesheet" href="~/css/auth.css">
@@ -19,8 +19,8 @@
                         </div>
                         <h3 class="text-center title mb-3">Alteração de Senha</h3>
                         <form id="formulario" class="form">
-                            <input type="hidden" name="token" value=@this.Model.Token>
-                            <label class="text-dark">Olá <b>@this.Model.UserName</b>, digite sua nova senha:</label>
+                            <input type="hidden" name="token" value=@Model.Token>
+                            <label class="text-dark">Olá <b>@Model.UserName</b>, digite sua nova senha:</label>
                             <div class="inputIcon">
                                 <input type="password" name="password" class="form-input" placeholder="Digite a sua nova senha">
                                 <i class="mdi mdi-key"></i>

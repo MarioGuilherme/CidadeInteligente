@@ -8,17 +8,20 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
 
-public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, UserDataChangePassword> {
+public class GetUserByTokenRecoverPasswordQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, UserDataChangePassword>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<UserDataChangePassword> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken) {
+    public async Task<UserDataChangePassword> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken)
+    {
         await new GetUserByTokenRecoverPasswordQueryValidator().ValidateAndThrowAsync(request, cancellationToken);
 
-        User? user = await this._unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
+        User? user = await _unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
 
-        if (DateTime.Now > user.TokenRecoverPasswordExpiration) {
+        if (DateTime.Now > user.TokenRecoverPasswordExpiration)
+        {
             user.RemovePasswordResetTokenInformation();
-            await this._unitOfWork.CompleteAsync();
+            await _unitOfWork.CompleteAsync();
             throw new TokenRecoverPasswordExpiredException();
         }
 

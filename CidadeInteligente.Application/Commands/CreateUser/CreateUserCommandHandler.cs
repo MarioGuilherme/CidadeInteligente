@@ -5,11 +5,13 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateUser;
 
-public class CreateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateUserCommand, long> {
+public class CreateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateUserCommand, long>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<long> Handle(CreateUserCommand request, CancellationToken cancellationToken) {
-        if (await this._unitOfWork.Users.IsEmailInUseExceptByUserId(request.Email))
+    public async Task<long> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    {
+        if (await _unitOfWork.Users.IsEmailInUseExceptByUserId(request.Email))
             throw new EmailAlreadyInUseException();
 
         User user = new(
@@ -20,8 +22,8 @@ public class CreateUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
             request.Role
         );
 
-        await this._unitOfWork.Users.AddAsync(user);
-        await this._unitOfWork.CompleteAsync();
+        await _unitOfWork.Users.AddAsync(user);
+        await _unitOfWork.CompleteAsync();
 
         return user.UserId;
     }

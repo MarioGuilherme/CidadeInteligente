@@ -1,7 +1,7 @@
 ﻿@using CidadeInteligente.Application.ViewModels;
 
 @{
-    this.ViewData["Title"] = "Criar Projeto";
+    ViewData["Title"] = "Criar Projeto";
 }
 
 <link rel="stylesheet" href="~/css/header.css" />
@@ -190,7 +190,8 @@
                                     <label>Área do projeto</label>
                                     <select class="form-control" name="areaId">
                                         <option value="">SELECIONE A ÁREA</option>
-                                        @foreach (AreaViewModel area in this.ViewBag.Areas) {
+                                        @foreach (AreaViewModel area in ViewBag.Areas)
+                                        {
                                             <option value=@area.AreaId>@area.Description</option>
                                         }
                                     </select>
@@ -201,7 +202,8 @@
                                     <label for="my-select">Curso do projeto</label>
                                     <select id="my-select" class="form-control" name="courseId">
                                         <option value="">SELECIONE O CURSO</option>
-                                        @foreach (CourseViewModel course in this.ViewBag.Courses) {
+                                        @foreach (CourseViewModel course in ViewBag.Courses)
+                                        {
                                             <option value=@course.CourseId>@course.Description</option>
                                         }
                                     </select>
@@ -225,7 +227,8 @@
                         <div class="form-group">
                             <label for="my-select">Pessoas Envolvidas</label>
                             <div class="users">
-                                @foreach (UserViewModel user in this.ViewBag.Users) {
+                                @foreach (UserViewModel user in ViewBag.Users)
+                                {
                                     <div class="user" id=@user.UserId>
                                         <span>@user.MinorName</span>
                                     </div>
@@ -269,6 +272,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="~/js/projectForm.js"></script>
+
 <script>
     const project = {
         title: null,

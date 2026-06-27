@@ -4,7 +4,7 @@
 @model PaginationResult<ProjectViewModel>;
 
 @{
-    this.ViewData["Title"] = "Meus Projetos";
+    ViewData["Title"] = "Meus Projetos";
 }
 
 <link rel="stylesheet" href="~/css/header.css" />
@@ -80,29 +80,40 @@
         <h3 class="title-my-projetos">Meus Projetos</h3>
         <hr>
         <div class="row justify-content-center mb-5 myProjects">
-            @if (this.Model.Data.Count == 0) {
+            @if (Model.Data.Count == 0)
+            {
                 <h3 class="text-center">Você não está participando de nenhum projeto.</h3>
-            } else {
-                foreach (ProjectViewModel project in this.Model.Data) {
+            }
+            else
+            {
+                foreach (ProjectViewModel project in Model.Data)
+                {
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-3">
                         <div class="card card-projeto">
-                            @if (project.Medias[0].Extension == ".mp4") {
+                            @if (project.Medias[0].Extension == ".mp4")
+                            {
                                 <video class="d-block" style="width:inherit" preload="metadata" src="@project.Medias[0].Path"></video>
-                            } else {
+                            }
+                            else
+                            {
                                 <img class="card-img-top img-card" src="@project.Medias[0].Path">
                             }
                             <div class="card-body">
                                 <h5 class="card-title">@project.Title</h5>
                                 <p class="card-text">
-                                    @if (project.Description is not null) {
+                                    @if (project.Description is not null)
+                                    {
                                         @(project.Description.Length < 125 ? project.Description : $"{project.Description[0..125]}...")
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         <small>Sem descrição</small>
                                     }
                                 </p>
                             </div>
                             <a href="/ver-projeto/@project.ProjectId" class="btn btn-block mt-2 btn-view-project">Ver Projeto</a>
-                            @if (this.User.IsInRole(nameof(Role.Teacher))) {
+                            @if (User.IsInRole(nameof(Role.Teacher)))
+                            {
                                 <a href="/editar-projeto/@project.ProjectId" class="btn mt-2 btn-edit-project">Editar</a>
                                 <button id=@project.ProjectId class="btn mt-2 btn-delete-project">Excluir</button>
                             }
@@ -112,12 +123,16 @@
             }
         </div>
         <div class="row justify-content-center mt-3 pages">
-            @for (int i = 1; i <= this.Model.TotalPages; i++) {
-                if (i != this.Model.CurrentPage) {
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i != Model.CurrentPage)
+                {
                     <a href="/meus-projetos?page=@i">
                         <button class="btn btn-default-red m-1">@i</button>
                     </a>
-                } else {
+                }
+                else
+                {
                     <button class="btn btn-strong-red m-1" disabled>@i</button>
                 }
             }
@@ -154,7 +169,7 @@
                             if ($(".myProjects").find("div.col-12").length == 0 && $(".pages").find("a").length == 0) // Se há não mais projetos nestá única página, aparece uma mensagem de que não há projetos
                                 $(".myProjects").html("<h3 class='text-center'>Você não está participando de nenhum projeto ainda.</h3>");
 
-                            if ($(".myProjects").find("div.col-12").length == 0 && $(".pages").find("a").length > 0) // Se há não hour mais projetos nesta página, vai para a página anterior
+                            if ($(".myProjects").find("div.col-12").length == 0 && $(".pages").find("a").length > 0) // Se há não houver mais projetos nesta página, vai para a página anterior
                                 [...$(".pages a")].at(-1).click();
                         }, 500);
                         break;

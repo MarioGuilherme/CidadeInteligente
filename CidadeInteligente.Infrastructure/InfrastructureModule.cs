@@ -11,8 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CidadeInteligente.Infrastructure;
 
-public static class InfrastructureModule {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) {
+public static class InfrastructureModule
+{
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
         services
             .AddPersistence(configuration)
             .AddRepositories()
@@ -23,7 +25,8 @@ public static class InfrastructureModule {
         return services;
     }
 
-    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration) {
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    {
         var connectionString = configuration.GetConnectionString("DevFreelaCs");
 
         services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("CidadeInteligenteDb")));
@@ -31,7 +34,8 @@ public static class InfrastructureModule {
 
         return services;
     }
-    private static IServiceCollection AddRepositories(this IServiceCollection services) {
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAreaRepository, AreaRepository>();
@@ -40,10 +44,12 @@ public static class InfrastructureModule {
         return services;
     }
 
-    private static IServiceCollection AddCookieAuthentication(this IServiceCollection services, IConfiguration configuration) {
+    private static IServiceCollection AddCookieAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
         services
             .AddAuthentication()
-            .AddCookie("Cookie", options => {
+            .AddCookie("Cookie", options =>
+            {
                 options.LoginPath = "/login";
                 options.LogoutPath = "/logout";
                 options.AccessDeniedPath = "/sem-permissao";
@@ -52,17 +58,20 @@ public static class InfrastructureModule {
         return services;
     }
 
-    private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration) {
+    private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+    {
         Environment.SetEnvironmentVariable("AzureStorageBlobURL", $"{configuration["AzureStorage:BaseURL"]!}/{configuration["AzureStorage:ContainerName"]!}");
 
-        services.AddSingleton<IFileStorage, AzureStorageService>(_ => {
+        services.AddSingleton<IFileStorage, AzureStorageService>(_ =>
+        {
             string connectionString = configuration["AzureStorage:ConnectionString"]!;
             string containerName = configuration["AzureStorage:ContainerName"]!;
             BlobContainerClient blobContainerClient = new(connectionString, containerName);
             blobContainerClient.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
             return new(connectionString, containerName);
         });
-        services.AddSingleton<IEmailService, SendGridEmailService>(_ => {
+        services.AddSingleton<IEmailService, SendGridEmailService>(_ =>
+        {
             string apiKey = configuration["SendGrid:ApiKey"]!;
             string senderEmail = configuration["SendGrid:SenderEmail"]!;
             return new(apiKey, senderEmail);
@@ -73,7 +82,8 @@ public static class InfrastructureModule {
         return services;
     }
 
-    private static IServiceCollection AddUnitOfWork(this IServiceCollection services) {
+    private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
+    {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

@@ -2,7 +2,7 @@
 @model ProjectDetailsViewModel;
 
 @{
-    this.ViewData["Title"] = $"Projeto - {this.Model.ProjectId}";
+    ViewData["Title"] = $"Projeto - {Model.ProjectId}";
 }
 
 <link rel="stylesheet" href="~/css/header.css" />
@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                 <hr>
-                <h4 class="font-weight-bold text-center default-color mt-2" style=word-break:break-all>@this.Model.Title</h4>
+                <h4 class="font-weight-bold text-center default-color mt-2" style=word-break:break-all>@Model.Title</h4>
                 <hr>
             </div>
         </div>
@@ -27,7 +27,8 @@
             <div class="col-12 col-md-12 col-lg-12">
                 <h5 class="font-weight-bold text-center default-color">Pessoas envolvidas</h5>
                 <div class="row justify-content-center align-items-center text-center m-1 p-1">
-                    @foreach (ProjectUserViewModel user in this.Model.InvolvedUsers) {
+                    @foreach (ProjectUserViewModel user in Model.InvolvedUsers)
+                    {
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3"><p>@user.Name</p></div>
                     }
                 </div>
@@ -36,39 +37,42 @@
         <div class="row mt-5 text-center">
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Área</h5>
-                <p>@this.Model.Area</p>
+                <p>@Model.Area</p>
             </div>
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Curso</h5>
-                <p>@this.Model.Course</p>
+                <p>@Model.Course</p>
             </div>
         </div>
         <div class="row mt-5 text-center">
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Data de ínicio do projeto</h5>
-                <p>@this.Model.StartedAt.ToShortDateString()</p>
+                <p>@Model.StartedAt.ToShortDateString()</p>
             </div>
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Data de término do projeto</h5>
-                <p>@(this.Model.FinishedAt?.ToShortDateString() ?? "Sem data de términio")</p>
+                <p>@(Model.FinishedAt?.ToShortDateString() ?? "Sem data de términio")</p>
             </div>
         </div>
         <hr>
         <div class="row mt-4">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                 <h5 class="font-weight-bold text-center default-color" style=word-break:break-all>Descrição</h5>
-                @(this.Model.Description ?? "Sem descrição")
+                @(Model.Description ?? "Sem descrição")
             </div>
         </div>
         <hr>
         <div class="row justify-content-center align-items-center m-1 p-1">
-            @foreach (MediaDetailsViewModel media in this.Model.Medias) {
+            @foreach (MediaDetailsViewModel media in Model.Medias) {
                 <div class="col-12 col-sm-12 col-lg-3 col-md-3 mt-2">
                     <div class="card">
                         <div class="card-body text-center">
-                            @if (media.Extension == ".mp4") {
+                            @if (media.Extension == ".mp4")
+                            {
                                 <video class="d-block" style="width:-webkit-fill-available" preload="metadata" controls src=@media.Path></video>
-                            } else {
+                            }
+                            else
+                            {
                                 <img class="d-block w-100 img-card" alt=@media.Title src=@media.Path>
                             }
                             <div class="form-group mt-2"><h4>@media.Title</h4></div>

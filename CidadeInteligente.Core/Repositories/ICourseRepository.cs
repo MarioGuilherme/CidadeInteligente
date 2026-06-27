@@ -2,7 +2,8 @@
 
 namespace CidadeInteligente.Core.Repositories;
 
-public interface ICourseRepository {
+public interface ICourseRepository
+{
     Task AddAsync(Course course);
     void Delete(Course course);
     Task<List<Course>> GetAllAsync();

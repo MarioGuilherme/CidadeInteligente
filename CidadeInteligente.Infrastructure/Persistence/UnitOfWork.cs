@@ -8,7 +8,8 @@ public class UnitOfWork(
     IAreaRepository areas,
     ICourseRepository courses,
     IProjectRepository projects,
-    IUserRepository users) : IUnitOfWork {
+    IUserRepository users) : IUnitOfWork
+{
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
     private IDbContextTransaction? _transaction;
 
@@ -17,26 +18,32 @@ public class UnitOfWork(
     public IProjectRepository Projects { get; } = projects;
     public IUserRepository Users { get; } = users;
 
-    public Task<int> CompleteAsync() => this._dbContext.SaveChangesAsync();
+    public Task<int> CompleteAsync() => _dbContext.SaveChangesAsync();
 
-    public async Task BeginTransactionAsync() => this._transaction = await this._dbContext.Database.BeginTransactionAsync();
+    public async Task BeginTransactionAsync() => _transaction = await _dbContext.Database.BeginTransactionAsync();
 
-    public async Task CommitAsync() {
-        try {
-            await this._transaction!.CommitAsync();
-        } catch (Exception) {
-            await this._transaction!.RollbackAsync();
+    public async Task CommitAsync()
+    {
+        try
+        {
+            await _transaction!.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await _transaction!.RollbackAsync();
             throw;
         }
     }
 
-    public void Dispose() {
-        this.Dispose(true);
+    public void Dispose()
+    {
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing) {
+    protected virtual void Dispose(bool disposing)
+    {
         if (disposing)
-            this._dbContext.Dispose();
+            _dbContext.Dispose();
     }
 }

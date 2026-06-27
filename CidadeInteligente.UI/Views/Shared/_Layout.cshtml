@@ -21,13 +21,14 @@
 </head>
 <body>
 
-    @this.RenderBody()
+    @RenderBody()
 
-    @if (!bool.TryParse(this.ViewData["ignoreFooter"]?.ToString(), out bool ignoreFooter)) {
+    @if (!bool.TryParse(ViewData["ignoreFooter"]?.ToString(), out bool ignoreFooter))
+    {
         <partial name="_Footer" />
     }
 
-    @await this.RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.8/jquery.mask.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.1/js/bootstrap.min.js"></script>

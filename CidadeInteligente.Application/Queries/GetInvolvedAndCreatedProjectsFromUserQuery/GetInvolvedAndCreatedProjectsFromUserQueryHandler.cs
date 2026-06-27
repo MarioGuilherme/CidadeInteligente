@@ -7,17 +7,19 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetInvolvedAndCreatedProjectsFromUser;
 
-public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetInvolvedAndCreatedProjectsFromUserQuery, PaginationResult<ProjectViewModel>> {
+public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetInvolvedAndCreatedProjectsFromUserQuery, PaginationResult<ProjectViewModel>>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<PaginationResult<ProjectViewModel>> Handle(GetInvolvedAndCreatedProjectsFromUserQuery request, CancellationToken cancellationToken) {
-        if (!await this._unitOfWork.Users.UserIdExistAsync(request.UserId))
+    public async Task<PaginationResult<ProjectViewModel>> Handle(GetInvolvedAndCreatedProjectsFromUserQuery request, CancellationToken cancellationToken)
+    {
+        if (!await _unitOfWork.Users.UserIdExistAsync(request.UserId))
             throw new UserNotExistException();
 
-        PaginationResult<Project> paginationResult = await this._unitOfWork.Users.GetInvolvedAndCreatedProjectsFromUser(request.UserId, request.Page);
+        PaginationResult<Project> paginationResult = await _unitOfWork.Users.GetInvolvedAndCreatedProjectsFromUser(request.UserId, request.Page);
 
         if (paginationResult.Data.Count == 0)
-            paginationResult = await this._unitOfWork.Users.GetInvolvedAndCreatedProjectsFromUser(request.UserId, paginationResult.TotalPages);
+            paginationResult = await _unitOfWork.Users.GetInvolvedAndCreatedProjectsFromUser(request.UserId, paginationResult.TotalPages);
 
         return new(
             paginationResult.CurrentPage,

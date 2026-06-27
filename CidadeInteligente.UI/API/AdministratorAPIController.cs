@@ -27,142 +27,162 @@ namespace CidadeInteligente.UI.Controllers;
 
 [Route("API/admin")]
 [Authorize(Roles = nameof(Role.Teacher))]
-public class AdministratorAPIController(ILogger<AdministratorAPIController> logger, IMediator mediator) : ControllerBase {
+public class AdministratorAPIController(ILogger<AdministratorAPIController> logger, IMediator mediator) : ControllerBase
+{
     private readonly ILogger<AdministratorAPIController> _logger = logger;
     private readonly IMediator _mediator = mediator;
 
     #region Users
     [HttpGet("users")]
-    public async Task<ActionResult> GetAllUsers() {
+    public async Task<ActionResult> GetAllUsers()
+    {
         GetAllUsersQuery getAllUsersQuery = new();
-        List<UserViewModel> users = await this._mediator.Send(getAllUsersQuery);
-        return this.Ok(users);
+        List<UserViewModel> users = await _mediator.Send(getAllUsersQuery);
+        return Ok(users);
     }
 
     [HttpGet("users/{userId}")]
-    public async Task<ActionResult> GetUserById(long userId) {
+    public async Task<ActionResult> GetUserById(long userId)
+    {
         GetUserByIdQuery getUserByIdQuery = new(userId);
-        UserViewModel user = await this._mediator.Send(getUserByIdQuery);
-        return this.Ok(user);
+        UserViewModel user = await _mediator.Send(getUserByIdQuery);
+        return Ok(user);
     }
 
     [HttpPost("users")]
-    public async Task<ActionResult> CreateUser([FromBody] CreateUserCommand command) {
-        long userId = await this._mediator.Send(command);
-        return this.CreatedAtAction(nameof(this.GetUserById), new { userId }, command);
+    public async Task<ActionResult> CreateUser([FromBody] CreateUserCommand command)
+    {
+        long userId = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetUserById), new { userId }, command);
     }
 
     [HttpPatch("users/{userId}")]
-    public async Task<ActionResult> UpdateUser(long userId, [FromBody] UpdateUserCommand command) {
+    public async Task<ActionResult> UpdateUser(long userId, [FromBody] UpdateUserCommand command)
+    {
         command.UserId = userId;
-        await this._mediator.Send(command);
-        return this.NoContent();
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpDelete("users/{userId}")]
-    public async Task<ActionResult> DeleteUser(long userId) {
+    public async Task<ActionResult> DeleteUser(long userId)
+    {
         DeleteUserByIdCommand deleteUserByIdCommand = new(userId);
-        await this._mediator.Send(deleteUserByIdCommand);
-        return this.NoContent();
+        await _mediator.Send(deleteUserByIdCommand);
+        return NoContent();
     }
     #endregion
 
     #region Areas
     [HttpGet("areas")]
-    public async Task<ActionResult> GetAllAreas() {
+    public async Task<ActionResult> GetAllAreas()
+    {
         GetAllAreasQuery getAllAreasQuery = new();
-        List<AreaViewModel> areas = await this._mediator.Send(getAllAreasQuery);
-        return this.Ok(areas);
+        List<AreaViewModel> areas = await _mediator.Send(getAllAreasQuery);
+        return Ok(areas);
     }
 
     [HttpGet("areas/{areaId}")]
-    public async Task<ActionResult> GetAreaById(long areaId) {
+    public async Task<ActionResult> GetAreaById(long areaId)
+    {
         GetAreaByIdQuery getAreaByIdQuery = new(areaId);
-        AreaViewModel area = await this._mediator.Send(getAreaByIdQuery);
-        return this.Ok(area);
+        AreaViewModel area = await _mediator.Send(getAreaByIdQuery);
+        return Ok(area);
     }
 
     [HttpPost("areas")]
-    public async Task<ActionResult> CreateArea([FromBody] CreateAreaCommand command) {
-        long areaId = await this._mediator.Send(command);
-        return this.CreatedAtAction(nameof(this.GetAreaById), new { areaId }, command);
+    public async Task<ActionResult> CreateArea([FromBody] CreateAreaCommand command)
+    {
+        long areaId = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetAreaById), new { areaId }, command);
     }
 
     [HttpPatch("areas/{areaId}")]
-    public async Task<ActionResult> UpdateArea(long areaId, [FromBody] UpdateAreaCommand command) {
+    public async Task<ActionResult> UpdateArea(long areaId, [FromBody] UpdateAreaCommand command)
+    {
         command.AreaId = areaId;
-        await this._mediator.Send(command);
-        return this.NoContent();
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpDelete("areas/{areaId}")]
-    public async Task<ActionResult> DeleteArea(long areaId) {
+    public async Task<ActionResult> DeleteArea(long areaId)
+    {
         DeleteAreaByIdCommand deleteAreaByIdCommand = new(areaId);
-        await this._mediator.Send(deleteAreaByIdCommand);
-        return this.NoContent();
+        await _mediator.Send(deleteAreaByIdCommand);
+        return NoContent();
     }
     #endregion
 
     #region Courses
     [HttpGet("courses")]
-    public async Task<ActionResult> GetAllCourses() {
+    public async Task<ActionResult> GetAllCourses()
+    {
         GetAllCoursesQuery getAllCoursesQuery = new();
-        List<CourseViewModel> courses = await this._mediator.Send(getAllCoursesQuery);
-        return this.Ok(courses);
+        List<CourseViewModel> courses = await _mediator.Send(getAllCoursesQuery);
+        return Ok(courses);
     }
 
     [HttpGet("courses/{courseId}")]
-    public async Task<ActionResult> GetCourseById(long courseId) {
+    public async Task<ActionResult> GetCourseById(long courseId)
+    {
         GetCourseByIdQuery getCourseByIdQuery = new(courseId);
-        CourseViewModel course = await this._mediator.Send(getCourseByIdQuery);
-        return this.Ok(course);
+        CourseViewModel course = await _mediator.Send(getCourseByIdQuery);
+        return Ok(course);
     }
 
     [HttpPost("courses")]
-    public async Task<ActionResult> CreateCourse([FromBody] CreateCourseCommand command) {
-        long courseId = await this._mediator.Send(command);
-        return this.CreatedAtAction(nameof(this.GetCourseById), new { courseId }, command);
+    public async Task<ActionResult> CreateCourse([FromBody] CreateCourseCommand command)
+    {
+        long courseId = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetCourseById), new { courseId }, command);
     }
 
     [HttpPatch("courses/{courseId}")]
-    public async Task<ActionResult> UpdateCourse(long courseId, [FromBody] UpdateCourseCommand command) {
+    public async Task<ActionResult> UpdateCourse(long courseId, [FromBody] UpdateCourseCommand command)
+    {
         command.CourseId = courseId;
-        await this._mediator.Send(command);
-        return this.NoContent();
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpDelete("courses/{courseId}")]
-    public async Task<ActionResult> DeleteCourse(long courseId) {
+    public async Task<ActionResult> DeleteCourse(long courseId)
+    {
         DeleteCourseByIdCommand deleteCourseByIdCommand = new(courseId);
-        await this._mediator.Send(deleteCourseByIdCommand);
-        return this.NoContent();
+        await _mediator.Send(deleteCourseByIdCommand);
+        return NoContent();
     }
     #endregion
 
     #region Projects
     [HttpPost("projects")]
-    public async Task<ActionResult> CreateProject([FromBody] CreateProjectCommand command) {
-        command.CreatorUserId = this.User.UserId();
-        long projectId = await this._mediator.Send(command);
-        this.Response.Headers.Location = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host}/ver-projeto/{projectId}";
-        return this.StatusCode(201);
+    public async Task<ActionResult> CreateProject([FromBody] CreateProjectCommand command)
+    {
+        command.CreatorUserId = User.UserId();
+        long projectId = await _mediator.Send(command);
+        Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/ver-projeto/{projectId}";
+        return StatusCode(201);
     }
 
     [HttpPatch("projects/{projectId}")]
-    public async Task<ActionResult> UpdateProject(long projectId, [FromBody] UpdateProjectCommand command) {
+    public async Task<ActionResult> UpdateProject(long projectId, [FromBody] UpdateProjectCommand command)
+    {
         command.ProjectId = projectId;
-        command.UserIdEditor = this.User.UserId();
-        await this._mediator.Send(command);
-        return this.NoContent();
+        command.UserIdEditor = User.UserId();
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpDelete("projects/{projectId}")]
-    public async Task<ActionResult> DeleteProject(long projectId) {
-        DeleteProjectByIdCommand deleteProjectByIdCommand = new(projectId) {
-            UserIdEditor = this.User.UserId()
+    public async Task<ActionResult> DeleteProject(long projectId)
+    {
+        DeleteProjectByIdCommand deleteProjectByIdCommand = new(projectId)
+        {
+            UserIdEditor = User.UserId()
         };
-        await this._mediator.Send(deleteProjectByIdCommand);
-        return this.NoContent();
+        await _mediator.Send(deleteProjectByIdCommand);
+        return NoContent();
     }
     #endregion
 }

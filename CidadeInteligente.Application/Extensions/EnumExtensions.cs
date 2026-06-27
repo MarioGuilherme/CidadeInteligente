@@ -3,8 +3,10 @@ using System.Reflection;
 
 namespace CidadeInteligente.Application.Extensions;
 
-public static class EnumExtensions {
-    public static string GetDescription(this Enum value) {
+public static class EnumExtensions
+{
+    public static string GetDescription(this Enum value)
+    {
         FieldInfo? fieldInfo = value.GetType().GetField(value.ToString());
 
         if (fieldInfo is null) return value.ToString();

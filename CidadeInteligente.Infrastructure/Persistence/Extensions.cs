@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence;
 
-public static class Extensions {
-    public static async Task<PaginationResult<T>> GetPaged<T>(
-        this IQueryable<T> query,
-        int currentPage
-    ) where T : class {
-        PaginationResult<T> result = new() {
+public static class Extensions
+{
+    public static async Task<PaginationResult<T>> GetPaged<T>(this IQueryable<T> query, int currentPage) where T : class
+    {
+        PaginationResult<T> result = new()
+        {
             CurrentPage = currentPage,
             ItemsCount = await query.CountAsync()
         };
@@ -23,11 +23,10 @@ public static class Extensions {
         return result;
     }
 
-    public static PaginationResult<T> GetPaged<T>(
-        this IEnumerable<T> query,
-        int currentPage
-    ) where T : class {
-        PaginationResult<T> result = new() {
+    public static PaginationResult<T> GetPaged<T>(this IEnumerable<T> query, int currentPage) where T : class
+    {
+        PaginationResult<T> result = new()
+        {
             CurrentPage = currentPage,
             ItemsCount = query.Count()
         };

@@ -1,5 +1,6 @@
 ﻿namespace CidadeInteligente.Core.Exceptions;
 
-public class TokenRecoverPasswordExpiredException : Exception {
+public class TokenRecoverPasswordExpiredException : Exception
+{
     public TokenRecoverPasswordExpiredException() : base() { }
 }

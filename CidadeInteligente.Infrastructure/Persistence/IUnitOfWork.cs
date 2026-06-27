@@ -2,7 +2,8 @@
 
 namespace CidadeInteligente.Infrastructure.Persistence;
 
-public interface IUnitOfWork : IDisposable {
+public interface IUnitOfWork : IDisposable
+{
     IAreaRepository Areas { get; }
     ICourseRepository Courses { get; }
     IProjectRepository Projects { get; }

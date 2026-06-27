@@ -6,11 +6,13 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetAllUsers;
 
-public class GetAllUsersQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllUsersQuery, List<UserViewModel>> {
+public class GetAllUsersQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllUsersQuery, List<UserViewModel>>
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<List<UserViewModel>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken) {
-        List<User> users = await this._unitOfWork.Users.GetAllAsync();
+    public async Task<List<UserViewModel>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+    {
+        List<User> users = await _unitOfWork.Users.GetAllAsync();
         return [.. users.Select(u => new UserViewModel(
             u.UserId,
             u.Name,

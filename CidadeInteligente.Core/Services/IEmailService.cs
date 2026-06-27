@@ -1,5 +1,6 @@
 ﻿namespace CidadeInteligente.Core.Services;
 
-public interface IEmailService {
+public interface IEmailService
+{
     Task SendEmailAsync(string recipient, string subject, string htmlContent);
 }

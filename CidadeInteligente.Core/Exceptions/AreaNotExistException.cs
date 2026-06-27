@@ -1,5 +1,6 @@
 ﻿namespace CidadeInteligente.Core.Exceptions;
 
-public class AreaNotExistException : Exception {
+public class AreaNotExistException : Exception
+{
     public AreaNotExistException() : base() { }
 }

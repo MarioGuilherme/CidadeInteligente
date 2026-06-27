@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Configurations;
 
-public class MediaConfiguration : IEntityTypeConfiguration<Media> {
-    public void Configure(EntityTypeBuilder<Media> builder) {
+public class MediaConfiguration : IEntityTypeConfiguration<Media>
+{
+    public void Configure(EntityTypeBuilder<Media> builder)
+    {
         builder.HasKey(m => m.MediaId);
 
         builder.Property(m => m.Title).HasMaxLength(60);

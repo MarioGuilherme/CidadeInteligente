@@ -1,9 +1,5 @@
-﻿using CidadeInteligente.Application.ViewModels;
-using MediatR;
+﻿using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetUserById;
 
-public class GetUserByIdQuery(long userId) : IRequest<UserViewModel>
-{
-    public long UserId { get; private set; } = userId;
-}
+public record GetUserByIdQuery(long UserId) : IRequest<GetUserByIdQueryResult> { }

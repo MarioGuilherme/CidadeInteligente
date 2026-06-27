@@ -40,7 +40,7 @@ namespace CidadeInteligente.Application.Validators
         }
     }
 
-    public class CreateMediaCommandValidator : AbstractValidator<CreateMediaCommand>
+    public class CreateMediaCommandValidator : AbstractValidator<CreateProjectCommand.CreateMediaCommand>
     {
         public CreateMediaCommandValidator()
         {

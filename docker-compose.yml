@@ -1,9 +1,9 @@
 services:
-  cidadeinteligente.ui:
-    image: ${DOCKER_REGISTRY-}cidadeinteligenteui
+  cidadeinteligente.mvc:
+    image: ${DOCKER_REGISTRY-}cidadeinteligentemvc
     build:
       context: .
-      dockerfile: CidadeInteligente.UI/Dockerfile
+      dockerfile: CidadeInteligente.Mvc/Dockerfile
 
   db:
     image: mcr.microsoft.com/mssql/server

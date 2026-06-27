@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.10.34928.147
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11903.348 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CidadeInteligente.Core", "CidadeInteligente.Core\CidadeInteligente.Core.csproj", "{A751B9BA-510A-4F04-9DC0-31AF7370AB1B}"
 EndProject
@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CidadeInteligente.Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CidadeInteligente.Application", "CidadeInteligente.Application\CidadeInteligente.Application.csproj", "{B793CC1C-3A4B-4158-A442-D8333AA670D5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CidadeInteligente.UI", "CidadeInteligente.UI\CidadeInteligente.UI.csproj", "{812E2266-1C1D-457B-9D83-35FA351805C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CidadeInteligente.Mvc", "CidadeInteligente.Mvc\CidadeInteligente.Mvc.csproj", "{812E2266-1C1D-457B-9D83-35FA351805C7}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9E1889C1-D381-4169-B93A-CC8F5804B314}"
 EndProject

@@ -7,7 +7,7 @@
     <ProjectGuid>9e1889c1-d381-4169-b93a-cc8f5804b314</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>cidadeinteligente.ui</DockerServiceName>
+    <DockerServiceName>cidadeinteligente.mvc</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

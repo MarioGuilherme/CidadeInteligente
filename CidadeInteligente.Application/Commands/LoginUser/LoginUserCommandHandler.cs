@@ -1,5 +1,4 @@
 ﻿using CidadeInteligente.Application.Extensions;
-using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.Infrastructure.Persistence;
@@ -8,11 +7,11 @@ using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.LoginUser;
 
-public class LoginUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<LoginUserCommand, LoginViewModel>
+public class LoginUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<LoginUserCommand, LoginUserCommandResult>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<LoginViewModel> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<LoginUserCommandResult> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         User possibleUser = await _unitOfWork.Users.GetByEmailAsync(request.Email) ?? throw new EmailOrPasswordNotMatchException();
 

@@ -1,4 +1,5 @@
 ﻿using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -32,8 +33,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                    k => k.HasKey("UserId", "ProjectId")
                );
 
-        // Login com email e senha: 'demo@demo.com' e 'demo'
         builder.HasData([
-            new(1, 1, "Usuário de Demonstração", "demo@demo.com", "demo", Core.Enums.Role.Teacher)]);
+            new(1, 1, "Usuário de Demonstração", "demo@demo.com", BCrypt.Net.BCrypt.HashPassword("demo"), Role.Teacher)]);
     }
 }

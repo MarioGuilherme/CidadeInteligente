@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using CidadeInteligente.Application.Extensions;
 using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
@@ -8,9 +8,8 @@ using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.LoginUser;
 
-public class LoginUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<LoginUserCommand, LoginViewModel> {
+public class LoginUserCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<LoginUserCommand, LoginViewModel> {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
 
     public async Task<LoginViewModel> Handle(LoginUserCommand request, CancellationToken cancellationToken) {
         User possibleUser = await this._unitOfWork.Users.GetByEmailAsync(request.Email) ?? throw new EmailOrPasswordNotMatchException();
@@ -18,6 +17,6 @@ public class LoginUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper) : I
         if (!Verify(request.Password, possibleUser.Password))
             throw new EmailOrPasswordNotMatchException();
 
-        return this._mapper.Map<LoginViewModel>(possibleUser);
+        return new(possibleUser.UserId, possibleUser.Role.GetDescription());
     }
 }

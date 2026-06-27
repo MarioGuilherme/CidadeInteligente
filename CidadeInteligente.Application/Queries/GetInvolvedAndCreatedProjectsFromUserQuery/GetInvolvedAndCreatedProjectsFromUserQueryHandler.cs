@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CidadeInteligente.Application.ViewModels;
+﻿using CidadeInteligente.Application.ViewModels;
 using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.Core.Models;
@@ -8,9 +7,8 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetInvolvedAndCreatedProjectsFromUser;
 
-public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetInvolvedAndCreatedProjectsFromUserQuery, PaginationResult<ProjectViewModel>> {
+public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetInvolvedAndCreatedProjectsFromUserQuery, PaginationResult<ProjectViewModel>> {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
 
     public async Task<PaginationResult<ProjectViewModel>> Handle(GetInvolvedAndCreatedProjectsFromUserQuery request, CancellationToken cancellationToken) {
         if (!await this._unitOfWork.Users.UserIdExistAsync(request.UserId))
@@ -25,7 +23,10 @@ public class GetInvolvedAndCreatedProjectsFromUserQueryHandler(IUnitOfWork unitO
             paginationResult.CurrentPage,
             paginationResult.TotalPages,
             paginationResult.ItemsCount,
-            this._mapper.Map<List<ProjectViewModel>>(paginationResult.Data)
+            [.. paginationResult.Data.Select(p => new ProjectViewModel(p.ProjectId,
+                p.Title,
+                p.Description,
+                [.. p.Medias.Select(m => new MediaViewModel(m.MediaId, m.FileName))]))]
         );
     }
 }

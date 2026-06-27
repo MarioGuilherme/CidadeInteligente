@@ -5,9 +5,9 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateProject;
 
-public class CreateProjectCommandHandler(IUnitOfWork unitOfWork/*, IFileStorage fileStorage*/) : IRequestHandler<CreateProjectCommand, long> {
+public class CreateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<CreateProjectCommand, long> {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    //private readonly IFileStorage _fileStorage = fileStorage;
+    private readonly IFileStorage _fileStorage = fileStorage;
 
     public async Task<long> Handle(CreateProjectCommand request, CancellationToken cancellationToken) {
         Project project = new(
@@ -25,7 +25,7 @@ public class CreateProjectCommandHandler(IUnitOfWork unitOfWork/*, IFileStorage 
         request.Medias.ForEach(m => project.Medias.Add(new(
             m.Title,
             m.Description,
-            $"{Guid.NewGuid():N}.{m.Extension}",//this._fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{m.Extension}", m.Base64).Result,
+            this._fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{m.Extension}", m.Base64).Result,
             m.Size
         )));
 

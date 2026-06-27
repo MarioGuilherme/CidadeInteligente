@@ -55,13 +55,13 @@ public static class InfrastructureModule {
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration) {
         Environment.SetEnvironmentVariable("AzureStorageBlobURL", $"{configuration["AzureStorage:BaseURL"]!}/{configuration["AzureStorage:ContainerName"]!}");
 
-        services.AddSingleton<IFileStorage, AzureStorageService>(_ => {
-            string connectionString = configuration["AzureStorage:ConnectionString"]!;
-            string containerName = configuration["AzureStorage:ContainerName"]!;
-            BlobContainerClient blobContainerClient = new(connectionString, containerName);
-            blobContainerClient.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-            return new(connectionString, containerName);
-        });
+        //services.AddSingleton<IFileStorage, AzureStorageService>(_ => {
+        //    string connectionString = configuration["AzureStorage:ConnectionString"]!;
+        //    string containerName = configuration["AzureStorage:ContainerName"]!;
+        //    BlobContainerClient blobContainerClient = new(connectionString, containerName);
+        //    blobContainerClient.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+        //    return new(connectionString, containerName);
+        //});
         services.AddSingleton<IEmailService, SendGridEmailService>(_ => {
             string apiKey = configuration["SendGrid:ApiKey"]!;
             string senderEmail = configuration["SendGrid:SenderEmail"]!;

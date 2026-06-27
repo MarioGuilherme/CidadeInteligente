@@ -1,0 +1,22 @@
+﻿@using CidadeInteligente.Mvc.ViewModels;
+@model ErrorViewModel;
+
+@{
+    ViewData["Title"] = $"{Model.StatusCode} - {Model.Title}";
+}
+
+<link rel="stylesheet" href="~/css/header.css" />
+
+<partial name="_Header" />
+
+<main class="p-3">
+    <div class="container-fluid">
+        <div class="row text-center m-3">
+            <div class="col-12 col-lg-12">
+                <h1 class="font-weight-bold text-center">@Model.Description</h1>
+                <hr>
+                <a href="/" class="default-color">Voltar ao início</a>
+            </div>
+        </div>
+    </div>
+</main>

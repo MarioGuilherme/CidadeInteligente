@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Queries.GetProjectById;
 
-public record GetProjectByIdQuery(long ProjectId, long? UserIdEditor = null) : IRequest<GetProjectByIdQueryResult> { }
+public record GetProjectByIdQuery(long ProjectId, long? CurrentUserId = null) : IRequest<GetProjectByIdQueryResult?> { }

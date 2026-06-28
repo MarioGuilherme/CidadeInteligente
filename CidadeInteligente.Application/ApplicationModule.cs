@@ -1,5 +1,6 @@
-﻿using CidadeInteligente.Application.Queries.GetProjects;
-using CidadeInteligente.Application.Validators;
+﻿using CidadeInteligente.Application.Commands.LoginUser;
+using CidadeInteligente.Application.Notifications;
+using CidadeInteligente.Core.Notifications;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,12 +9,39 @@ namespace CidadeInteligente.Application;
 
 public static class ApplicationModule
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddMediatR(opt => opt.RegisterServicesFromAssemblyContaining(typeof(GetProjectsQuery)));
-        services.AddFluentValidationAutoValidation(opt => opt.DisableDataAnnotationsValidation = true);
-        services.AddValidatorsFromAssemblyContaining<CreateAreaCommandValidator>();
+        public IServiceCollection AddApplication()
+        {
+            services
+                .AddMediatR()
+                .AddFluentValidation()
+                .AddNotification();
 
-        return services;
+            return services;
+        }
+
+        private IServiceCollection AddMediatR()
+        {
+            services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<LoginUserCommand>());
+
+            return services;
+        }
+
+        private IServiceCollection AddFluentValidation()
+        {
+            services
+                .AddFluentValidationAutoValidation(o => o.DisableDataAnnotationsValidation = true)
+                .AddValidatorsFromAssemblyContaining<LoginUserCommandValidator>();
+
+            return services;
+        }
+
+        private IServiceCollection AddNotification()
+        {
+            services.AddScoped<INotificationContext, NotificationContext>();
+
+            return services;
+        }
     }
 }

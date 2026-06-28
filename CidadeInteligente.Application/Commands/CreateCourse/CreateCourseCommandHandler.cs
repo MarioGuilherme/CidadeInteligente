@@ -12,8 +12,9 @@ public class CreateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandle
     {
         Course course = new(request.Description);
 
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         await _unitOfWork.Courses.AddAsync(course);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         return course.CourseId;
     }

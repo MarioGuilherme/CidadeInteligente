@@ -4,6 +4,6 @@ namespace CidadeInteligente.Core.Enums;
 
 public enum Role : byte
 {
-    [Description("Professor")] Teacher = 1,
+    [Description("Professor")] Teacher,
     [Description("Aluno")] Student
 }

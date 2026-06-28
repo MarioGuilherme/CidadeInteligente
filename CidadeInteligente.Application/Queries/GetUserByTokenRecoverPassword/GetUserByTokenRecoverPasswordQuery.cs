@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
 
-public record GetUserByTokenRecoverPasswordQuery(string Token) : IRequest<GetUserByTokenRecoverPasswordQueryResult> { }
+public record GetUserByTokenRecoverPasswordQuery(string Token) : IRequest<GetUserByTokenRecoverPasswordQueryResult?> { }

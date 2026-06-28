@@ -3,7 +3,7 @@
 namespace CidadeInteligente.Application.Commands.UpdateProject;
 
 public record UpdateProjectCommand(long ProjectId,
-    long? UserIdEditor,
+    long? CurrentUserId,
     string Title,
     long AreaId,
     long CourseId,
@@ -11,7 +11,7 @@ public record UpdateProjectCommand(long ProjectId,
     DateOnly StartedAt,
     DateOnly? FinishedAt,
     IEnumerable<long> InvolvedUsers,
-    IEnumerable<UpdateProjectCommand.UpdateMediaCommand> Medias) : IRequest<Unit>
+    IEnumerable<UpdateProjectCommand.UpdateMediaCommand> Medias) : IRequest<Unit?>
 {
     public record UpdateMediaCommand(long? MediaId, string Title, string? Description, string Extension, string? Path, byte[]? Base64)
     {

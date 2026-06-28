@@ -1,20 +1,32 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Exceptions;
+using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
+using Serilog;
 
 namespace CidadeInteligente.Application.Queries.GetProjectById;
 
-public class GetProjectByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetProjectByIdQuery, GetProjectByIdQueryResult>
+public class GetProjectByIdQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<GetProjectByIdQuery, GetProjectByIdQueryResult?>
 {
+    private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<GetProjectByIdQueryResult> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
+    public async Task<GetProjectByIdQueryResult?> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
     {
-        Project project = await _unitOfWork.Projects.GetDetailsById(request.ProjectId) ?? throw new ProjectNotExistException();
+        Project? project = await _unitOfWork.Projects.GetByIdAsync(request.ProjectId);
+        if (project is null)
+        {
+            Log.Warning("Project with ID {ProjectId} ​​not found.", request.ProjectId);
+            _notification.AddNotification(NotificationType.ProjectNotFound);
+            return null;
+        }
 
-        if (request.UserIdEditor is not null && !(request.UserIdEditor == project.CreatorUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
-            throw new UserIsReadOnlyException();
+        if (request.CurrentUserId is not null && !(request.CurrentUserId == project.CreatorUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId)))
+        {
+            Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
+            _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject);
+            return null;
+        }
 
         return new(project.ProjectId,
             project.Title,
@@ -26,7 +38,6 @@ public class GetProjectByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
             project.StartedAt,
             project.FinishedAt,
             project.InvolvedUsers.Select(iu => new GetProjectByIdQueryResult.ProjectUserViewModel(iu.UserId, iu.Name)),
-            project.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName, m.Size))
-        );
+            project.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName, m.Size)));
     }
 }

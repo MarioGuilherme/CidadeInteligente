@@ -1,19 +1,25 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.Core.Models;
+using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
+using Serilog;
 
 namespace CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
 
-public class GetRelatedProjectsFromUserQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetRelatedProjectsFromUserQuery, GetRelatedProjectsFromUserQueryResult>
+public class GetRelatedProjectsFromUserQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<GetRelatedProjectsFromUserQuery, GetRelatedProjectsFromUserQueryResult?>
 {
+    private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<GetRelatedProjectsFromUserQueryResult> Handle(GetRelatedProjectsFromUserQuery request, CancellationToken cancellationToken)
+    public async Task<GetRelatedProjectsFromUserQueryResult?> Handle(GetRelatedProjectsFromUserQuery request, CancellationToken cancellationToken)
     {
         if (!await _unitOfWork.Users.UserIdExistAsync(request.UserId))
-            throw new UserNotExistException();
+        {
+            Log.Warning("User with ID {UserId} not found.", request.UserId);
+            _notification.AddNotification(NotificationType.UserNotFound);
+            return null;
+        }
 
         PaginationResult<Project> paginationResult = await _unitOfWork.Users.GetInvolvedAndCreatedProjectsFromUser(request.UserId, request.Page);
 

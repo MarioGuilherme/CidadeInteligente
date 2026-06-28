@@ -1,28 +1,39 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Exceptions;
+using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
+using Serilog;
 
 namespace CidadeInteligente.Application.Commands.ChangePasswordCommand;
 
-public class ChangePasswordCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<ChangePasswordCommand, Unit>
+public class ChangePasswordCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<ChangePasswordCommand, Unit?>
 {
+    private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Unit> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+    public async Task<Unit?> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token) ?? throw new UserNotExistException();
+        User? user = await _unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token);
+        if (user is null)
+        {
+            Log.Warning("User ​​not found during password recovery.", request.Token);
+            _notification.AddNotification(NotificationType.UserWithTokenNotFound);
+            return null;
+        }
+
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         if (DateTime.Now > user.TokenRecoverPasswordExpiration)
         {
+            Log.Warning("Token for password recovery has expired.");
             user.RemovePasswordResetTokenInformation();
-            await _unitOfWork.CompleteAsync();
-            throw new TokenRecoverPasswordExpiredException();
+            await _unitOfWork.CommitAsync(cancellationToken);
+            _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);
+            return null;
         }
 
         user.UpdatePassword(BCrypt.Net.BCrypt.HashPassword(request.NewPassword));
-
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         return Unit.Value;
     }

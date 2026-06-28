@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CidadeInteligente.Infrastructure.Persistence;
 
-public class UnitOfWork(
-    CidadeInteligenteDbContext dbContext,
+public class UnitOfWork(CidadeInteligenteDbContext dbContext,
     IAreaRepository areas,
     ICourseRepository courses,
     IProjectRepository projects,
@@ -18,19 +17,19 @@ public class UnitOfWork(
     public IProjectRepository Projects { get; } = projects;
     public IUserRepository Users { get; } = users;
 
-    public Task<int> CompleteAsync() => _dbContext.SaveChangesAsync();
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken) => _transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
 
-    public async Task BeginTransactionAsync() => _transaction = await _dbContext.Database.BeginTransactionAsync();
-
-    public async Task CommitAsync()
+    public async Task<int> CommitAsync(CancellationToken cancellationToken)
     {
         try
         {
-            await _transaction!.CommitAsync();
+            int rowsAffected = await _dbContext.SaveChangesAsync(cancellationToken);
+            await _transaction!.CommitAsync(cancellationToken);
+            return rowsAffected;
         }
         catch (Exception)
         {
-            await _transaction!.RollbackAsync();
+            await _transaction!.RollbackAsync(cancellationToken);
             throw;
         }
     }

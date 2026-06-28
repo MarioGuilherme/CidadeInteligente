@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.LoginUser;
 
-public record LoginUserCommand(string Email, string Password) : IRequest<LoginUserCommandResult> { }
+public record LoginUserCommand(string Email, string Password) : IRequest<LoginUserCommandResult?> { }

@@ -9,7 +9,7 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(User user)
+    public async Task CreateAsync(User user)
     {
         await _dbContext.Users.AddAsync(user);
     }
@@ -44,7 +44,8 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         return user.CreatedProjects.Concat(user.InvolvedProjects).Distinct().GetPaged(page);
     }
 
-    public Task<bool> IsEmailInUseExceptByUserId(string email, long userId = default) => _dbContext.Users.AnyAsync(u => u.Email == email && u.UserId != userId);
+    public Task<bool> IsEmailInUseAsync(string email, long userId = default, CancellationToken cancellationToken = default) => _dbContext.Users
+        .AnyAsync(u => u.Email == email && u.UserId != userId, cancellationToken);
 
     public async Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId)
     {

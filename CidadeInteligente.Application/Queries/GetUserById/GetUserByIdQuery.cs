@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Queries.GetUserById;
 
-public record GetUserByIdQuery(long UserId) : IRequest<GetUserByIdQueryResult> { }
+public record GetUserByIdQuery(long UserId) : IRequest<GetUserByIdQueryResult?> { }

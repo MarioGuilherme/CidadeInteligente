@@ -1,32 +1,42 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Exceptions;
+using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Core.Services;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
+using Serilog;
 
 namespace CidadeInteligente.Application.Commands.UpdateProject;
 
-public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<UpdateProjectCommand, Unit>
+public class UpdateProjectCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<UpdateProjectCommand, Unit?>
 {
+    private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IFileStorage _fileStorage = fileStorage;
 
-    public async Task<Unit> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<Unit?> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
-        Project projectDb = await _unitOfWork.Projects.GetByIdAsync(request.ProjectId, true) ?? throw new ProjectNotExistException();
+        Project? projectDb = await _unitOfWork.Projects.GetByIdAsync(request.ProjectId, true);
+        if (projectDb is null)
+        {
+            Log.Warning("Project with ID {ProjectId} ​​not found.", request.ProjectId);
+            _notification.AddNotification(NotificationType.ProjectNotFound);
+            return null;
+        }
 
-        if (!(request.UserIdEditor == projectDb.CreatorUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.UserIdEditor)))
-            throw new UserIsReadOnlyException();
+        if (!(request.CurrentUserId == projectDb.CreatorUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId)))
+        {
+            Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
+            _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject);
+            return null;
+        }
 
-        await _unitOfWork.BeginTransactionAsync();
-        projectDb.Update(
-            request.AreaId,
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        projectDb.Update(request.AreaId,
             request.CourseId,
             request.Title,
             request.Description,
             request.StartedAt,
-            request.FinishedAt
-        );
+            request.FinishedAt);
         projectDb.InvolvedUsers.Clear();
 
         foreach (long userId in request.InvolvedUsers)
@@ -47,12 +57,10 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
         {
             if (media.MediaId is null)
             {
-                projectDb.Medias.Add(new(
-                    media.Title,
+                projectDb.Medias.Add(new(media.Title,
                     media.Description,
                     _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{media.Extension}", media.Base64!).Result,
-                    (long)media.Size!
-                ));
+                    (long)media.Size!));
                 continue;
             }
 
@@ -69,8 +77,7 @@ public class UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             projectDb.Medias.Add(mediaDb);
         }
 
-        await _unitOfWork.CompleteAsync();
-        await _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync(cancellationToken);
         return Unit.Value;
     }
 }

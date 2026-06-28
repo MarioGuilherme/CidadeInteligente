@@ -1,3 +1,6 @@
+using CidadeInteligente.Application.Commands.CreateProject;
+using CidadeInteligente.Application.Commands.DeleteProjectById;
+using CidadeInteligente.Application.Commands.UpdateProject;
 using CidadeInteligente.Application.Queries.GetAreas;
 using CidadeInteligente.Application.Queries.GetCourses;
 using CidadeInteligente.Application.Queries.GetProjectById;
@@ -5,18 +8,18 @@ using CidadeInteligente.Application.Queries.GetProjects;
 using CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
 using CidadeInteligente.Application.Queries.GetUsers;
 using CidadeInteligente.Core.Enums;
-using CidadeInteligente.Core.Exceptions;
 using CidadeInteligente.Mvc.Extensions;
+using CidadeInteligente.Mvc.Requests;
 using CidadeInteligente.Mvc.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace CidadeInteligente.Mvc.Controllers;
 
-public class ProjectsController(ILogger<ProjectsController> logger, IMediator mediator) : Controller
+public class ProjectsController(IMediator mediator) : Controller
 {
-    private readonly ILogger<ProjectsController> _logger = logger;
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
@@ -29,7 +32,7 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
         }
         catch (Exception ex)
         {
-            _logger.LogError("{Message}", ex.Message);
+            Log.Error(ex.Message, "{Message}");
             return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
@@ -48,7 +51,7 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
         }
         catch (Exception ex)
         {
-            _logger.LogError("{Message}", ex.Message);
+            Log.Error(ex.Message, "{Message}");
             return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
@@ -59,16 +62,16 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
         try
         {
             GetProjectByIdQuery getProjectDetailsByIdQuery = new(projectId);
-            GetProjectByIdQueryResult getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
+            GetProjectByIdQueryResult? getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
             return View(getProjectDetailsByIdQueryResult);
         }
-        catch (ProjectNotExistException)
-        {
-            return View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
-        }
+        //catch (ProjectNotExistException)
+        //{
+        //    return View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
+        //}
         catch (Exception ex)
         {
-            _logger.LogError("{Message}", ex.Message);
+            Log.Error(ex.Message, "{Message}");
             return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
@@ -79,8 +82,8 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     {
         try
         {
-            GetProjectByIdQuery getProjectDetailsByIdQuery = new(projectId, User.UserId());
-            GetProjectByIdQueryResult getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
+            GetProjectByIdQuery getProjectDetailsByIdQuery = new(projectId, User.UserId);
+            GetProjectByIdQueryResult? getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
 
             GetUsersQuery getAllUsersQuery = new();
             GetAreasQuery getAllAreasQuery = new();
@@ -92,17 +95,17 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
 
             return View(getProjectDetailsByIdQueryResult);
         }
-        catch (ProjectNotExistException)
-        {
-            return View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
-        }
-        catch (UserIsReadOnlyException)
-        {
-            return View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não está relacionado à este projeto para poder alterá-lo!"));
-        }
+        //catch (ProjectNotExistException)
+        //{
+        //    return View("~/Views/Error.cshtml", new ErrorViewModel(404, "Projeto não encontrado"));
+        //}
+        //catch (UserIsReadOnlyException)
+        //{
+        //    return View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não está relacionado à este projeto para poder alterá-lo!"));
+        //}
         catch (Exception ex)
         {
-            _logger.LogError("{Message}", ex.Message);
+            Log.Error(ex.Message, "{Message}");
             return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
     }
@@ -113,14 +116,64 @@ public class ProjectsController(ILogger<ProjectsController> logger, IMediator me
     {
         try
         {
-            GetRelatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId(), page);
+            GetRelatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId, page);
             GetRelatedProjectsFromUserQueryResult getRelatedProjectsFromUserQueryResult = await _mediator.Send(getInvolvedProjectsFromUserQuery);
             return View(getRelatedProjectsFromUserQueryResult);
         }
         catch (Exception ex)
         {
-            _logger.LogError("{Message}", ex.Message);
+            Log.Error(ex.Message, "{Message}");
             return View("~/Views/Error.cshtml", new ErrorViewModel(500));
         }
+    }
+
+    [HttpPost("api/projects")]
+    public async Task<ActionResult> CreateProject([FromBody] CreateProjectRequest request)
+    {
+        CreateProjectCommand createProjectCommand = new(request.Title,
+            request.AreaId,
+            request.CourseId,
+            User.UserId,
+            request.Description,
+            request.StartedAt,
+            request.FinishedAt,
+            request.InvolvedUsers,
+            request.Medias.Select(m => new CreateProjectCommand.CreateMediaCommand(m.Title,
+                m.Description,
+                m.Extension,
+                m.Base64)));
+        long projectId = await _mediator.Send(createProjectCommand);
+        Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/ver-projeto/{projectId}";
+        return StatusCode(201);
+    }
+
+    [HttpPatch("api/projects/{projectId:int}")]
+    public async Task<ActionResult> UpdateProject(long projectId, [FromBody] UpdateProjectRequest request)
+    {
+        UpdateProjectCommand updateProjectCommand = new(projectId,
+            User.UserId,
+            request.Title,
+            request.AreaId,
+            request.CourseId,
+            request.Description,
+            request.StartedAt,
+            request.FinishedAt,
+            request.InvolvedUsers,
+            request.Medias.Select(media => new UpdateProjectCommand.UpdateMediaCommand(media.MediaId,
+                media.Title,
+                media.Description,
+                media.Extension,
+                media.Path,
+                media.Base64)));
+        await _mediator.Send(updateProjectCommand);
+        return NoContent();
+    }
+
+    [HttpDelete("api/projects/{projectId:int}")]
+    public async Task<ActionResult> DeleteProject(long projectId)
+    {
+        DeleteProjectByIdCommand deleteProjectByIdCommand = new(projectId, User.UserId);
+        await _mediator.Send(deleteProjectByIdCommand);
+        return NoContent();
     }
 }

@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.DeleteUserById;
 
-public record DeleteUserByIdCommand(long UserId) : IRequest<Unit> { }
+public record DeleteUserByIdCommand(long UserId) : IRequest<Unit?> { }

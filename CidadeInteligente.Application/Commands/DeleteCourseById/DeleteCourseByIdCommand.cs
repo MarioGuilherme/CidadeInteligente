@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.DeleteCourseById;
 
-public record DeleteCourseByIdCommand(long CourseId) : IRequest<Unit> { }
+public record DeleteCourseByIdCommand(long CourseId) : IRequest<Unit?> { }

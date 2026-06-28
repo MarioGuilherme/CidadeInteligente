@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Queries.GetCourseById;
 
-public record GetCourseByIdQuery(long CourseId) : IRequest<GetCourseByIdQueryResult> { }
+public record GetCourseByIdQuery(long CourseId) : IRequest<GetCourseByIdQueryResult?> { }

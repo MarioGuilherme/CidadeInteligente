@@ -7,6 +7,15 @@ public static class ClaimsExtensions
 {
     extension(ClaimsPrincipal principal)
     {
-        public int UserId => int.Parse(principal.Claims.First(c => c.Type == nameof(User.UserId)).Value);
+        public long? UserId
+        {
+            get
+            {
+                if (principal.Identity!.IsAuthenticated)
+                    return long.Parse(principal.Claims.First(c => c.Type == nameof(User.UserId)).Value);
+
+                return default;
+            }
+        }
     }
 }

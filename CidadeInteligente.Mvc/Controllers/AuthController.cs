@@ -5,19 +5,20 @@ using CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Mvc.Requests;
 using CidadeInteligente.Mvc.ViewModels;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Security.Claims;
 
 namespace CidadeInteligente.Mvc.Controllers;
 
-public class AuthController(INotification notification, IMediator mediator) : Controller
+public class AuthController(INotificationContext notification, IMediator mediator) : Controller
 {
-    private readonly INotification _notification = notification;
+    private readonly INotificationContext notification = notification;
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("login")]
@@ -64,19 +65,23 @@ public class AuthController(INotification notification, IMediator mediator) : Co
     public async Task<IActionResult> Login([FromBody] AuthenticateUserRequest request)
     {
         LoginUserCommand loginUserCommand = new(request.Email, request.Password);
-        LoginUserCommandResult loginUserCommandResult = await _mediator.Send(loginUserCommand);
-        ClaimsIdentity claimsIdentity = new([
-            new(nameof(loginUserCommandResult.UserId), loginUserCommandResult.UserId.ToString()),
-            new(ClaimTypes.Role, loginUserCommandResult.Role.ToString())
-        ], "Cookie");
-        AuthenticationProperties authProperties = new()
-        {
-            IsPersistent = true,
-            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-        };
+        LoginUserCommandResult? loginUserCommandResult = await _mediator.Send(loginUserCommand);
 
-        await HttpContext.SignInAsync("Cookie", new ClaimsPrincipal(claimsIdentity), authProperties);
-        return Created();
+        if (loginUserCommandResult is not null)
+        {
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                loginUserCommandResult!.ClaimsPrincipal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+                });
+
+            return Created();
+        }
+
+        return default;
     }
 
     [HttpPatch("api/auth/v1/sendEmailRecover")]

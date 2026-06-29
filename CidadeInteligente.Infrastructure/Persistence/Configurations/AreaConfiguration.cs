@@ -16,5 +16,10 @@ public class AreaConfiguration : IEntityTypeConfiguration<Area>
                .WithOne(p => p.Area)
                .HasForeignKey(p => p.AreaId)
                .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasData([
+            new(1, "Urbana"),
+            new(2, "Industrial"),
+            new(3, "Rural")]);
     }
 }

@@ -319,7 +319,7 @@
             }
 
             sweetAlertAwait("Criando projeto...");
-            const { status, body, headers } = await restAPI.post("admin/projects", project);
+            const { status, body, headers } = await restAPI.post("projects", project);
             toggleExitConfirmation(false);
 
             switch (status) {

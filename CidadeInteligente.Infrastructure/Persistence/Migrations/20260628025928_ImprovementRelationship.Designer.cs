@@ -4,6 +4,7 @@ using CidadeInteligente.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(CidadeInteligenteDbContext))]
-    partial class CidadeInteligenteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260628025928_ImprovementRelationship")]
+    partial class ImprovementRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,7 +219,7 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                             CourseId = 1L,
                             Email = "demo@demo.com",
                             Name = "Usuário de Demonstração",
-                            Password = "$2a$12$6Mv0u92cyvPnf7c.2rvdmen5RpawVRPvfIsADYfEx915HDxGeMll.",
+                            Password = "$2a$11$3Cu0uCK/iCFuYSQuFUxdG.lpgwVJ2M2MvH76ed8JRsm8ptEIYfmfu",
                             Role = (byte)0
                         });
                 });

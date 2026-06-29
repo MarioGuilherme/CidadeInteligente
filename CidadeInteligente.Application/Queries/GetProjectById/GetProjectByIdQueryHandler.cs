@@ -21,7 +21,7 @@ public class GetProjectByIdQueryHandler(INotificationContext notification, IUnit
             return null;
         }
 
-        if (request.CurrentUserId is not null && !(request.CurrentUserId == project.CreatorUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId)))
+        if (request.CurrentUserId is not null && !(request.CurrentUserId == project.CreatedByUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId)))
         {
             Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
             _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject);

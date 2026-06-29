@@ -43,9 +43,13 @@ public class ProjectsController(IMediator mediator) : Controller
     {
         try
         {
-            ViewBag.Users = await _mediator.Send(new GetUsersQuery());
-            ViewBag.Areas = await _mediator.Send(new GetAreasQuery());
-            ViewBag.Courses = await _mediator.Send(new GetCoursesQuery());
+            GetUsersQueryResult getUsersQueryResult = await _mediator.Send(new GetUsersQuery());
+            GetAreasQueryResult getAreasQueryResult = await _mediator.Send(new GetAreasQuery());
+            GetCoursesQueryResult getCoursesQueryResult = await _mediator.Send(new GetCoursesQuery());
+
+            ViewBag.Users = getUsersQueryResult.Users;
+            ViewBag.Areas = getAreasQueryResult.Areas;
+            ViewBag.Courses = getCoursesQueryResult.Courses;
 
             return View();
         }
@@ -61,7 +65,7 @@ public class ProjectsController(IMediator mediator) : Controller
     {
         try
         {
-            GetProjectByIdQuery getProjectDetailsByIdQuery = new(projectId);
+            GetProjectByIdQuery getProjectDetailsByIdQuery = new(projectId, User.UserId);
             GetProjectByIdQueryResult? getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
             return View(getProjectDetailsByIdQueryResult);
         }
@@ -116,8 +120,8 @@ public class ProjectsController(IMediator mediator) : Controller
     {
         try
         {
-            GetRelatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId, page);
-            GetRelatedProjectsFromUserQueryResult getRelatedProjectsFromUserQueryResult = await _mediator.Send(getInvolvedProjectsFromUserQuery);
+            GetRelatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId!.Value, page);
+            GetRelatedProjectsFromUserQueryResult? getRelatedProjectsFromUserQueryResult = await _mediator.Send(getInvolvedProjectsFromUserQuery);
             return View(getRelatedProjectsFromUserQueryResult);
         }
         catch (Exception ex)
@@ -133,7 +137,7 @@ public class ProjectsController(IMediator mediator) : Controller
         CreateProjectCommand createProjectCommand = new(request.Title,
             request.AreaId,
             request.CourseId,
-            User.UserId,
+            (long)User.UserId!,
             request.Description,
             request.StartedAt,
             request.FinishedAt,

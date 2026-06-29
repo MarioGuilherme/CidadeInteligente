@@ -8,17 +8,18 @@ public class User
     public long UserId { get; private set; }
     public long CourseId { get; set; }
     public Course Course { get; private set; } = null!;
-    public string Name { get; private set; }
-    public string Email { get; private set; }
-    public string Password { get; private set; }
+    public string Name { get; private set; } = null!;
+    public string Email { get; private set; } = null!;
+    public string Password { get; private set; } = null!;
     public Role Role { get; private set; }
     public string? TokenRecoverPassword { get; private set; }
     public DateTime? TokenRecoverPasswordExpiration { get; private set; }
-    public List<Project> InvolvedProjects { get; private set; } = [];
-    public List<Project> CreatedProjects { get; private set; } = [];
+    public virtual ICollection<Project> InvolvedProjects { get; private set; } = [];
+    public virtual ICollection<Project> CreatedProjects { get; private set; } = [];
 
-    public User(long courseId, string name, string email, string password, Role role)
+    public User(long userId, long courseId, string name, string email, string password, Role role)
     {
+        UserId = userId;
         CourseId = courseId;
         Name = name;
         Email = email;
@@ -26,9 +27,8 @@ public class User
         Role = role;
     }
 
-    public User(long userId, long courseId, string name, string email, string password, Role role)
+    public User(long courseId, string name, string email, string password, Role role)
     {
-        UserId = userId;
         CourseId = courseId;
         Name = name;
         Email = email;
@@ -69,8 +69,4 @@ public class User
         TokenRecoverPassword = Convert.ToHexStringLower(randomBytes);
         TokenRecoverPasswordExpiration = DateTime.Now.AddMinutes(60);
     }
-
-    public override bool Equals(object? obj) => obj is User user && UserId == user.UserId;
-
-    public override int GetHashCode() => HashCode.Combine(UserId);
 }

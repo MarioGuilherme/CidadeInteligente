@@ -1,3 +1,5 @@
-﻿namespace CidadeInteligente.Application.Commands.LoginUser;
+﻿using System.Security.Claims;
 
-public record LoginUserCommandResult(long UserId, string Role);
+namespace CidadeInteligente.Application.Commands.LoginUser;
+
+public record LoginUserCommandResult(ClaimsPrincipal ClaimsPrincipal);

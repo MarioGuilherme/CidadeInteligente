@@ -1,9 +1,10 @@
-﻿using CidadeInteligente.Application.Extensions;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
+using System.Security.Claims;
 using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.LoginUser;
@@ -30,6 +31,12 @@ public class LoginUserCommandHandler(INotificationContext notification, IUnitOfW
             return null;
         }
 
-        return new(possibleUser.UserId, possibleUser.Role.GetDescription());
+        IEnumerable<Claim> claims = [
+            new(nameof(possibleUser.UserId), possibleUser.UserId.ToString()),
+            new(ClaimTypes.Role, possibleUser.Role.ToString())];
+
+        ClaimsIdentity claimsIdentity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        return new(new(claimsIdentity));
     }
 }

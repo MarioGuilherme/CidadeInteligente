@@ -29,20 +29,20 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 
         builder.HasMany(p => p.Medias)
                .WithOne(m => m.Project)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(p => p.CreatorUser)
-               .WithMany(cu => cu.CreatedProjects)
-               .HasForeignKey(p => p.CreatorUserId)
+        builder.HasOne(p => p.CreatedBy)
+               .WithMany(u => u.CreatedProjects)
+               .HasForeignKey(p => p.CreatedByUserId)
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(p => p.InvolvedUsers)
-               .WithMany(u => u.InvolvedProjects)
-               .UsingEntity(
-                   "ProjectsUsers",
-                   u => u.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey("UserId"),
-                   p => p.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId").HasPrincipalKey("ProjectId"),
-                   k => k.HasKey("UserId", "ProjectId")
-               );
+               .WithMany(u => u.InvolvedProjects);
+               //.UsingEntity(
+               //    "ProjectsUsers",
+               //    u => u.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey("UserId"),
+               //    p => p.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId").HasPrincipalKey("ProjectId"),
+               //    k => k.HasKey("UserId", "ProjectId")
+               //);
     }
 }

@@ -34,14 +34,14 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
     public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page)
     {
         User user = await _dbContext.Users
+            .AsNoTracking()
             .Include(u => u.InvolvedProjects)
             .ThenInclude(p => p.Medias)
             .Include(u => u.CreatedProjects)
             .ThenInclude(p => p.Medias)
-            .AsNoTracking()
             .FirstAsync(u => u.UserId == userId);
 
-        return user.CreatedProjects.Concat(user.InvolvedProjects).Distinct().GetPaged(page);
+        return user.CreatedProjects.Concat(user.InvolvedProjects).DistinctBy(p => p.ProjectId).GetPaged(page);
     }
 
     public Task<bool> IsEmailInUseAsync(string email, long userId = default, CancellationToken cancellationToken = default) => _dbContext.Users

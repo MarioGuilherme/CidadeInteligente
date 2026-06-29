@@ -1,5 +1,5 @@
-﻿using CidadeInteligente.Application.Queries.GetCourses;
-using CidadeInteligente.Application.Queries.GetAreas;
+﻿using CidadeInteligente.Application.Queries.GetAreas;
+using CidadeInteligente.Application.Queries.GetCourses;
 using CidadeInteligente.Application.Queries.GetUsers;
 using CidadeInteligente.Core.Enums;
 using CidadeInteligente.Mvc.ViewModels;

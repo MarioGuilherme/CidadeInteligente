@@ -18,7 +18,6 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasData([
-            new(1, "Demonstração")
-        ]);
+            new(1, "Demonstração")]);
     }
 }

@@ -45,14 +45,14 @@
             formHasEmptyField($("form").serializeArray());
 
             sweetAlertAwait("Fazendo login...");
-            const { status, body } = await restAPI.post("auth/login", {
+            const { status, body } = await restAPI.post("auth/v1/login", {
                 email: $("input[name=email]").val().trim(),
                 password: $("input[name=password]").val().trim()
             });
             toggleExitConfirmation(false);
 
             switch (status) {
-                case 204:
+                case 201:
                     sweetAlert("success", "Login efetuado!").then(({ value }) => value && $(location).attr("href", "/"));
                     break;
                 case 400:

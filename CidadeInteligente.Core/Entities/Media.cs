@@ -2,8 +2,8 @@
 
 public class Media(string title, string? description, string fileName)
 {
-    public long MediaId { get; private set; }
-    public long ProjectId { get; private set; }
+    public int MediaId { get; private set; }
+    public int ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
     public string Title { get; private set; } = title;
     public string? Description { get; private set; } = description;

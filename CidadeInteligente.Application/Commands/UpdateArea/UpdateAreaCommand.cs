@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.UpdateArea;
 
-public record UpdateAreaCommand(long AreaId, string Description) : IRequest<Unit?> { }
+public record UpdateAreaCommand(int AreaId, string Description) : IRequest<Unit?> { }

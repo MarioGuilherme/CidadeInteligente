@@ -25,13 +25,13 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         ? _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email)
         : _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
 
-    public Task<User?> GetByIdAsync(long userId, bool tracking = false) => tracking
+    public Task<User?> GetByIdAsync(int userId, bool tracking = false) => tracking
         ? _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId)
         : _dbContext.Users.Include(u => u.Course).AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
 
     public Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword) => _dbContext.Users.FirstOrDefaultAsync(u => u.TokenRecoverPassword == tokenRecoverPassword);
 
-    public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page)
+    public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(int userId, int page)
     {
         User user = await _dbContext.Users
             .AsNoTracking()
@@ -44,10 +44,10 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         return user.CreatedProjects.Concat(user.InvolvedProjects).DistinctBy(p => p.ProjectId).GetPaged(page);
     }
 
-    public Task<bool> IsEmailInUseAsync(string email, long userId = default, CancellationToken cancellationToken = default) => _dbContext.Users
+    public Task<bool> IsEmailInUseAsync(string email, int userId = default, CancellationToken cancellationToken = default) => _dbContext.Users
         .AnyAsync(u => u.Email == email && u.UserId != userId, cancellationToken);
 
-    public async Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId)
+    public async Task<bool> IsInvolvedOrCreatedProjectsAsync(int userId)
     {
         User user = await _dbContext.Users
             .Include(u => u.InvolvedProjects)
@@ -58,5 +58,5 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserReposit
         return user.InvolvedProjects.Count != 0 || user.CreatedProjects.Count != 0;
     }
 
-    public Task<bool> UserIdExistAsync(long userId) => _dbContext.Users.AnyAsync(u => u.UserId == userId);
+    public Task<bool> UserIdExistAsync(int userId) => _dbContext.Users.AnyAsync(u => u.UserId == userId);
 }

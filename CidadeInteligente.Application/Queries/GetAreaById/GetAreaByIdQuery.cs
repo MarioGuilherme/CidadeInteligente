@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Queries.GetAreaById;
 
-public record GetAreaByIdQuery(long AreaId) : IRequest<GetAreaByIdQueryResult> { }
+public record GetAreaByIdQuery(int AreaId) : IRequest<GetAreaByIdQueryResult?> { }

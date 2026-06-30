@@ -1,3 +1,3 @@
 ﻿namespace CidadeInteligente.Application.Queries.GetCourseById;
 
-public record GetCourseByIdQueryResult(long CourseId, string Description);
+public record GetCourseByIdQueryResult(int CourseId, string Description);

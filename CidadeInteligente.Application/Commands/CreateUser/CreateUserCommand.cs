@@ -3,4 +3,4 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateUser;
 
-public record CreateUserCommand(long CourseId, string Name, string Email, string Password, Role Role) : IRequest<long?> { }
+public record CreateUserCommand(int CourseId, string Name, string Email, string Password, Role Role) : IRequest<int?> { }

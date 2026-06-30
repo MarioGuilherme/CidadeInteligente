@@ -2,16 +2,16 @@
 
 namespace CidadeInteligente.Application.Commands.UpdateProject;
 
-public record UpdateProjectCommand(long ProjectId,
-    long? CurrentUserId,
+public record UpdateProjectCommand(int ProjectId,
+    int? CurrentUserId,
     string Title,
-    long AreaId,
-    long CourseId,
+    int AreaId,
+    int CourseId,
     string? Description,
     DateOnly StartedAt,
     DateOnly? FinishedAt,
-    IEnumerable<long> InvolvedUsers,
+    IEnumerable<int> InvolvedUsers,
     IEnumerable<UpdateProjectCommand.UpdateMediaCommand> Medias) : IRequest<Unit?>
 {
-    public record UpdateMediaCommand(long? MediaId, string Title, string? Description, string Extension, Func<Stream> OpenStream);
+    public record UpdateMediaCommand(int? MediaId, string Title, string? Description, string Extension, Func<Stream> OpenStream);
 }

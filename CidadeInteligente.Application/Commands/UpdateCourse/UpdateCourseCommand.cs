@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.UpdateCourse;
 
-public record UpdateCourseCommand(long CourseId, string Description) : IRequest<Unit?> { }
+public record UpdateCourseCommand(int CourseId, string Description) : IRequest<Unit?> { }

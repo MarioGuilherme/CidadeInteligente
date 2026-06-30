@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.CreateArea;
 
-public record CreateAreaCommand(string Description) : IRequest<long> { }
+public record CreateAreaCommand(string Description) : IRequest<int?> { }

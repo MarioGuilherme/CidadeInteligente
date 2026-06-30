@@ -17,14 +17,14 @@ public class GetProjectByIdQueryHandler(INotificationContext notification, IUnit
         if (project is null)
         {
             Log.Warning("Project with ID {ProjectId} ​​not found.", request.ProjectId);
-            _notification.AddNotification(NotificationType.ProjectNotFound);
+            _notification.AddNotification(NotificationType.ProjectNotFound, [request.ProjectId]);
             return null;
         }
 
-        if (request.CurrentUserId != project.CreatedByUserId && !project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId))
+        if (request.CurrentUserId is not null && request.CurrentUserId != project.CreatedByUserId && !project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId))
         {
             Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
-            _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject);
+            _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject, [request.CurrentUserId, request.ProjectId]);
             return null;
         }
 

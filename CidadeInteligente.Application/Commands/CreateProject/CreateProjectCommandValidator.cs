@@ -55,9 +55,6 @@ namespace CidadeInteligente.Application.Commands.CreateProject
 
             RuleFor(m => m.OpenStream)
                 .NotNull().WithMessage("É necessário anexar o arquivo da mídia!");
-
-            RuleFor(m => m.OpenStream.GetType())
-                .NotNull().WithMessage("É necessário anexar o arquivo da mídia!");
         }
     }
 }

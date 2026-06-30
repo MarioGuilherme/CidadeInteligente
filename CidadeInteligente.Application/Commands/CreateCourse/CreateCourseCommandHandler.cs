@@ -4,11 +4,11 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateCourse;
 
-public class CreateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateCourseCommand, long>
+public class CreateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateCourseCommand, int?>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<long> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+    public async Task<int?> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
         Course course = new(request.Description);
 

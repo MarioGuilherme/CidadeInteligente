@@ -10,12 +10,12 @@ public enum NotificationType : byte
     [Description("The course with ID {0} was not found.")] CourseNotFound,
     [Description("The project with ID {0} was not found.")] ProjectNotFound,
     [Description("The media with ID {0} was not found.")] MediaNotFound,
-    [Description("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.")] UserNotAuthorizedToModifyProject,
+    [Description("User with ID {0} is not authorized to modify project with ID {1}.")] UserNotAuthorizedToModifyProject,
     [Description("The area with ID {0} has dependent projects and cannot be deleted.")] AreaWithDependentProjects,
     [Description("The course with ID {0} has dependent projects and cannot be deleted.")] CourseWithDependentProjects,
     [Description("The user with ID {0} has dependent projects and cannot be deleted.")] UserWithDependentProjects,
     [Description("The user with specific Token was not found.")] UserWithTokenNotFound,
     [Description("The user with specific email was not found.")] UserWithEmailNotFound,
     [Description("The token for password recovery has expired.")] TokenRecoverPasswordExpired,
-    [Description("Email {Email} is already in use by another user.")] EmailAlreadyInUse
+    [Description("Email {0} is already in use by another user.")] EmailAlreadyInUse
 }

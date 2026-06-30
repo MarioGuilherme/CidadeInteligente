@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.CreateCourse;
 
-public record CreateCourseCommand(string Description) : IRequest<long> { }
+public record CreateCourseCommand(string Description) : IRequest<int?> { }

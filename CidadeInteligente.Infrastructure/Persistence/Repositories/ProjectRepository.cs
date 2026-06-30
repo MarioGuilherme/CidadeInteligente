@@ -28,7 +28,7 @@ public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectR
         .AsNoTracking()
         .GetPaged(page);
 
-    public async Task<Project?> GetByIdAsync(long projectId, bool tracking = false) => tracking
+    public async Task<Project?> GetByIdAsync(int projectId, bool tracking = false) => tracking
         ? await _dbContext.Projects.Include(p => p.Medias)
             .Include(p => p.InvolvedUsers)
             .Include(p => p.Area)
@@ -41,7 +41,7 @@ public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectR
             .AsNoTracking().FirstOrDefaultAsync(p => p.ProjectId == projectId);
 
 
-    public Task<Project?> GetDetailsById(long projectId) => _dbContext.Projects
+    public Task<Project?> GetDetailsById(int projectId) => _dbContext.Projects
         .Include(p => p.Area)
         .Include(p => p.Course)
         .Include(p => p.Medias)
@@ -49,5 +49,5 @@ public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectR
         .AsNoTracking()
         .FirstOrDefaultAsync(p => p.ProjectId == projectId);
 
-    public Task<Media?> GetMediaById(long mediaId) => _dbContext.Medias.FirstOrDefaultAsync(m => m.MediaId == mediaId);
+    public Task<Media?> GetMediaById(int mediaId) => _dbContext.Medias.FirstOrDefaultAsync(m => m.MediaId == mediaId);
 }

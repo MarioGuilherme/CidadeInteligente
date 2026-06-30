@@ -17,11 +17,11 @@ public class AreaRepository(CidadeInteligenteDbContext dbContext) : IAreaReposit
 
     public Task<List<Area>> GetAllAsync() => _dbContext.Areas.AsNoTracking().ToListAsync();
 
-    public Task<Area?> GetByIdAsync(long areaId, bool tracking = false) => tracking
+    public Task<Area?> GetByIdAsync(int areaId, bool tracking = false) => tracking
         ? _dbContext.Areas.FirstOrDefaultAsync(a => a.AreaId == areaId)
         : _dbContext.Areas.AsNoTracking().FirstOrDefaultAsync(a => a.AreaId == areaId);
 
-    public async Task<bool> HaveProjectsAsync(long areaId) => (await _dbContext.Areas
+    public async Task<bool> HaveProjectsAsync(int areaId) => (await _dbContext.Areas
         .Include(a => a.Projects)
         .AsNoTracking()
         .FirstAsync(a => a.AreaId == areaId)).Projects.Count > 0;

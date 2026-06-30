@@ -3,14 +3,14 @@
 namespace CidadeInteligente.Application.Commands.CreateProject;
 
 public record CreateProjectCommand(string Title,
-    long AreaId,
-    long CourseId,
-    long CreatorUserId,
+    int AreaId,
+    int CourseId,
+    int CreatorUserId,
     string? Description,
     DateOnly StartedAt,
     DateOnly? FinishedAt,
-    IEnumerable<long> InvolvedUsers,
-    IEnumerable<CreateProjectCommand.CreateMediaCommand> Medias) : IRequest<long>
+    IEnumerable<int> InvolvedUsers,
+    IEnumerable<CreateProjectCommand.CreateMediaCommand> Medias) : IRequest<int>
 {
     public record CreateMediaCommand(string Title, string? Description, string Extension, Func<Stream> OpenStream);
 }

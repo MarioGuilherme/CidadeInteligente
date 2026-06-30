@@ -17,11 +17,11 @@ public class CourseRepository(CidadeInteligenteDbContext dbContext) : ICourseRep
 
     public Task<List<Course>> GetAllAsync() => _dbContext.Courses.AsNoTracking().ToListAsync();
 
-    public Task<Course?> GetByIdAsync(long courseId, bool tracking = false) => tracking
+    public Task<Course?> GetByIdAsync(int courseId, bool tracking = false) => tracking
         ? _dbContext.Courses.FirstOrDefaultAsync(c => c.CourseId == courseId)
         : _dbContext.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.CourseId == courseId);
 
-    public async Task<bool> HaveProjectsAsync(long courseId) => (await _dbContext.Courses
+    public async Task<bool> HaveProjectsAsync(int courseId) => (await _dbContext.Courses
         .Include(c => c.Projects)
         .AsNoTracking()
         .FirstAsync(c => c.CourseId == courseId)).Projects.Count > 0;

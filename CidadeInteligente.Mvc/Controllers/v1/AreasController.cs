@@ -4,7 +4,7 @@ using CidadeInteligente.Application.Commands.UpdateArea;
 using CidadeInteligente.Application.Queries.GetAreaById;
 using CidadeInteligente.Application.Queries.GetAreas;
 using CidadeInteligente.Core.Enums;
-using CidadeInteligente.Mvc.Requests;
+using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

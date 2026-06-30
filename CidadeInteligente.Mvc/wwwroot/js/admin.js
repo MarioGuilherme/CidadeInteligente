@@ -52,6 +52,11 @@
             $("select[name=courseId]").append(courses.reduce((acc, { courseId, description }) => acc + `<option value=${courseId}>${description}</option>`, ""));
         }
 
+        $("ul.nav a.nav-link").click(function() {
+            const entityName = $(this)[0].id.replace("-tab", "");
+            history.pushState({}, "", `/admin?tab=${entityName}`);
+        });
+
         $(".btn-save").click(async () => {
             const entityName = getCurrentEntityName();
             if (entityName == "users") {

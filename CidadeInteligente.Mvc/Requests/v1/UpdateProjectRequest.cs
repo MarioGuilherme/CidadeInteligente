@@ -1,4 +1,4 @@
-﻿namespace CidadeInteligente.Mvc.Requests;
+﻿namespace CidadeInteligente.Mvc.Requests.v1;
 
 public record UpdateProjectRequest(string Title,
     long AreaId,

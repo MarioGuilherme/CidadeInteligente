@@ -1,13 +1,11 @@
 ﻿using CidadeInteligente.Application.Commands.ChangePasswordCommand;
 using CidadeInteligente.Application.Commands.LoginUser;
 using CidadeInteligente.Application.Commands.SendEmailRecover;
-using CidadeInteligente.Core.Enums;
 using CidadeInteligente.Core.Notifications;
-using CidadeInteligente.Mvc.Requests;
+using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CidadeInteligente.Mvc.Controllers.v1;
@@ -41,17 +39,19 @@ public class AuthApiController(INotificationContext notification, IMediator medi
         return default;
     }
 
-    [HttpPatch("sendEmailRecover")]
-    public async Task<IActionResult> SendEmailRecover([FromBody] SendEmailRecoverCommand command)
+    [HttpPatch("send-email-recover")]
+    public async Task<IActionResult> SendEmailRecover([FromBody] SendEmailRecoverRequest request)
     {
-        await _mediator.Send(command);
+        SendEmailRecoverCommand sendEmailRecoverCommand = new(request.Email);
+        await _mediator.Send(sendEmailRecoverCommand);
         return NoContent();
     }
 
-    [HttpPatch("changePassword")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+    [HttpPatch("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        await _mediator.Send(command);
+        ChangePasswordCommand changePasswordCommand = new(request.NewPassword, request.ConfirmNewPassword, request.Token);
+        await _mediator.Send(changePasswordCommand);
         return NoContent();
     }
 }

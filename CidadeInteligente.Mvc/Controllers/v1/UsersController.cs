@@ -4,7 +4,7 @@ using CidadeInteligente.Application.Commands.UpdateUser;
 using CidadeInteligente.Application.Queries.GetUserById;
 using CidadeInteligente.Application.Queries.GetUsers;
 using CidadeInteligente.Core.Enums;
-using CidadeInteligente.Mvc.Requests;
+using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,10 +34,11 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateUser([FromBody] CreateUserCommand command)
+    public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
-        long? userId = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetUserById), new { userId }, command);
+        CreateUserCommand createUserCommand = new(request.CourseId, request.Name, request.Email, request.Password, request.Role);
+        long? userId = await _mediator.Send(createUserCommand);
+        return CreatedAtAction(nameof(GetUserById), new { userId }, createUserCommand);
     }
 
     [HttpPatch("{userId}")]

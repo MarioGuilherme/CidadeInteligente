@@ -33,9 +33,9 @@ public class ProjectsController(IMediator mediator) : Controller
         }
     }
 
-    [HttpGet("criar-projeto")]
+    [HttpGet("create")]
     [Authorize(Roles = nameof(Role.Teacher))]
-    public async Task<ViewResult> Form()
+    public async Task<ViewResult> Create()
     {
         try
         {
@@ -56,7 +56,7 @@ public class ProjectsController(IMediator mediator) : Controller
         }
     }
 
-    [HttpGet("ver-projeto/{projectId}")]
+    [HttpGet("project/{projectId}/view")]
     public async Task<ViewResult> View(long projectId)
     {
         try
@@ -76,7 +76,7 @@ public class ProjectsController(IMediator mediator) : Controller
         }
     }
 
-    [HttpGet("editar-projeto/{projectId}")]
+    [HttpGet("edit-project/{projectId}/edit")]
     [Authorize(Roles = nameof(Role.Teacher))]
     public async Task<ViewResult> Edit(long projectId)
     {
@@ -109,7 +109,7 @@ public class ProjectsController(IMediator mediator) : Controller
         }
     }
 
-    [HttpGet("meus-projetos")]
+    [HttpGet("my-projects")]
     [Authorize]
     public async Task<ViewResult> MyProjects(int page = 1)
     {

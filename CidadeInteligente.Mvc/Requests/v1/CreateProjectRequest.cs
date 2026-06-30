@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace CidadeInteligente.Mvc.Requests;
+namespace CidadeInteligente.Mvc.Requests.v1;
 
 public record CreateProjectRequest(string Title,
     long AreaId,

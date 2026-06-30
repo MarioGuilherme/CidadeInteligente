@@ -3,7 +3,7 @@ using CidadeInteligente.Application.Commands.DeleteProjectById;
 using CidadeInteligente.Application.Commands.UpdateProject;
 using CidadeInteligente.Core.Enums;
 using CidadeInteligente.Mvc.Extensions;
-using CidadeInteligente.Mvc.Requests;
+using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +32,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
                 Path.GetExtension(m.File.FileName),
                 m.File.OpenReadStream)));
         long projectId = await _mediator.Send(createProjectCommand);
-        Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/ver-projeto/{projectId}";
+        Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/project/{projectId}";
         return StatusCode(201);
     }
 

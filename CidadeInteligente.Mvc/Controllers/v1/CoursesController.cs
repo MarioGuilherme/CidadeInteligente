@@ -4,7 +4,7 @@ using CidadeInteligente.Application.Commands.UpdateCourse;
 using CidadeInteligente.Application.Queries.GetCourseById;
 using CidadeInteligente.Application.Queries.GetCourses;
 using CidadeInteligente.Core.Enums;
-using CidadeInteligente.Mvc.Requests;
+using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,15 +29,16 @@ public class CoursesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> GetCourseById(long courseId)
     {
         GetCourseByIdQuery getCourseByIdQuery = new(courseId);
-        GetCourseByIdQueryResult getCourseByIdQueryResult = await _mediator.Send(getCourseByIdQuery);
+        GetCourseByIdQueryResult? getCourseByIdQueryResult = await _mediator.Send(getCourseByIdQuery);
         return Ok(getCourseByIdQueryResult);
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateCourse([FromBody] CreateCourseCommand command)
+    public async Task<ActionResult> CreateCourse([FromBody] CreateCourseRequest request)
     {
-        long courseId = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetCourseById), new { courseId }, command);
+        CreateCourseCommand createCourseCommand = new(request.Description);
+        long courseId = await _mediator.Send(createCourseCommand);
+        return CreatedAtAction(nameof(GetCourseById), new { courseId }, createCourseCommand);
     }
 
     [HttpPatch("{courseId}")]

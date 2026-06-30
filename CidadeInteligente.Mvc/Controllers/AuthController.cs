@@ -17,10 +17,10 @@ public class AuthController(INotificationContext notification, IMediator mediato
     [HttpGet("login")]
     public ActionResult Login() => !(User.Identity?.IsAuthenticated ?? false) ? View() : Redirect("/");
 
-    [HttpGet("recuperar-senha")]
+    [HttpGet("recover-password")]
     public ActionResult RecuperarSenha() => !(User.Identity?.IsAuthenticated ?? false) ? View() : Redirect("/");
 
-    [HttpGet("alterar-senha")]
+    [HttpGet("change-password")]
     public async Task<ActionResult> AlterarSenha(string token)
     {
         try
@@ -50,7 +50,7 @@ public class AuthController(INotificationContext notification, IMediator mediato
         return Redirect("/");
     }
 
-    [HttpGet("sem-permissao")]
+    [HttpGet("forbidden")]
     [Authorize]
     public ViewResult SemPermissao() => View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não tem permissão para acessar está página!"));
 }

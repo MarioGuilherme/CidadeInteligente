@@ -25,8 +25,8 @@ public class UsersController(IMediator mediator) : ControllerBase
         return Ok(getUsersQueryResult.Users);
     }
 
-    [HttpGet("{userId}")]
-    public async Task<ActionResult> GetUserById(long userId)
+    [HttpGet("{userId:int}")]
+    public async Task<ActionResult> GetUserById(int userId)
     {
         GetUserByIdQuery getUserByIdQuery = new(userId);
         GetUserByIdQueryResult? getUserByIdQueryResult = await _mediator.Send(getUserByIdQuery);
@@ -37,20 +37,20 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
         CreateUserCommand createUserCommand = new(request.CourseId, request.Name, request.Email, request.Password, request.Role);
-        long? userId = await _mediator.Send(createUserCommand);
+        int? userId = await _mediator.Send(createUserCommand);
         return CreatedAtAction(nameof(GetUserById), new { userId }, createUserCommand);
     }
 
-    [HttpPatch("{userId}")]
-    public async Task<ActionResult> UpdateUser(long userId, [FromBody] UpdateUserRequest request)
+    [HttpPatch("{userId:int}")]
+    public async Task<ActionResult> UpdateUser(int userId, [FromBody] UpdateUserRequest request)
     {
         UpdateUserCommand updateUserCommand = new(userId, request.CourseId, request.Name, request.Email, request.Role);
         await _mediator.Send(updateUserCommand);
         return NoContent();
     }
 
-    [HttpDelete("{userId}")]
-    public async Task<ActionResult> DeleteUser(long userId)
+    [HttpDelete("{userId:int}")]
+    public async Task<ActionResult> DeleteUser(int userId)
     {
         DeleteUserByIdCommand deleteUserByIdCommand = new(userId);
         await _mediator.Send(deleteUserByIdCommand);

@@ -22,7 +22,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
         CreateProjectCommand createProjectCommand = new(request.Title,
             request.AreaId,
             request.CourseId,
-            (long)User.UserId!,
+            User.UserId!.Value,
             request.Description,
             request.StartedAt,
             request.FinishedAt,
@@ -31,13 +31,13 @@ public class ProjectsApiController(IMediator mediator) : Controller
                 m.Description,
                 Path.GetExtension(m.File.FileName),
                 m.File.OpenReadStream)));
-        long projectId = await _mediator.Send(createProjectCommand);
+        int projectId = await _mediator.Send(createProjectCommand);
         Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/projects/{projectId}/view";
         return StatusCode(201);
     }
 
     [HttpPatch("{projectId:int}")]
-    public async Task<ActionResult> UpdateProject(long projectId, [FromForm] UpdateProjectRequest request)
+    public async Task<ActionResult> UpdateProject(int projectId, [FromForm] UpdateProjectRequest request)
     {
         UpdateProjectCommand updateProjectCommand = new(projectId,
             User.UserId,
@@ -58,7 +58,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
     }
 
     [HttpDelete("{projectId:int}")]
-    public async Task<ActionResult> DeleteProject(long projectId)
+    public async Task<ActionResult> DeleteProject(int projectId)
     {
         DeleteProjectByIdCommand deleteProjectByIdCommand = new(projectId, User.UserId);
         await _mediator.Send(deleteProjectByIdCommand);

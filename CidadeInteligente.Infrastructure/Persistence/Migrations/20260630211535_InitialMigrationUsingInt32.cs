@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrationUsingInt32 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +17,7 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                 name: "Areas",
                 columns: table => new
                 {
-                    AreaId = table.Column<long>(type: "bigint", nullable: false)
+                    AreaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false)
                 },
@@ -28,7 +30,7 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                 name: "Courses",
                 columns: table => new
                 {
-                    CourseId = table.Column<long>(type: "bigint", nullable: false)
+                    CourseId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false)
                 },
@@ -41,13 +43,15 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CourseId = table.Column<long>(type: "bigint", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Role = table.Column<byte>(type: "tinyint", nullable: false)
+                    Role = table.Column<byte>(type: "tinyint", nullable: false),
+                    TokenRecoverPassword = table.Column<string>(type: "nvarchar(156)", maxLength: 156, nullable: true),
+                    TokenRecoverPasswordExpiration = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,16 +68,16 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    ProjectId = table.Column<long>(type: "bigint", nullable: false)
+                    ProjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatorUserId = table.Column<long>(type: "bigint", nullable: false),
-                    AreaId = table.Column<long>(type: "bigint", nullable: false),
-                    CourseId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    AreaId = table.Column<int>(type: "int", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(800)", maxLength: 800, nullable: true),
-                    RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FinishedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    RegisteredAt = table.Column<DateOnly>(type: "date", nullable: false, defaultValueSql: "GETDATE()"),
+                    StartedAt = table.Column<DateOnly>(type: "date", nullable: false),
+                    FinishedAt = table.Column<DateOnly>(type: "date", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -91,8 +95,8 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                         principalColumn: "CourseId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Projects_Users_CreatorUserId",
-                        column: x => x.CreatorUserId,
+                        name: "FK_Projects_Users_CreatedByUserId",
+                        column: x => x.CreatedByUserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
@@ -102,13 +106,12 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                 name: "Medias",
                 columns: table => new
                 {
-                    MediaId = table.Column<long>(type: "bigint", nullable: false)
+                    MediaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectId = table.Column<long>(type: "bigint", nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Size = table.Column<long>(type: "bigint", nullable: false)
+                    FileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,15 +121,15 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "ProjectId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ProjectsUsers",
                 columns: table => new
                 {
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    ProjectId = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -145,6 +148,26 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Areas",
+                columns: new[] { "AreaId", "Description" },
+                values: new object[,]
+                {
+                    { 1, "Urbana" },
+                    { 2, "Industrial" },
+                    { 3, "Rural" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Courses",
+                columns: new[] { "CourseId", "Description" },
+                values: new object[] { 1, "Demonstração" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "CourseId", "Email", "Name", "Password", "Role", "TokenRecoverPassword", "TokenRecoverPasswordExpiration" },
+                values: new object[] { 1, 1, "demo@demo.com", "Usuário de Demonstração", "$2a$12$6Mv0u92cyvPnf7c.2rvdmen5RpawVRPvfIsADYfEx915HDxGeMll.", (byte)0, null, null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Medias_ProjectId",
                 table: "Medias",
@@ -161,9 +184,9 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_CreatorUserId",
+                name: "IX_Projects_CreatedByUserId",
                 table: "Projects",
-                column: "CreatorUserId");
+                column: "CreatedByUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectsUsers_ProjectId",

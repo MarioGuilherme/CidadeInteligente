@@ -5,12 +5,12 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateProject;
 
-public class CreateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<CreateProjectCommand, long>
+public class CreateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<CreateProjectCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IFileStorage _fileStorage = fileStorage;
 
-    public async Task<long> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
         Project project = new(request.CreatorUserId,
             request.AreaId,
@@ -20,7 +20,7 @@ public class CreateProjectCommandHandler(IUnitOfWork unitOfWork, IFileStorage fi
             request.StartedAt,
             request.FinishedAt);
 
-        foreach (long involvedUser in request.InvolvedUsers)
+        foreach (int involvedUser in request.InvolvedUsers)
             project.InvolvedUsers.Add(new User(involvedUser));
 
         foreach (CreateProjectCommand.CreateMediaCommand media in request.Medias)

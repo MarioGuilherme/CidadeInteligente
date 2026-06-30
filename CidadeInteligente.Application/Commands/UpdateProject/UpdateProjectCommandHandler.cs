@@ -39,7 +39,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
             request.FinishedAt);
         projectDb.InvolvedUsers.Clear();
 
-        foreach (long userId in request.InvolvedUsers)
+        foreach (int userId in request.InvolvedUsers)
         {
             User? newUserInvolved = await _unitOfWork.Users.GetByIdAsync(userId, true);
             if (newUserInvolved is null)

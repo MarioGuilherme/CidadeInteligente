@@ -20,7 +20,7 @@ builder.Services
     .AddApplication();
 
 builder.Services
-    .AddControllers(options => options.Filters.Add<RestResponseFilter>())
+    .AddControllers(options => options.Filters.Add<NotificationResultFilter>())
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 builder.Services.AddHealthChecks();

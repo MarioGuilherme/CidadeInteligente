@@ -5,8 +5,8 @@ namespace CidadeInteligente.Core.Entities;
 
 public class User
 {
-    public long UserId { get; private set; }
-    public long CourseId { get; set; }
+    public int UserId { get; private set; }
+    public int CourseId { get; private set; }
     public Course Course { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public string Email { get; private set; } = null!;
@@ -17,7 +17,7 @@ public class User
     public virtual ICollection<Project> InvolvedProjects { get; private set; } = [];
     public virtual ICollection<Project> CreatedProjects { get; private set; } = [];
 
-    public User(long userId, long courseId, string name, string email, string password, Role role)
+    public User(int userId, int courseId, string name, string email, string password, Role role)
     {
         UserId = userId;
         CourseId = courseId;
@@ -27,7 +27,7 @@ public class User
         Role = role;
     }
 
-    public User(long courseId, string name, string email, string password, Role role)
+    public User(int courseId, string name, string email, string password, Role role)
     {
         CourseId = courseId;
         Name = name;
@@ -36,9 +36,9 @@ public class User
         Role = role;
     }
 
-    public User(long userId) => UserId = userId;
+    public User(int userId) => UserId = userId;
 
-    public void Update(long courseId, string name, string email, Role role)
+    public void Update(int courseId, string name, string email, Role role)
     {
         CourseId = courseId;
         Name = name;

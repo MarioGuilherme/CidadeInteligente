@@ -24,11 +24,11 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CidadeInteligente.Core.Entities.Area", b =>
                 {
-                    b.Property<long>("AreaId")
+                    b.Property<int>("AreaId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AreaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AreaId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -42,28 +42,28 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            AreaId = 1L,
+                            AreaId = 1,
                             Description = "Urbana"
                         },
                         new
                         {
-                            AreaId = 2L,
+                            AreaId = 2,
                             Description = "Industrial"
                         },
                         new
                         {
-                            AreaId = 3L,
+                            AreaId = 3,
                             Description = "Rural"
                         });
                 });
 
             modelBuilder.Entity("CidadeInteligente.Core.Entities.Course", b =>
                 {
-                    b.Property<long>("CourseId")
+                    b.Property<int>("CourseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CourseId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -77,18 +77,18 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            CourseId = 1L,
+                            CourseId = 1,
                             Description = "Demonstração"
                         });
                 });
 
             modelBuilder.Entity("CidadeInteligente.Core.Entities.Media", b =>
                 {
-                    b.Property<long>("MediaId")
+                    b.Property<int>("MediaId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MediaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MediaId"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(300)
@@ -99,8 +99,8 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<long>("ProjectId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -116,20 +116,20 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CidadeInteligente.Core.Entities.Project", b =>
                 {
-                    b.Property<long>("ProjectId")
+                    b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ProjectId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
 
-                    b.Property<long>("AreaId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("AreaId")
+                        .HasColumnType("int");
 
-                    b.Property<long>("CourseId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
 
-                    b.Property<long>("CreatedByUserId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasMaxLength(800)
@@ -164,14 +164,14 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("CidadeInteligente.Core.Entities.User", b =>
                 {
-                    b.Property<long>("UserId")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<long>("CourseId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -210,8 +210,8 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = 1L,
-                            CourseId = 1L,
+                            UserId = 1,
+                            CourseId = 1,
                             Email = "demo@demo.com",
                             Name = "Usuário de Demonstração",
                             Password = "$2a$12$6Mv0u92cyvPnf7c.2rvdmen5RpawVRPvfIsADYfEx915HDxGeMll.",
@@ -221,11 +221,11 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ProjectsUsers", b =>
                 {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<long>("ProjectId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "ProjectId");
 

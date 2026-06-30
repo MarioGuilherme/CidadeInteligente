@@ -2,5 +2,5 @@
 
 public record GetCoursesQueryResult(IEnumerable<GetCoursesQueryResult.CourseViewModel> Courses)
 {
-    public record CourseViewModel(long CourseId, string Description);
+    public record CourseViewModel(int CourseId, string Description);
 }

@@ -1,5 +1,4 @@
-﻿using CidadeInteligente.Application.Extensions;
-using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
@@ -26,9 +25,7 @@ public class GetUserByIdQueryHandler(INotificationContext notification, IUnitOfW
         return new(user.UserId,
             user.Name,
             user.Email,
-            user.Course.Description,
-            user.CourseId,
-            user.Role.GetDescription(),
+            user.Course.CourseId,
             (byte)user.Role);
     }
 }

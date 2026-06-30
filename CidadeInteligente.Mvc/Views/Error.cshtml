@@ -2,7 +2,7 @@
 @model ErrorViewModel;
 
 @{
-    ViewData["Title"] = $"{Model.StatusCode} - {Model.Title}";
+    ViewData["Title"] = Model.StatusCode;
 }
 
 <link rel="stylesheet" href="~/css/header.css" />

@@ -4,11 +4,11 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateArea;
 
-public class CreateAreaCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateAreaCommand, long>
+public class CreateAreaCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateAreaCommand, int?>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<long> Handle(CreateAreaCommand request, CancellationToken cancellationToken)
+    public async Task<int?> Handle(CreateAreaCommand request, CancellationToken cancellationToken)
     {
         Area area = new(request.Description);
 

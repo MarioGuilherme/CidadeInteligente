@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.DeleteAreaById;
 
-public record DeleteAreaByIdCommand(long AreaId) : IRequest<Unit?> { }
+public record DeleteAreaByIdCommand(int AreaId) : IRequest<Unit?> { }

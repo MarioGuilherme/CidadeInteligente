@@ -6,12 +6,12 @@ using Serilog;
 
 namespace CidadeInteligente.Application.Commands.CreateUser;
 
-public class CreateUserCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<CreateUserCommand, long?>
+public class CreateUserCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<CreateUserCommand, int?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<long?> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<int?> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.Users.IsEmailInUseAsync(request.Email, cancellationToken: cancellationToken))
         {

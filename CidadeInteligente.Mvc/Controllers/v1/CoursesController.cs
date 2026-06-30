@@ -25,8 +25,8 @@ public class CoursesController(IMediator mediator) : ControllerBase
         return Ok(getAllCoursesQueryResult.Courses);
     }
 
-    [HttpGet("{courseId}")]
-    public async Task<ActionResult> GetCourseById(long courseId)
+    [HttpGet("{courseId:int}")]
+    public async Task<ActionResult> GetCourseById(int courseId)
     {
         GetCourseByIdQuery getCourseByIdQuery = new(courseId);
         GetCourseByIdQueryResult? getCourseByIdQueryResult = await _mediator.Send(getCourseByIdQuery);
@@ -37,20 +37,20 @@ public class CoursesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> CreateCourse([FromBody] CreateCourseRequest request)
     {
         CreateCourseCommand createCourseCommand = new(request.Description);
-        long courseId = await _mediator.Send(createCourseCommand);
+        int? courseId = await _mediator.Send(createCourseCommand);
         return CreatedAtAction(nameof(GetCourseById), new { courseId }, createCourseCommand);
     }
 
-    [HttpPatch("{courseId}")]
-    public async Task<ActionResult> UpdateCourse(long courseId, [FromBody] UpdateCourseRequest request)
+    [HttpPatch("{courseId:int}")]
+    public async Task<ActionResult> UpdateCourse(int courseId, [FromBody] UpdateCourseRequest request)
     {
         UpdateCourseCommand updateCourseCommand = new(courseId, request.Description);
         await _mediator.Send(updateCourseCommand);
         return NoContent();
     }
 
-    [HttpDelete("{courseId}")]
-    public async Task<ActionResult> DeleteCourse(long courseId)
+    [HttpDelete("{courseId:int}")]
+    public async Task<ActionResult> DeleteCourse(int courseId)
     {
         DeleteCourseByIdCommand deleteCourseByIdCommand = new(courseId);
         await _mediator.Send(deleteCourseByIdCommand);

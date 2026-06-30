@@ -9,10 +9,10 @@ public interface IUserRepository
     void Delete(User user);
     Task<List<User>> GetAllAsync();
     Task<User?> GetByEmailAsync(string email, bool tracking = false);
-    Task<User?> GetByIdAsync(long userId, bool tracking = false);
+    Task<User?> GetByIdAsync(int userId, bool tracking = false);
     Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword);
-    Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(long userId, int page);
-    Task<bool> IsEmailInUseAsync(string email, long userId = default, CancellationToken cancellationToken = default);
-    Task<bool> IsInvolvedOrCreatedProjectsAsync(long userId);
-    Task<bool> UserIdExistAsync(long userId);
+    Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(int userId, int page);
+    Task<bool> IsEmailInUseAsync(string email, int userId = default, CancellationToken cancellationToken = default);
+    Task<bool> IsInvolvedOrCreatedProjectsAsync(int userId);
+    Task<bool> UserIdExistAsync(int userId);
 }

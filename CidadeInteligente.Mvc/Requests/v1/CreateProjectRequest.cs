@@ -1,15 +1,13 @@
-﻿using MediatR;
-
-namespace CidadeInteligente.Mvc.Requests.v1;
+﻿namespace CidadeInteligente.Mvc.Requests.v1;
 
 public record CreateProjectRequest(string Title,
-    long AreaId,
-    long CourseId,
+    int AreaId,
+    int CourseId,
     string? Description,
     DateOnly StartedAt,
     DateOnly? FinishedAt,
-    IEnumerable<long> InvolvedUsers,
-    IEnumerable<CreateProjectRequest.CreateMediaRequest> Medias) : IRequest<long>
+    IEnumerable<int> InvolvedUsers,
+    IEnumerable<CreateProjectRequest.CreateMediaRequest> Medias)
 {
     public record CreateMediaRequest(string Title, string? Description, IFormFile File);
 }

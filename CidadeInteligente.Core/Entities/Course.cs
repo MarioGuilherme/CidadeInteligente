@@ -2,13 +2,13 @@
 
 public class Course
 {
-    public long CourseId { get; private set; }
+    public int CourseId { get; private set; }
     public string Description { get; private set; }
     public virtual ICollection<Project> Projects { get; private set; } = [];
 
     public Course(string description) => Description = description;
 
-    public Course(long courseId, string description)
+    public Course(int courseId, string description)
     {
         CourseId = courseId;
         Description = description;

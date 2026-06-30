@@ -9,7 +9,7 @@ public interface IProjectRepository
     void DeleteMedia(Media media);
     void DeleteProject(Project project);
     Task<PaginationResult<Project>> GetAllAsync(int page);
-    Task<Project?> GetByIdAsync(long projectId, bool tracking = false);
-    Task<Project?> GetDetailsById(long projectId);
-    Task<Media?> GetMediaById(long mediaId);
+    Task<Project?> GetByIdAsync(int projectId, bool tracking = false);
+    Task<Project?> GetDetailsById(int projectId);
+    Task<Media?> GetMediaById(int mediaId);
 }

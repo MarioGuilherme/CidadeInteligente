@@ -1,20 +1,20 @@
 ﻿namespace CidadeInteligente.Core.Entities;
 
 public class Project(
-    long areaId,
-    long courseId,
-    long createdByUserId,
+    int areaId,
+    int courseId,
+    int createdByUserId,
     string title,
     string? description,
     DateOnly startedAt,
     DateOnly? finishedAt)
 {
-    public long ProjectId { get; private set; }
-    public long CreatedByUserId { get; private set; } = createdByUserId;
+    public int ProjectId { get; private set; }
+    public int CreatedByUserId { get; private set; } = createdByUserId;
     public User CreatedBy { get; private set; } = null!;
-    public long AreaId { get; private set; } = areaId;
+    public int AreaId { get; private set; } = areaId;
     public Area Area { get; private set; } = null!;
-    public long CourseId { get; private set; } = courseId;
+    public int CourseId { get; private set; } = courseId;
     public Course Course { get; private set; } = null!;
     public string Title { get; private set; } = title;
     public string? Description { get; private set; } = description;
@@ -24,7 +24,7 @@ public class Project(
     public virtual ICollection<User> InvolvedUsers { get; set; } = [];
     public virtual ICollection<Media> Medias { get; private set; } = [];
 
-    public void Update(long areaId, long courseId, string title, string? description, DateOnly startedAt, DateOnly? finishedAt)
+    public void Update(int areaId, int courseId, string title, string? description, DateOnly startedAt, DateOnly? finishedAt)
     {
         AreaId = areaId;
         CourseId = courseId;

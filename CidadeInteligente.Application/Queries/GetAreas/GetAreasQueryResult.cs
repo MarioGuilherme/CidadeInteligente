@@ -2,5 +2,5 @@
 
 public record GetAreasQueryResult(IEnumerable<GetAreasQueryResult.AreaViewModel> Areas)
 {
-    public record AreaViewModel(long AreaId, string Description);
+    public record AreaViewModel(int AreaId, string Description);
 }

@@ -1,0 +1,38 @@
+﻿table {
+    width: 100% !important
+}
+
+th, td {
+    text-align: center !important
+}
+
+.tab-content .container-fluid {
+    border-right: 1px solid #b11116;
+    border-left: 1px solid #b11116;
+    border-bottom: 1px solid #b11116
+}
+
+.tab-pane > .container-fluid {
+    overflow: auto
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #b11116
+}
+
+main .nav-link {
+    color: black;
+    border-top: 1px solid #f8868999 !important;
+    border-left: 1px solid #f8868999 !important;
+    border-right: 1px solid #f8868999 !important
+}
+
+main a.active {
+    border-top: 1px solid #b11116 !important;
+    border-left: 1px solid #b11116 !important;
+    border-right: 1px solid #b11116 !important
+}
+
+.tab-pane .col-12 {
+    overflow: auto
+}

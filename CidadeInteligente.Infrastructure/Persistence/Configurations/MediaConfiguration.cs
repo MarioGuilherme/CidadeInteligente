@@ -11,6 +11,7 @@ public class MediaConfiguration : IEntityTypeConfiguration<Media>
         builder.HasKey(m => m.MediaId);
 
         builder.Property(m => m.Title).HasMaxLength(60);
+        builder.Property(m => m.FileName).HasMaxLength(50);
         builder.Property(m => m.Description)
                .IsRequired(false)
                .HasMaxLength(300);

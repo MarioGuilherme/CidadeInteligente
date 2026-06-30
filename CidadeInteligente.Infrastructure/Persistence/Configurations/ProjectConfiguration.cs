@@ -37,12 +37,12 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(p => p.InvolvedUsers)
-               .WithMany(u => u.InvolvedProjects);
-               //.UsingEntity(
-               //    "ProjectsUsers",
-               //    u => u.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey("UserId"),
-               //    p => p.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId").HasPrincipalKey("ProjectId"),
-               //    k => k.HasKey("UserId", "ProjectId")
-               //);
+               .WithMany(u => u.InvolvedProjects)
+               .UsingEntity(
+                    "ProjectsUsers",
+                    u => u.HasOne(typeof(User)).WithMany().HasForeignKey("UserId"),
+                    p => p.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId"),
+                    k => k.HasKey("UserId", "ProjectId")
+               );
     }
 }

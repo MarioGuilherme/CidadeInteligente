@@ -23,7 +23,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
             return null;
         }
 
-        if (!(request.CurrentUserId == projectDb.CreatedByUserId || projectDb.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId)))
+        if (request.CurrentUserId != projectDb.CreatedByUserId && !projectDb.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId))
         {
             Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
             _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject);
@@ -42,38 +42,51 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
         foreach (long userId in request.InvolvedUsers)
         {
             User? newUserInvolved = await _unitOfWork.Users.GetByIdAsync(userId, true);
-            if (newUserInvolved is null) continue;
+            if (newUserInvolved is null)
+            {
+                Log.Warning("User with ID {UserId} was not found.", userId);
+                _notification.AddNotification(NotificationType.UserNotFound, [userId]);
+                continue;
+            }
             projectDb.InvolvedUsers.Add(newUserInvolved);
         }
+
         foreach (Media mediaDb in projectDb.Medias)
         {
-            if (request.Medias.Any(mediaForm => mediaDb.MediaId == mediaForm.MediaId)) continue;
+            if (request.Medias.Any(mediaForm => mediaForm.MediaId == mediaDb.MediaId)) continue;
             await _fileStorage.DeleteFileAsync(mediaDb.FileName);
             _unitOfWork.Projects.DeleteMedia(mediaDb);
         }
 
         projectDb.Medias.Clear();
-        foreach (UpdateProjectCommand.UpdateMediaCommand media in request.Medias)
+        foreach (UpdateProjectCommand.UpdateMediaCommand mediaCommand in request.Medias)
         {
-            if (media.MediaId is null)
+            await using Stream mediaStream = mediaCommand.OpenStream.Invoke();
+            if (mediaCommand.MediaId is null)
             {
-                projectDb.Medias.Add(new(media.Title,
-                    media.Description,
-                    _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}.{media.Extension}", media.Base64!).Result,
-                    (long)media.Size!));
+                Media media = new(mediaCommand.Title,
+                    mediaCommand.Description,
+                    await _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}{mediaCommand.Extension}", mediaStream!));
+                projectDb.Medias.Add(media);
                 continue;
             }
 
-            Media? mediaDb = await _unitOfWork.Projects.GetMediaById((long)media.MediaId);
-            if (mediaDb is null) continue;
+            Media? mediaDb = await _unitOfWork.Projects.GetMediaById(mediaCommand.MediaId.Value);
+            if (mediaDb is null)
+            {
+                Log.Warning("The media with ID {MediaId} was not found.", mediaCommand.MediaId);
+                _notification.AddNotification(NotificationType.MediaNotFound, [mediaCommand.MediaId]);
+                continue;
+            }
 
-            if (media.Base64 is null)
-                mediaDb.Update(media.Title, media.Description);
+            if (mediaStream.Length == 0)
+                mediaDb.Update(mediaCommand.Title, mediaCommand.Description);
             else
             {
-                await _fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, media.Base64);
-                mediaDb.Update(media.Title, media.Description, (long)media.Size!);
+                await _fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, mediaStream);
+                mediaDb.Update(mediaCommand.Title, mediaCommand.Description);
             }
+
             projectDb.Medias.Add(mediaDb);
         }
 

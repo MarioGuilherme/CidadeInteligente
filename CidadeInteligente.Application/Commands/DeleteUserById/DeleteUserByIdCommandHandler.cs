@@ -24,7 +24,7 @@ public class DeleteUserByIdCommandHandler(INotificationContext notification, IUn
         if (await _unitOfWork.Users.IsInvolvedOrCreatedProjectsAsync(request.UserId))
         {
             Log.Warning("User with ID {UserId} has dependent projects and cannot be deleted.", request.UserId);
-            _notification.AddNotification(NotificationType.UserWithDependentProjects);
+            _notification.AddNotification(NotificationType.UserWithDependentProjects, [request.UserId]);
             return null;
         }
 

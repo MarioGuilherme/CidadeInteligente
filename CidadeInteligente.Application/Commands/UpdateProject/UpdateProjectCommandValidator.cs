@@ -55,11 +55,11 @@ public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectComm
             RuleFor(m => m.Extension)
                 .NotEmpty().WithMessage("É necessário informar a extensão da mídia!");
 
-            When(m => m.Path is null, () =>
-            {
-                RuleFor(m => m.Base64)
-                    .NotEmpty().WithMessage("É necessário anexar o arquivo da mídia!");
-            }).Otherwise(() => RuleFor(m => m.Path).NotEmpty().WithMessage("É necessário informar a URL da mídias!"));
+            //When(m => m.OpenStream is null, () =>
+            //{
+            //    RuleFor(m => m.Base64)
+            //        .NotEmpty().WithMessage("É necessário anexar o arquivo da mídia!");
+            //}).Otherwise(() => RuleFor(m => m.Path).NotEmpty().WithMessage("É necessário informar a URL da mídias!"));
         }
     }
 }

@@ -3,16 +3,16 @@ using CidadeInteligente.Core.Services;
 
 namespace CidadeInteligente.Infrastructure.CloudServices;
 
-public class AzureStorageService(string connectionString, string containerName) : IFileStorage
+public class AzureStorageService(BlobContainerClient blobContainerClient) : IFileStorage
 {
-    private readonly BlobContainerClient _blobContainerClient = new(connectionString, containerName);
+    private readonly BlobContainerClient _blobContainerClient = blobContainerClient;
 
-    public async Task DeleteFileAsync(string fileName) => await _blobContainerClient.DeleteBlobIfExistsAsync(fileName);
+    public Task DeleteFileAsync(string fileName) => _blobContainerClient.DeleteBlobIfExistsAsync(fileName);
 
-    public async Task<string> UploadOrUpdateFileAsync(string fileName, byte[] bytes)
+    public async Task<string> UploadOrUpdateFileAsync(string fileName, Stream stream)
     {
         BlobClient blobClient = _blobContainerClient.GetBlobClient(fileName);
-        await blobClient.UploadAsync(new BinaryData(bytes), overwrite: true);
+        await blobClient.UploadAsync(stream, overwrite: true);
         return fileName;
     }
 }

@@ -1,8 +1,6 @@
 ﻿namespace CidadeInteligente.Mvc.ViewModels;
 
-public class ErrorViewModel(int statusCode, string title = "Erro desconhecido", string? description = null)
+public record ErrorViewModel(int StatusCode, string Title = "Erro desconhecido", string? Description = null)
 {
-    public int StatusCode { get; private set; } = statusCode;
-    public string Title { get; private set; } = title;
-    public string Description { get; private set; } = description ?? title;
+    public string Description { get; private set; } = Description ?? Title;
 }

@@ -21,7 +21,7 @@ public class GetProjectByIdQueryHandler(INotificationContext notification, IUnit
             return null;
         }
 
-        if (request.CurrentUserId is not null && !(request.CurrentUserId == project.CreatedByUserId || project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId)))
+        if (request.CurrentUserId != project.CreatedByUserId && !project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId))
         {
             Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
             _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject);
@@ -38,6 +38,6 @@ public class GetProjectByIdQueryHandler(INotificationContext notification, IUnit
             project.StartedAt,
             project.FinishedAt,
             project.InvolvedUsers.Select(iu => new GetProjectByIdQueryResult.ProjectUserViewModel(iu.UserId, iu.Name)),
-            project.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName, m.Size)));
+            project.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName)));
     }
 }

@@ -6,7 +6,6 @@ public class Project(
     long createdByUserId,
     string title,
     string? description,
-    DateOnly registeredAt,
     DateOnly startedAt,
     DateOnly? finishedAt)
 {
@@ -19,7 +18,7 @@ public class Project(
     public Course Course { get; private set; } = null!;
     public string Title { get; private set; } = title;
     public string? Description { get; private set; } = description;
-    public DateOnly RegisteredAt { get; private set; } = registeredAt;
+    public DateOnly RegisteredAt { get; init; } = DateOnly.FromDateTime(DateTime.Now);
     public DateOnly StartedAt { get; private set; } = startedAt;
     public DateOnly? FinishedAt { get; private set; } = finishedAt;
     public virtual ICollection<User> InvolvedUsers { get; set; } = [];

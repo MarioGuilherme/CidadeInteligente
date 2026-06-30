@@ -8,7 +8,7 @@ public record GetProjectsQueryResult(int Page, int TotalPages, int ItemsCount, I
     public record ProjectViewModel(long ProjectId, string Title, string? Description, IList<ProjectViewModel.MediaViewModel> Medias)
     {
         public string Description { get; private set; } = string.IsNullOrWhiteSpace(Description)
-            ? "Sem descrição"
+            ? string.Empty
             : Description.Length >= 125
                 ? $"{Description![0..125]}..."
                 : Description;

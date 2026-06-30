@@ -13,8 +13,5 @@ public record UpdateProjectCommand(long ProjectId,
     IEnumerable<long> InvolvedUsers,
     IEnumerable<UpdateProjectCommand.UpdateMediaCommand> Medias) : IRequest<Unit?>
 {
-    public record UpdateMediaCommand(long? MediaId, string Title, string? Description, string Extension, string? Path, byte[]? Base64)
-    {
-        public long? Size => Base64?.Length;
-    }
+    public record UpdateMediaCommand(long? MediaId, string Title, string? Description, string Extension, Func<Stream> OpenStream);
 }

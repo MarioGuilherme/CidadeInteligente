@@ -12,8 +12,5 @@ public record CreateProjectCommand(string Title,
     IEnumerable<long> InvolvedUsers,
     IEnumerable<CreateProjectCommand.CreateMediaCommand> Medias) : IRequest<long>
 {
-    public record CreateMediaCommand(string Title, string? Description, string Extension, byte[] Base64)
-    {
-        public long Size => Base64.Length;
-    }
+    public record CreateMediaCommand(string Title, string? Description, string Extension, Func<Stream> OpenStream);
 }

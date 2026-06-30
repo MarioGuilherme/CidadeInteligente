@@ -20,13 +20,13 @@ public class AdminController(IMediator mediator) : Controller
     {
         try
         {
-            GetUsersQuery getAllUsersQuery = new();
-            GetAreasQuery getAreasQuery = new();
-            GetCoursesQuery getAllCoursesQuery = new();
+            GetUsersQueryResult getUsersQueryResult = await _mediator.Send(new GetUsersQuery());
+            GetAreasQueryResult getAreasQueryResult = await _mediator.Send(new GetAreasQuery());
+            GetCoursesQueryResult getCoursesQueryResult = await _mediator.Send(new GetCoursesQuery());
 
-            ViewBag.Users = await _mediator.Send(getAllUsersQuery);
-            ViewBag.Areas = await _mediator.Send(getAreasQuery);
-            ViewBag.Courses = await _mediator.Send(getAllCoursesQuery);
+            ViewBag.Users = getUsersQueryResult.Users;
+            ViewBag.Areas = getAreasQueryResult.Areas;
+            ViewBag.Courses = getCoursesQueryResult.Courses;
 
             return View();
         }

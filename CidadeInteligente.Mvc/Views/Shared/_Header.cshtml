@@ -21,11 +21,11 @@
                     {
                         if (User.IsInRole(nameof(Role.Teacher)))
                         {
-                            <a class="dropdown-item@(Context.Request.Path == "/criar-projeto" ? " disabledItemDropDown" : string.Empty)" href="/criar-projeto">
+                            <a class="dropdown-item@(Context.Request.Path == "/create" ? " disabledItemDropDown" : string.Empty)" href="/create">
                                 Criar
                             </a>
                         }
-                        <a class="dropdown-item@(Context.Request.Path == "/meus-projetos" ? " disabledItemDropDown" : string.Empty)" href="/meus-projetos">
+                        <a class="dropdown-item@(Context.Request.Path == "/projects/my" ? " disabledItemDropDown" : string.Empty)" href="/projects/my">
                             Meus Projetos
                         </a>
                     }

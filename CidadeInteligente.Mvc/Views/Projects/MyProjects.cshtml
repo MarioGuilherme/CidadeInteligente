@@ -109,10 +109,10 @@
                                 }
                             </p>
                         </div>
-                        <a href="/ver-projeto/@project.ProjectId" class="btn btn-block mt-2 btn-view-project">Ver Projeto</a>
+                        <a href="/projects/@project.ProjectId/view" class="btn btn-block mt-2 btn-view-project">Ver Projeto</a>
                         @if (User.IsInRole(nameof(Role.Teacher)))
                         {
-                            <a href="/editar-projeto/@project.ProjectId" class="btn mt-2 btn-edit-project">Editar</a>
+                            <a href="/projects/@project.ProjectId/edit" class="btn mt-2 btn-edit-project">Editar</a>
                             <button id=@project.ProjectId class="btn mt-2 btn-delete-project">Excluir</button>
                         }
                     </div>

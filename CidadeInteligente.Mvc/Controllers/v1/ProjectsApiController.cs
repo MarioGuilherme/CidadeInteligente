@@ -32,7 +32,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
                 Path.GetExtension(m.File.FileName),
                 m.File.OpenReadStream)));
         long projectId = await _mediator.Send(createProjectCommand);
-        Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/project/{projectId}";
+        Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/projects/{projectId}/view";
         return StatusCode(201);
     }
 

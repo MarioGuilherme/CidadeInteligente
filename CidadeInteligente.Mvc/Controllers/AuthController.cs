@@ -18,10 +18,10 @@ public class AuthController(INotificationContext notification, IMediator mediato
     public ActionResult Login() => !(User.Identity?.IsAuthenticated ?? false) ? View() : Redirect("/");
 
     [HttpGet("recover-password")]
-    public ActionResult RecuperarSenha() => !(User.Identity?.IsAuthenticated ?? false) ? View() : Redirect("/");
+    public ActionResult RecoverPassword() => !(User.Identity?.IsAuthenticated ?? false) ? View() : Redirect("/");
 
     [HttpGet("change-password")]
-    public async Task<ActionResult> AlterarSenha(string token)
+    public async Task<ActionResult> ChangePassword(string token)
     {
         try
         {
@@ -52,5 +52,5 @@ public class AuthController(INotificationContext notification, IMediator mediato
 
     [HttpGet("forbidden")]
     [Authorize]
-    public ViewResult SemPermissao() => View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não tem permissão para acessar está página!"));
+    public ViewResult Forbidden() => View("~/Views/Error.cshtml", new ErrorViewModel(403, "Acesso restrito", "Você não tem permissão para acessar está página!"));
 }

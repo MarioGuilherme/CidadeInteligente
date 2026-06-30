@@ -16,7 +16,8 @@ public class AdminController(IMediator mediator) : Controller
 {
     private readonly IMediator _mediator = mediator;
 
-    public async Task<ViewResult> Index()
+    [HttpGet]
+    public async Task<ViewResult> Index([FromQuery] string tab)
     {
         try
         {
@@ -27,6 +28,8 @@ public class AdminController(IMediator mediator) : Controller
             ViewBag.Users = getUsersQueryResult.Users;
             ViewBag.Areas = getAreasQueryResult.Areas;
             ViewBag.Courses = getCoursesQueryResult.Courses;
+
+            ViewBag.Tab = tab;
 
             return View();
         }

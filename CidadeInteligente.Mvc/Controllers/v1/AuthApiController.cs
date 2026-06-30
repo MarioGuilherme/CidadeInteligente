@@ -47,7 +47,7 @@ public class AuthApiController(INotificationContext notification, IMediator medi
         return NoContent();
     }
 
-    [HttpPatch("changePassword")]
+    [HttpPatch("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         ChangePasswordCommand changePasswordCommand = new(request.NewPassword, request.ConfirmNewPassword, request.Token);

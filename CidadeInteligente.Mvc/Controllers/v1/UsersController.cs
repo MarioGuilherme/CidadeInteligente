@@ -9,9 +9,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CidadeInteligente.Mvc.Controllers;
+namespace CidadeInteligente.Mvc.Controllers.v1;
 
-[Route("api/users")]
+[Route("api/v1/users")]
 [Authorize(Roles = nameof(Role.Teacher))]
 public class UsersController(IMediator mediator) : ControllerBase
 {

@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Login";
-    ViewData["ignoreFooter"] = true;
+    ViewData["ShowFooter"] = false;
 }
 
 <link rel="stylesheet" href="~/css/auth.css">
@@ -45,7 +45,7 @@
             formHasEmptyField($("form").serializeArray());
 
             sweetAlertAwait("Fazendo login...");
-            const { status, body } = await restAPI.post("auth/v1/login", {
+            const { status, body } = await restAPI.post("v1/auth/login", {
                 email: $("input[name=email]").val().trim(),
                 password: $("input[name=password]").val().trim()
             });
@@ -53,7 +53,7 @@
 
             switch (status) {
                 case 201:
-                    sweetAlert("success", "Login efetuado!").then(({ value }) => value && $(location).attr("href", "/"));
+                    $(location).attr("href", "/");
                     break;
                 case 400:
                     handleBadRequest(body);

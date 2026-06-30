@@ -62,14 +62,16 @@ public class RestResponseFilter(INotificationContext notification) : IAsyncResul
             || n.Type == NotificationType.CourseNotFound || n.Type == NotificationType.UserWithTokenNotFound || n.Type == NotificationType.UserWithEmailNotFound))
             return StatusCodes.Status404NotFound;
 
-        if (notifications.Any(n => n.Type == NotificationType.UserNotAuthorizedToModifyProject || n.Type == NotificationType.AreaWithDependentProjects)
-            || notifications.Any(n => n.Type == NotificationType.CourseWithDependentProjects || n.Type == NotificationType.UserWithDependentProjects))
+        if (notifications.Any(n => n.Type == NotificationType.UserNotAuthorizedToModifyProject))
             return StatusCodes.Status403Forbidden;
 
         if (notifications.Any(n => n.Type == NotificationType.InvalidLoginCredentials || n.Type == NotificationType.TokenRecoverPasswordExpired))
             return StatusCodes.Status401Unauthorized;
 
-        if (notifications.Any(n => n.Type == NotificationType.EmailAlreadyInUse))
+        if (notifications.Any(n => n.Type == NotificationType.EmailAlreadyInUse
+            || n.Type == NotificationType.CourseWithDependentProjects
+            || n.Type == NotificationType.AreaWithDependentProjects
+            || n.Type == NotificationType.UserWithDependentProjects))
             return StatusCodes.Status409Conflict;
 
         return StatusCodes.Status400BadRequest;

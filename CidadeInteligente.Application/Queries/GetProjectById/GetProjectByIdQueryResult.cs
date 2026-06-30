@@ -17,7 +17,7 @@ public record GetProjectByIdQueryResult(long ProjectId,
         public string MinorName => Name.Length > 58 ? Name[0..58] : Name;
     }
 
-    public record MediaDetailsViewModel(long MediaId, string Title, string? Description, string FileName, long Size)
+    public record MediaDetailsViewModel(long MediaId, string Title, string? Description, string FileName)
     {
         public string Extension => System.IO.Path.GetExtension(FileName);
         public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBlobURL")}/{FileName}";

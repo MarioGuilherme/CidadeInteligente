@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using CidadeInteligente.Core.Repositories;
 using CidadeInteligente.Core.Services;
 using CidadeInteligente.Infrastructure.CloudServices;
@@ -75,16 +76,15 @@ public static class InfrastructureModule
 
         private IServiceCollection AddFileStorage(IConfiguration configuration)
         {
-            Environment.SetEnvironmentVariable("AzureStorageBlobURL", $"{configuration["AzureStorage:BaseURL"]!}/{configuration["AzureStorage:ContainerName"]!}");
+            string connectionString = configuration["AzureStorage:ConnectionString"]!;
+            string containerName = configuration["AzureStorage:ContainerName"]!;
 
-            services.AddSingleton<IFileStorage, AzureStorageService>(_ =>
-            {
-                string connectionString = configuration["AzureStorage:ConnectionString"]!;
-                string containerName = configuration["AzureStorage:ContainerName"]!;
-                BlobContainerClient blobContainerClient = new(connectionString, containerName);
-                blobContainerClient.CreateIfNotExists(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-                return new(connectionString, containerName);
-            });
+            BlobContainerClient blobContainerClient = new(connectionString, containerName);
+            blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
+
+            Environment.SetEnvironmentVariable("AzureStorageBlobURL", blobContainerClient.Uri.ToString());
+
+            services.AddSingleton<IFileStorage, AzureStorageService>(_ => new(blobContainerClient));
 
             return services;
         }

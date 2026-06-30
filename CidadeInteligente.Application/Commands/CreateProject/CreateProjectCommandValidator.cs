@@ -53,8 +53,11 @@ namespace CidadeInteligente.Application.Commands.CreateProject
             RuleFor(m => m.Extension)
                 .NotEmpty().WithMessage("É necessário informar a extensão da mídia!");
 
-            RuleFor(m => m.Base64)
-                .NotEmpty().WithMessage("É necessário anexar o arquivo da mídia!");
+            RuleFor(m => m.OpenStream)
+                .NotNull().WithMessage("É necessário anexar o arquivo da mídia!");
+
+            RuleFor(m => m.OpenStream.GetType())
+                .NotNull().WithMessage("É necessário anexar o arquivo da mídia!");
         }
     }
 }

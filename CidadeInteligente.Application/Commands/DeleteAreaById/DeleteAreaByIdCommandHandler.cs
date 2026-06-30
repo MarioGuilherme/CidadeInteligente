@@ -17,14 +17,14 @@ public class DeleteAreaByIdCommandHandler(INotificationContext notification, IUn
         if (area is null)
         {
             Log.Warning("Area with ID {AreaId} ​​not found.", request.AreaId);
-            _notification.AddNotification(NotificationType.AreaNotFound);
+            _notification.AddNotification(NotificationType.AreaNotFound, [request.AreaId]);
             return null;
         }
 
         if (await _unitOfWork.Areas.HaveProjectsAsync(request.AreaId))
         {
             Log.Warning("Area with ID {AreaId} has dependent projects and cannot be deleted.", request.AreaId);
-            _notification.AddNotification(NotificationType.AreaWithDependentProjects);
+            _notification.AddNotification(NotificationType.AreaWithDependentProjects, [request.AreaId]);
             return null;
         }
 

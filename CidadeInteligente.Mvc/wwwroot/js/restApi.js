@@ -22,6 +22,24 @@ class RestAPI {
         return { status: request.status, body: body == "" ? null : JSON.parse(body), headers: request.headers }
     }
 
+    async postFormData(url, data) {
+        const request = await fetch(`${this.BASE_URL}/${url}`, {
+            method: "POST",
+            body: data
+        });
+        const body = await request.text();
+        return { status: request.status, body: body == "" ? null : JSON.parse(body), headers: request.headers }
+    }
+
+    async patchFormData(url, data) {
+        const request = await fetch(`${this.BASE_URL}/${url}`, {
+            method: "PATCH",
+            body: data
+        });
+        const responseBody = await request.text();
+        return { status: request.status, body: responseBody == "" ? null : JSON.parse(responseBody) }
+    }
+
     async patch(url, body) {
         const request = await fetch(`${this.BASE_URL}/${url}`, {
             method: "PATCH",
@@ -35,7 +53,9 @@ class RestAPI {
     }
 
     async delete(url) {
-        return await fetch(`${this.BASE_URL}/${url}`, { method: "DELETE" });
+        const request = await fetch(`${this.BASE_URL}/${url}`, { method: "DELETE" });
+        const responseBody = await request.text();
+        return { status: request.status, body: responseBody == "" ? null : JSON.parse(responseBody) }
     }
 }
 

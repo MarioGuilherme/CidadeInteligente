@@ -9,6 +9,7 @@ public enum NotificationType : byte
     [Description("The area with ID {0} was not found.")] AreaNotFound,
     [Description("The course with ID {0} was not found.")] CourseNotFound,
     [Description("The project with ID {0} was not found.")] ProjectNotFound,
+    [Description("The media with ID {0} was not found.")] MediaNotFound,
     [Description("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.")] UserNotAuthorizedToModifyProject,
     [Description("The area with ID {0} has dependent projects and cannot be deleted.")] AreaWithDependentProjects,
     [Description("The course with ID {0} has dependent projects and cannot be deleted.")] CourseWithDependentProjects,

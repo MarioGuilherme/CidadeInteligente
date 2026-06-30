@@ -109,6 +109,10 @@ footer p {
     display: block
 }
 
+.navbar {
+    z-index: 1
+}
+
 .navbar-toggler {
     width: 50px;
     height: 35px;

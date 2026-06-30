@@ -25,13 +25,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                .HasForeignKey(p => p.CreatedByUserId);
 
         builder.HasMany(u => u.InvolvedProjects)
+               .WithMany(p => p.InvolvedUsers)
+               .UsingEntity(
+                    "ProjectsUsers",
+                    u => u.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId"),
+                    p => p.HasOne(typeof(User)).WithMany().HasForeignKey("UserId"),
+                    k => k.HasKey("UserId", "ProjectId")
+               );
+
+        builder.HasMany(u => u.InvolvedProjects)
                .WithMany(p => p.InvolvedUsers);
-               //.UsingEntity(
-               //    "ProjectsUsers",
-               //    p => p.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId").HasPrincipalKey("ProjectId"),
-               //    u => u.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey("UserId"),
-               //    k => k.HasKey("UserId", "ProjectId")
-               //);
 
         builder.HasData([
             new(1, 1, "Usuário de Demonstração", "demo@demo.com", "$2a$12$6Mv0u92cyvPnf7c.2rvdmen5RpawVRPvfIsADYfEx915HDxGeMll.", Role.Teacher)]); // Password: demo

@@ -3,5 +3,5 @@
 public interface IFileStorage
 {
     Task DeleteFileAsync(string fileName);
-    Task<string> UploadOrUpdateFileAsync(string fileName, byte[] bytes);
+    Task<string> UploadOrUpdateFileAsync(string fileName, Stream stream);
 }

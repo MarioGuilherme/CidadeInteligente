@@ -13,8 +13,7 @@ public class UpdateAreaCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<Unit?> Handle(UpdateAreaCommand request, CancellationToken cancellationToken)
     {
-        Area? area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId);
-
+        Area? area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId, true);
         if (area is null)
         {
             Log.Warning("Area with ID {AreaId} ​​not found.", request.AreaId);

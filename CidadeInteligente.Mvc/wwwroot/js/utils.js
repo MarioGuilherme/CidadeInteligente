@@ -43,24 +43,4 @@ const cleanAllFields = () => {
     $("select").prop("selectedIndex", 0);
 }
 
-const fileIsValidWithAlertReturn = ({ size, type }) => {
-    const validExtensions = ["mp4", "png", "jpg", "jpeg"];
-    const [mimeType, extension] = type.split("/");
-
-    if (size > 4 * 1024 ** 2) {
-        sweetAlert("warning", "Por favor, selecione mídias com menos de 4MB.");
-        return false;
-    }
-    if (mimeType != "image" && mimeType != "video") {
-        sweetAlert("warning", "É permitido apenas anexos do tipo vídeo e foto.");
-        return false;
-    }
-    if (!validExtensions.includes(extension)) {
-        sweetAlert("warning", "Apenas mídias .jpg, .jpeg, .png e .mp4.");
-        return false;
-    }
-
-    return true;
-}
-
 const handleBadRequest = errors => sweetAlert("warning", "Campos inválidos", `<ul>${errors.map(v => `<li>${v}</li>`).join("")}</ul>`);

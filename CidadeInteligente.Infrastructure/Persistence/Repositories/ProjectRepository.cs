@@ -30,11 +30,15 @@ public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectR
 
     public async Task<Project?> GetByIdAsync(long projectId, bool tracking = false) => tracking
         ? await _dbContext.Projects.Include(p => p.Medias)
-                                        .Include(p => p.InvolvedUsers)
-                                        .FirstOrDefaultAsync(p => p.ProjectId == projectId)
+            .Include(p => p.InvolvedUsers)
+            .Include(p => p.Area)
+            .Include(p => p.Course)
+            .FirstOrDefaultAsync(p => p.ProjectId == projectId)
         : await _dbContext.Projects.Include(p => p.Medias)
-                                        .Include(p => p.InvolvedUsers)
-                                        .AsNoTracking().FirstOrDefaultAsync(p => p.ProjectId == projectId);
+            .Include(p => p.InvolvedUsers)
+            .Include(p => p.Area)
+            .Include(p => p.Course)
+            .AsNoTracking().FirstOrDefaultAsync(p => p.ProjectId == projectId);
 
 
     public Task<Project?> GetDetailsById(long projectId) => _dbContext.Projects

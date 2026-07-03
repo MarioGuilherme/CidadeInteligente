@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,19 +14,21 @@ public class GetUserByIdQueryHandler(INotificationContext notification, IUnitOfW
 
     public async Task<GetUserByIdQueryResult?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
+        Specification<User, GetUserByIdQueryResult?> spec = SpecificationBuilder<User>.Create()
+            .Where(u => u.UserId == request.UserId)
+            .WithProjection(u => new GetUserByIdQueryResult(u.UserId,
+                u.CourseId,
+                u.Name,
+                u.Email,
+                (byte)u.Role));
 
-        if (user is null)
+        GetUserByIdQueryResult? getUserByIdQueryResult = await _unitOfWork.Users.GetBySpecAsync(spec);
+        if (getUserByIdQueryResult is null)
         {
-            Log.Warning("User with ID {UserId} not found.", request.UserId);
-            _notification.AddNotification(NotificationType.UserNotFound);
+            _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);
             return null;
         }
 
-        return new(user.UserId,
-            user.Name,
-            user.Email,
-            user.Course.CourseId,
-            (byte)user.Role);
+        return getUserByIdQueryResult;
     }
 }

@@ -1,28 +1,12 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Repositories;
+using CidadeInteligente.Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
-public class AreaRepository(CidadeInteligenteDbContext dbContext) : IAreaRepository
+public class AreaRepository(CidadeInteligenteDbContext dbContext) : SpecificationRepositoryBase<Area>(dbContext), IAreaRepository
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
-
-    public async Task AddAsync(Area area)
-    {
-        await _dbContext.Areas.AddAsync(area);
-    }
-
-    public void Delete(Area area) => _dbContext.Areas.Remove(area);
-
-    public Task<List<Area>> GetAllAsync() => _dbContext.Areas.AsNoTracking().ToListAsync();
-
-    public Task<Area?> GetByIdAsync(int areaId, bool tracking = false) => tracking
-        ? _dbContext.Areas.FirstOrDefaultAsync(a => a.AreaId == areaId)
-        : _dbContext.Areas.AsNoTracking().FirstOrDefaultAsync(a => a.AreaId == areaId);
-
-    public async Task<bool> HaveProjectsAsync(int areaId) => (await _dbContext.Areas
-        .Include(a => a.Projects)
-        .AsNoTracking()
-        .FirstAsync(a => a.AreaId == areaId)).Projects.Count > 0;
+    private readonly DbSet<Area> _dbSet = dbContext.Set<Area>();
 }

@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,9 +14,13 @@ public class CreateUserCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<int?> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        if (await _unitOfWork.Users.IsEmailInUseAsync(request.Email, cancellationToken: cancellationToken))
+        Specification<User> spec = SpecificationBuilder<User>.Create()
+            .Where(u => u.Email == request.Email)
+            .Build();
+
+        bool isEmailAlreadyInUse = await _unitOfWork.Users.AnyBySpecAsync(spec);
+        if (isEmailAlreadyInUse)
         {
-            Log.Warning("The email address {Email} is already in use.", request.Email);
             _notification.AddNotification(NotificationType.EmailAlreadyInUse);
             return null;
         }

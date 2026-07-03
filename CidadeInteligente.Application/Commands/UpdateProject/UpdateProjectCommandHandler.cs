@@ -1,6 +1,7 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Core.Services;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -15,66 +16,94 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
 
     public async Task<Unit?> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
-        Project? projectDb = await _unitOfWork.Projects.GetByIdAsync(request.ProjectId, true);
-        if (projectDb is null)
+        //Project? project = await _unitOfWork.Projects.GetByIdAsync(request.ProjectId, true);
+        Specification<Project> specProject = SpecificationBuilder<Project>.Create()
+            .Include(p => p.Medias)
+            .Where(p => p.ProjectId == request.ProjectId)
+            .AsEditable()
+            .Build();
+
+        Project? project = await _unitOfWork.Projects.GetBySpecAsync(specProject);
+        if (project is null)
         {
-            Log.Warning("Project with ID {ProjectId} ​​not found.", request.ProjectId);
             _notification.AddNotification(NotificationType.ProjectNotFound);
             return null;
         }
 
-        if (request.CurrentUserId != projectDb.CreatedByUserId && !projectDb.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId))
+        if (request.CurrentUserId != project.CreatedByUserId && !project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId))
         {
-            Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
             _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject);
             return null;
         }
 
         await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        projectDb.Update(request.AreaId,
+        project.Update(request.AreaId,
             request.CourseId,
             request.Title,
             request.Description,
             request.StartedAt,
             request.FinishedAt);
-        projectDb.InvolvedUsers.Clear();
+        project.InvolvedUsers.Clear();
 
         foreach (int userId in request.InvolvedUsers)
         {
-            User? newUserInvolved = await _unitOfWork.Users.GetByIdAsync(userId, true);
+            ////User? newUserInvolved = await _unitOfWork.Users.GetByIdAsync(userId, true);
+            //var spec = SpecificationBuilder<User>.Create()
+            //    .Where(u => u.UserId == userId)
+            //    //.Include(u => u.Course)
+            //    .WithProjection(u => new User(u.UserId,
+            //        u.CourseId,
+            //        u.Name,
+            //        u.Email,
+            //        u.Password,
+            //        u.Role))
+            //    .NoTracking()
+            //    .Build();
+
+            Specification<User> specNewInvolvedUser = SpecificationBuilder<User>.Create()
+                .Where(u => u.UserId == userId)
+                .AsEditable()
+                .Build();
+
+            User? newUserInvolved = await _unitOfWork.Users.GetBySpecAsync(specNewInvolvedUser);
+            //var newUserInvolved = await _unitOfWork.Users.GetProjectionBySpecAsync(spec);
             if (newUserInvolved is null)
             {
-                Log.Warning("User with ID {UserId} was not found.", userId);
                 _notification.AddNotification(NotificationType.UserNotFound, [userId]);
                 continue;
             }
-            projectDb.InvolvedUsers.Add(newUserInvolved);
+            project.InvolvedUsers.Add(newUserInvolved);
         }
 
-        foreach (Media mediaDb in projectDb.Medias)
+        foreach (Media mediaDb in project.Medias)
         {
             if (request.Medias.Any(mediaForm => mediaForm.MediaId == mediaDb.MediaId)) continue;
             await _fileStorage.DeleteFileAsync(mediaDb.FileName);
             _unitOfWork.Projects.DeleteMedia(mediaDb);
         }
 
-        projectDb.Medias.Clear();
+        project.Medias.Clear();
         foreach (UpdateProjectCommand.UpdateMediaCommand mediaCommand in request.Medias)
         {
             await using Stream mediaStream = mediaCommand.OpenStream.Invoke();
             if (mediaCommand.MediaId is null)
             {
-                Media media = new(mediaCommand.Title,
-                    mediaCommand.Description,
-                    await _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}{mediaCommand.Extension}", mediaStream!));
-                projectDb.Medias.Add(media);
+                string fileName = await _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}{mediaCommand.Extension}", mediaStream!);
+                Media media = new(mediaCommand.Title, mediaCommand.Description, fileName);
+                project.Medias.Add(media);
                 continue;
             }
 
-            Media? mediaDb = await _unitOfWork.Projects.GetMediaById(mediaCommand.MediaId.Value);
+            //Specification<Media> specMedia = SpecificationBuilder<Media>.Create()
+            //    .Where(m => m.MediaId == mediaCommand.MediaId.Value)
+            //    .AsEditable()
+            //    .Build();
+
+            //Media? mediaDb = await _unitOfWork.Projects.GetBySpecAsync(specMedia);
+            //Media? mediaDb = await _unitOfWork.Projects.GetMediaById(mediaCommand.MediaId.Value);
+            Media? mediaDb = project.Medias.FirstOrDefault(m => m.MediaId == mediaCommand.MediaId.Value);
             if (mediaDb is null)
             {
-                Log.Warning("The media with ID {MediaId} was not found.", mediaCommand.MediaId);
                 _notification.AddNotification(NotificationType.MediaNotFound, [mediaCommand.MediaId]);
                 continue;
             }
@@ -87,7 +116,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
                 mediaDb.Update(mediaCommand.Title, mediaCommand.Description);
             }
 
-            projectDb.Medias.Add(mediaDb);
+            project.Medias.Add(mediaDb);
         }
 
         await _unitOfWork.CommitAsync(cancellationToken);

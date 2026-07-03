@@ -1,0 +1,195 @@
+﻿using System.Linq.Expressions;
+
+namespace CidadeInteligente.Core.Specifications;
+
+public class SpecificationBuilder<T> where T : class
+{
+    //private readonly Specification<T> _spec;
+
+    //private SpecificationBuilder(Specification<T> spec)
+    //{
+    //    _spec = spec ?? throw new ArgumentNullException(nameof(spec));
+    //}
+
+    //public static SpecificationBuilder<T> Create()
+    //{
+    //    return new(new BaseSpecification<T>());
+    //}
+
+    //public SpecificationBuilder<T> Where(Expression<Func<T, bool>> criteria)
+    //{
+    //    ArgumentNullException.ThrowIfNull(criteria);
+
+    //    _spec.SetCriteria(criteria);
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> Include(Expression<Func<T, object>> includeExpression)
+    //{
+    //    ArgumentNullException.ThrowIfNull(includeExpression);
+
+    //    _spec.Includes.Add(includeExpression);
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> Include(string includeString)
+    //{
+    //    if (string.IsNullOrWhiteSpace(includeString))
+    //        throw new ArgumentException("Include string não pode ser vazio", nameof(includeString));
+
+    //    _spec.IncludeStrings.Add(includeString);
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> OrderBy(Expression<Func<T, object>> orderBy)
+    //{
+    //    ArgumentNullException.ThrowIfNull(orderBy);
+
+    //    _spec.SetOrderBy(orderBy, descending: false);
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> OrderByDesc(Expression<Func<T, object>> orderBy)
+    //{
+    //    ArgumentNullException.ThrowIfNull(orderBy);
+
+    //    _spec.SetOrderBy(orderBy, descending: true);
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> PageBy(int pageNumber, int pageSize)
+    //{
+    //    _spec.ApplyPaging(pageNumber, pageSize);
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> WithProjection(Expression<Func<T, T>> projectionSelector)
+    //{
+    //    ArgumentNullException.ThrowIfNull(projectionSelector);
+
+    //    _spec.DisableTracking();
+    //    _spec.SetProjection(projectionSelector);
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> NoTracking()
+    //{
+    //    _spec.DisableTracking();
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> WithTracking()
+    //{
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> SplitQuery()
+    //{
+    //    _spec.EnableSplitQuery();
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> AsReadOnly()
+    //{
+    //    _spec.DisableTracking();
+    //    _spec.EnableSplitQuery();
+    //    return this;
+    //}
+
+    //public SpecificationBuilder<T> AsEditable()
+    //{
+    //    return this;
+    //}
+
+    //public Specification<T> Build()
+    //{
+    //    return _spec;
+    //}
+
+    private readonly Specification<T> _spec;
+
+    private SpecificationBuilder(Specification<T> spec)
+    {
+        _spec = spec ?? throw new ArgumentNullException(nameof(spec));
+    }
+
+    public static SpecificationBuilder<T> Create()
+    {
+        return new(new BaseSpecification<T>());
+    }
+
+    public SpecificationBuilder<T> Where(Expression<Func<T, bool>> criteria)
+    {
+        _spec.SetCriteria(criteria);
+        return this;
+    }
+
+    public SpecificationBuilder<T> Include(Expression<Func<T, object>> includeExpression)
+    {
+        _spec.AddInclude(includeExpression);
+        return this;
+    }
+
+    public SpecificationBuilder<T> Include(string includeString)
+    {
+        _spec.AddInclude(includeString);
+        return this;
+    }
+
+    public SpecificationBuilder<T> OrderBy(Expression<Func<T, object>> orderBy)
+    {
+        _spec.SetOrderBy(orderBy, descending: false);
+        return this;
+    }
+
+    public SpecificationBuilder<T> OrderByDesc(Expression<Func<T, object>> orderBy)
+    {
+        _spec.SetOrderBy(orderBy, descending: true);
+        return this;
+    }
+
+    public SpecificationBuilder<T> PageBy(int pageNumber, int pageSize)
+    {
+        _spec.ApplyPaging(pageNumber, pageSize);
+        return this;
+    }
+
+    public SpecificationBuilder<T> NoTracking()
+    {
+        _spec.DisableTracking();
+        return this;
+    }
+
+    public SpecificationBuilder<T> SplitQuery()
+    {
+        _spec.EnableSplitQuery();
+        return this;
+    }
+
+    public SpecificationBuilder<T> AsReadOnly()
+    {
+        _spec.DisableTracking();
+        _spec.EnableSplitQuery();
+        return this;
+    }
+
+    public SpecificationBuilder<T> AsEditable()
+    {
+        return this;
+    }
+
+    public Specification<T> Build()
+    {
+        return _spec;
+    }
+
+    public Specification<T, TResult?> WithProjection<TResult>(
+        Expression<Func<T, TResult?>> selector)
+    {
+        if (selector is null)
+            throw new ArgumentNullException(nameof(selector));
+
+        _spec.DisableTracking();
+        return new Specification<T, TResult?>(_spec, selector);
+    }
+}

@@ -1,4 +1,6 @@
-﻿using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Application.Queries.GetAreas;
+using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
@@ -10,7 +12,10 @@ public class GetCoursesQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<Ge
 
     public async Task<GetCoursesQueryResult> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
     {
-        List<Course> courses = await _unitOfWork.Courses.GetAllAsync();
-        return new(courses.Select(c => new GetCoursesQueryResult.CourseViewModel(c.CourseId, c.Description)));
+        Specification<Course, GetCoursesQueryResult.CourseViewModel> spec = SpecificationBuilder<Course>.Create()
+            .WithProjection(a => new GetCoursesQueryResult.CourseViewModel(a.CourseId, a.Description))!;
+
+        IEnumerable<GetCoursesQueryResult.CourseViewModel> course = await _unitOfWork.Courses.GetAllBySpecAsync(spec);
+        return new(course);
     }
 }

@@ -1,5 +1,6 @@
-﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Models;
+﻿using CidadeInteligente.Core.Common;
+using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
@@ -11,22 +12,21 @@ public class GetProjectsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
     public async Task<GetProjectsQueryResult> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
     {
-        PaginationResult<Project> paginationResult = await _unitOfWork.Projects.GetAllAsync(request.Page);
+        const int pageSize = 8;
 
-        if (request.Page != 1 && !paginationResult.Data.Any())
-            paginationResult = await _unitOfWork.Projects.GetAllAsync(paginationResult.TotalPages);
-
-        return new(
-            paginationResult.CurrentPage,
-            paginationResult.TotalPages,
-            paginationResult.ItemsCount,
-            [.. paginationResult.Data.Select(p => new GetProjectsQueryResult.ProjectViewModel(
+        Specification<Project, GetProjectsQueryResult.ProjectViewModel> spec = SpecificationBuilder<Project>.Create()
+            .PageBy(request.Page, pageSize)
+            .AsReadOnly()
+            .WithProjection(p => new GetProjectsQueryResult.ProjectViewModel(
                 p.ProjectId,
                 p.Title,
                 p.Description,
-                [.. p.Medias.Select(m => new GetProjectsQueryResult.ProjectViewModel.MediaViewModel(
-                    m.MediaId,
-                    m.FileName))]))]
-        );
+                p.Medias.Select(m => new GetProjectsQueryResult.ProjectViewModel.MediaViewModel(m.MediaId, m.FileName)).ToList()))!;
+
+        PagedResult<GetProjectsQueryResult.ProjectViewModel> pagedProjects = await _unitOfWork.Projects.GetPagedBySpecAsync(spec);
+        return new(pagedProjects.Page,
+            pagedProjects.TotalPages,
+            pagedProjects.TotalItems,
+            pagedProjects.Items);
     }
 }

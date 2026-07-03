@@ -1,8 +1,8 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 
 namespace CidadeInteligente.Application.Queries.GetProjectById;
 
@@ -13,31 +13,27 @@ public class GetProjectByIdQueryHandler(INotificationContext notification, IUnit
 
     public async Task<GetProjectByIdQueryResult?> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
     {
-        Project? project = await _unitOfWork.Projects.GetByIdAsync(request.ProjectId);
+        Specification<Project, GetProjectByIdQueryResult?> spec = SpecificationBuilder<Project>.Create()
+            .Where(p => p.ProjectId == request.ProjectId)
+            .WithProjection(p => new GetProjectByIdQueryResult(p.ProjectId,
+                p.Title,
+                p.Area.Description,
+                p.AreaId,
+                p.Course.Description,
+                p.CourseId,
+                p.Description,
+                p.StartedAt,
+                p.FinishedAt,
+                p.InvolvedUsers.Select(iu => new GetProjectByIdQueryResult.ProjectUserViewModel(iu.UserId, iu.Name)),
+                p.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName))));
+
+        GetProjectByIdQueryResult? project = await _unitOfWork.Projects.GetBySpecAsync(spec);
         if (project is null)
         {
-            Log.Warning("Project with ID {ProjectId} ​​not found.", request.ProjectId);
             _notification.AddNotification(NotificationType.ProjectNotFound, [request.ProjectId]);
             return null;
         }
 
-        if (request.CurrentUserId is not null && request.CurrentUserId != project.CreatedByUserId && !project.InvolvedUsers.Any(iu => iu.UserId == request.CurrentUserId))
-        {
-            Log.Warning("User with ID {CurrentUserId} is not authorized to modify project with ID {ProjectId}.", request.CurrentUserId, request.ProjectId);
-            _notification.AddNotification(NotificationType.UserNotAuthorizedToModifyProject, [request.CurrentUserId, request.ProjectId]);
-            return null;
-        }
-
-        return new(project.ProjectId,
-            project.Title,
-            project.Area.Description,
-            project.AreaId,
-            project.Course.Description,
-            project.CourseId,
-            project.Description!,
-            project.StartedAt,
-            project.FinishedAt,
-            project.InvolvedUsers.Select(iu => new GetProjectByIdQueryResult.ProjectUserViewModel(iu.UserId, iu.Name)),
-            project.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName)));
+        return project;
     }
 }

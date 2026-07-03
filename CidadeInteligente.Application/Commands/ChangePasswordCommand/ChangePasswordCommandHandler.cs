@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,10 +14,14 @@ public class ChangePasswordCommandHandler(INotificationContext notification, IUn
 
     public async Task<Unit?> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token);
+        Specification<User> spec = SpecificationBuilder<User>.Create()
+            .Where(u => u.TokenRecoverPassword == request.Token)
+            .AsEditable()
+            .Build();
+
+        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
         if (user is null)
         {
-            Log.Warning("User ​​not found during password recovery.", request.Token);
             _notification.AddNotification(NotificationType.UserWithTokenNotFound);
             return null;
         }
@@ -25,7 +30,6 @@ public class ChangePasswordCommandHandler(INotificationContext notification, IUn
 
         if (DateTime.Now > user.TokenRecoverPasswordExpiration)
         {
-            Log.Warning("Token for password recovery has expired.");
             user.RemovePasswordResetTokenInformation();
             await _unitOfWork.CommitAsync(cancellationToken);
             _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);

@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,10 +14,15 @@ public class UpdateCourseCommandHandler(INotificationContext notification, IUnit
 
     public async Task<Unit?> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        Course? course = await _unitOfWork.Courses.GetByIdAsync(request.CourseId, true);
+        //Course? course = await _unitOfWork.Courses.GetByIdAsync(request.CourseId, true);
+        Specification<Course> specCourse = SpecificationBuilder<Course>.Create()
+            .Where(c => c.CourseId == request.CourseId)
+            .AsEditable()
+            .Build();
+
+        Course? course = await _unitOfWork.Courses.GetBySpecAsync(specCourse);
         if (course is null)
         {
-            Log.Warning("Course with ID {CourseId} ​​not found.", request.CourseId);
             _notification.AddNotification(NotificationType.CourseNotFound);
             return null;
         }

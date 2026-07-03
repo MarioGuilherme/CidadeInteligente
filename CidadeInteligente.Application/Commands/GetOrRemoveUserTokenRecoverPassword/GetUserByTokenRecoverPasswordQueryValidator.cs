@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
+namespace CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
 
 public class GetUserByTokenRecoverPasswordQueryValidator : AbstractValidator<GetUserByTokenRecoverPasswordQuery>
 {

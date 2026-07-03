@@ -10,7 +10,7 @@ public record CreateProjectCommand(string Title,
     DateOnly StartedAt,
     DateOnly? FinishedAt,
     IEnumerable<int> InvolvedUsers,
-    IEnumerable<CreateProjectCommand.CreateMediaCommand> Medias) : IRequest<int>
+    IEnumerable<CreateProjectCommand.CreateMediaCommand> Medias) : IRequest<int?>
 {
     public record CreateMediaCommand(string Title, string? Description, string Extension, Func<Stream> OpenStream);
 }

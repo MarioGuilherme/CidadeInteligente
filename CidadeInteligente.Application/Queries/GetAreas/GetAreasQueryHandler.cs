@@ -1,4 +1,5 @@
 ﻿using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
@@ -10,8 +11,10 @@ public class GetAreasQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetA
 
     public async Task<GetAreasQueryResult> Handle(GetAreasQuery request, CancellationToken cancellationToken)
     {
-        List<Area> areas = await _unitOfWork.Areas.GetAllAsync();
+        Specification<Area, GetAreasQueryResult.AreaViewModel> spec = SpecificationBuilder<Area>.Create()
+            .WithProjection(a => new GetAreasQueryResult.AreaViewModel(a.AreaId, a.Description))!;
 
-        return new(areas.Select(a => new GetAreasQueryResult.AreaViewModel(a.AreaId, a.Description)));
+        IEnumerable<GetAreasQueryResult.AreaViewModel> areas = await _unitOfWork.Areas.GetAllBySpecAsync(spec);
+        return new(areas);
     }
 }

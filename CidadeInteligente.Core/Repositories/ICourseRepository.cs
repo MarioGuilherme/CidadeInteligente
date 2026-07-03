@@ -1,12 +1,8 @@
 ﻿using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Specifications.Interfaces;
 
 namespace CidadeInteligente.Core.Repositories;
 
-public interface ICourseRepository
+public interface ICourseRepository : ISpecificationRepository<Course>
 {
-    Task AddAsync(Course course);
-    void Delete(Course course);
-    Task<List<Course>> GetAllAsync();
-    Task<Course?> GetByIdAsync(int courseId, bool tracking = false);
-    Task<bool> HaveProjectsAsync(int courseId);
 }

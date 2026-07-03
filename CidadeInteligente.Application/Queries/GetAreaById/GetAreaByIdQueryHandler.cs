@@ -1,8 +1,8 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 
 namespace CidadeInteligente.Application.Queries.GetAreaById;
 
@@ -13,14 +13,17 @@ public class GetAreaByIdQueryHandler(INotificationContext notification, IUnitOfW
 
     public async Task<GetAreaByIdQueryResult?> Handle(GetAreaByIdQuery request, CancellationToken cancellationToken)
     {
-        Area? area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId);
+        Specification<Area, GetAreaByIdQueryResult?> spec = SpecificationBuilder<Area>.Create()
+            .Where(a => a.AreaId == request.AreaId)
+            .WithProjection(a => new GetAreaByIdQueryResult(a.AreaId, a.Description));
+
+        GetAreaByIdQueryResult? area = await _unitOfWork.Areas.GetBySpecAsync(spec);
         if (area is null)
         {
-            Log.Warning("Area with ID {AreaId} ​​not found.", request.AreaId);
-            _notification.AddNotification(NotificationType.AreaNotFound);
+            _notification.AddNotification(NotificationType.AreaNotFound, [request.AreaId]);
             return null;
         }
 
-        return new(area.AreaId, area.Description);
+        return area;
     }
 }

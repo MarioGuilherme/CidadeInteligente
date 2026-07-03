@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
+﻿using CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Mvc.ViewModels;
 using MediatR;

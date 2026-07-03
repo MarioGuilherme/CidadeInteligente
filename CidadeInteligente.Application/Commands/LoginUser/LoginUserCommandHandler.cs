@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -16,25 +17,21 @@ public class LoginUserCommandHandler(INotificationContext notification, IUnitOfW
 
     public async Task<LoginUserCommandResult?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        User? possibleUser = await _unitOfWork.Users.GetByEmailAsync(request.Email);
-        if (possibleUser is null)
-        {
-            Log.Warning("User with email {Email} not found", request.Email);
-            _notification.AddNotification(NotificationType.UserWithEmailNotFound);
-            return null;
-        }
+        Specification<User> spec = SpecificationBuilder<User>.Create()
+            .Where(u => u.Email == request.Email)
+            .AsEditable()
+            .Build();
 
-        if (!Verify(request.Password, possibleUser.Password))
+        User? possibleUser = await _unitOfWork.Users.GetBySpecAsync(spec);
+        if (possibleUser is null || !Verify(request.Password, possibleUser.Password))
         {
-            Log.Warning("Non-existent email and/or password combination.");
-            _notification.AddNotification(NotificationType.InvalidLoginCredentials);
+            _notification.AddNotification(NotificationType.UserWithEmailNotFound);
             return null;
         }
 
         IEnumerable<Claim> claims = [
             new(nameof(possibleUser.UserId), possibleUser.UserId.ToString()),
             new(ClaimTypes.Role, possibleUser.Role.ToString())];
-
         ClaimsIdentity claimsIdentity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
         return new(new(claimsIdentity));

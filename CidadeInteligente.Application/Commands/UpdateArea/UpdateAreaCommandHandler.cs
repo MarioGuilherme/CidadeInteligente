@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,10 +14,15 @@ public class UpdateAreaCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<Unit?> Handle(UpdateAreaCommand request, CancellationToken cancellationToken)
     {
-        Area? area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId, true);
+        //Area? area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId, true);
+        Specification<Area> specArea = SpecificationBuilder<Area>.Create()
+            .Where(a => a.AreaId == request.AreaId)
+            .AsEditable()
+            .Build();
+
+        Area? area = await _unitOfWork.Areas.GetBySpecAsync(specArea);
         if (area is null)
         {
-            Log.Warning("Area with ID {AreaId} ​​not found.", request.AreaId);
             _notification.AddNotification(NotificationType.AreaNotFound);
             return null;
         }

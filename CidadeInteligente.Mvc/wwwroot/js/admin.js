@@ -233,7 +233,10 @@
 
                 sweetAlertAwait("Apagando registro");
                 const entityName = getCurrentEntityName();
-                const { body: { notifications }, status } = await restAPI.delete(`v1/${entityName}/${$(this).attr("id")}`);
+                const response = await restAPI.delete(`v1/${entityName}/${$(this).attr("id")}`);
+                const notifications = response.body?.notifications;
+                const { status } = response;
+
                 toggleExitConfirmation(false);
 
                 if (status == 204) {

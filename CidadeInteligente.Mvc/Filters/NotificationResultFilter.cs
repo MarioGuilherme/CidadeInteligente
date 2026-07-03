@@ -10,106 +10,6 @@ using System.Net;
 
 namespace CidadeInteligente.Mvc.Filters;
 
-//public class RestResponseFilter(INotificationContext notification) : IAsyncResultFilter
-//{
-//    private readonly INotificationContext _notification = notification;
-
-//    public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
-//    {
-//        if (context.Result is ViewResult)
-//        {
-//            if (_notification.HasNotifications)
-//            {
-//                IModelMetadataProvider metadataProvider = context.HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
-//                ViewDataDictionary<ErrorViewModel> viewData = new(metadataProvider, context.ModelState)
-//                {
-//                    Model = new ErrorViewModel(MapStatusCode(_notification.Notifications), string.Join(", ", _notification.Notifications))
-//                };
-
-//                context.Result = new ViewResult
-//                {
-//                    ViewName = "/Views/Error.cshtml",
-//                    ViewData = viewData
-//                };
-
-//                await next();
-//                return;
-//            }
-
-//            await next();
-//            return;
-//        }
-
-//        if (_notification.HasValidations)
-//        {
-//            context.Result = new BadRequestObjectResult(new RestResponseWithInvalidFields { InvalidFields = _notification.Validations });
-//            await next();
-//            return;
-//        }
-
-//        if (_notification.HasNotifications && (context.Result is NoContentResult || context.Result is AcceptedResult))
-//        {
-//            context.Result = new ObjectResult(new RestResponse { Notifications = _notification.AsListString })
-//            {
-//                StatusCode = MapStatusCode(_notification.Notifications)
-//            };
-//            await next();
-//            return;
-//        }
-
-//        if (context.Result is ObjectResult objectResult && objectResult.StatusCode >= 200 && objectResult.StatusCode < 300)
-//        {
-//            if (objectResult.Value is not null)
-//            {
-//                RestResponse restResponse = new(objectResult.Value);
-
-//                if (_notification.HasNotifications)
-//                {
-//                    objectResult.StatusCode = (int)HttpStatusCode.MultiStatus;
-//                    objectResult.Value = restResponse with { Notifications = _notification.AsListString };
-//                }
-//                else
-//                    objectResult.Value = restResponse;
-//            }
-//            else if (objectResult is not CreatedResult)
-//            {
-//                context.Result = new ObjectResult(new RestResponse { Notifications = _notification.AsListString })
-//                {
-//                    StatusCode = MapStatusCode(_notification.Notifications)
-//                };
-//            }
-//        }
-
-//        await next();
-//    }
-
-//    private static int MapStatusCode(IReadOnlyCollection<Notification> notifications)
-//    {
-//        if (notifications.Any(n => n.Type == NotificationType.UserNotFound
-//            || n.Type == NotificationType.AreaNotFound
-//            || n.Type == NotificationType.ProjectNotFound
-//            || n.Type == NotificationType.CourseNotFound
-//            || n.Type == NotificationType.UserWithTokenNotFound
-//            || n.Type == NotificationType.UserWithEmailNotFound))
-//            return StatusCodes.Status404NotFound;
-
-//        if (notifications.Any(n => n.Type == NotificationType.UserNotAuthorizedToModifyProject))
-//            return StatusCodes.Status403Forbidden;
-
-//        if (notifications.Any(n => n.Type == NotificationType.InvalidLoginCredentials
-//            || n.Type == NotificationType.TokenRecoverPasswordExpired))
-//            return StatusCodes.Status401Unauthorized;
-
-//        if (notifications.Any(n => n.Type == NotificationType.EmailAlreadyInUse
-//            || n.Type == NotificationType.CourseWithDependentProjects
-//            || n.Type == NotificationType.AreaWithDependentProjects
-//            || n.Type == NotificationType.UserWithDependentProjects))
-//            return StatusCodes.Status409Conflict;
-
-//        return StatusCodes.Status400BadRequest;
-//    }
-//}
-
 public class NotificationResultFilter(INotificationContext notification) : IAsyncResultFilter
 {
     private readonly INotificationContext _notification = notification;
@@ -181,7 +81,9 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
         }
 
         // Value null: CreatedResult passa intacto; o resto vira resposta de notification
-        return objectResult is CreatedResult ? objectResult : BuildNotificationResult();
+        return objectResult is CreatedResult
+            || objectResult is CreatedAtRouteResult
+            || objectResult is CreatedAtActionResult ? objectResult : BuildNotificationResult();
     }
 
     private static int MapStatusCode(IReadOnlyCollection<Notification> notifications)

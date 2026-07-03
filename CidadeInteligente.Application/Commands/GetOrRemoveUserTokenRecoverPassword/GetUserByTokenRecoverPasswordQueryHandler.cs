@@ -1,10 +1,10 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 
-namespace CidadeInteligente.Application.Queries.GetUserByTokenRecoverPassword;
+namespace CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
 
 public class GetUserByTokenRecoverPasswordQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, GetUserByTokenRecoverPasswordQueryResult?>
 {
@@ -13,10 +13,14 @@ public class GetUserByTokenRecoverPasswordQueryHandler(INotificationContext noti
 
     public async Task<GetUserByTokenRecoverPasswordQueryResult?> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.Users.GetByTokenRecoverPasswordAsync(request.Token);
+        Specification<User> spec = SpecificationBuilder<User>.Create()
+            .Where(u => u.TokenRecoverPassword == request.Token)
+            .AsEditable()
+            .Build();
+
+        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
         if (user is null)
         {
-            Log.Warning("User ​​not found during password recovery.", request.Token);
             _notification.AddNotification(NotificationType.UserWithTokenNotFound);
             return null;
         }
@@ -26,7 +30,7 @@ public class GetUserByTokenRecoverPasswordQueryHandler(INotificationContext noti
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
             user.RemovePasswordResetTokenInformation();
             await _unitOfWork.CommitAsync(cancellationToken);
-            _notification.AddNotification(NotificationType.EmailAlreadyInUse);
+            _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);
             return null;
         }
 

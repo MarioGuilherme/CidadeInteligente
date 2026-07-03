@@ -1,4 +1,6 @@
-﻿namespace CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
+﻿using SendGrid;
+
+namespace CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
 
 public record GetRelatedProjectsFromUserQueryResult(int Page, int TotalPages, int ItemsCount, IReadOnlyList<GetRelatedProjectsFromUserQueryResult.ProjectViewModel> Data)
 {
@@ -10,9 +12,9 @@ public record GetRelatedProjectsFromUserQueryResult(int Page, int TotalPages, in
                 ? $"{Description![0..125]}..."
                 : Description;
 
-        public record MediaViewModel(int MediaId, string FileName)
+        public record MediaViewModel(int MediaId, string FileName, string MimeType)
         {
-            public string Extension => System.IO.Path.GetExtension(FileName);
+            public bool IsVideo { get; init; } = MimeType == "video/mp4";
             public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBlobURL")}/{FileName}";
         }
     }

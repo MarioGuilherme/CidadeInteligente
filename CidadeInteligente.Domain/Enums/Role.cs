@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace CidadeInteligente.Core.Enums;
+namespace CidadeInteligente.Domain.Enums;
 
 public enum Role : byte
 {

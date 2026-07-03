@@ -1,5 +1,5 @@
 ﻿using CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
-using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Domain.Notifications;
 using CidadeInteligente.Mvc.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;

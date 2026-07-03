@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Core.Repositories;
+﻿using CidadeInteligente.Domain.Repositories;
 
 namespace CidadeInteligente.Infrastructure.Persistence;
 

@@ -1,5 +1,5 @@
 ﻿using CidadeInteligente.Application.Extensions;
-using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Domain.Notifications;
 
 namespace CidadeInteligente.Mvc.Extensions;
 

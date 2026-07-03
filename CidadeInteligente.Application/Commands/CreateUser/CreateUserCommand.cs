@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Core.Enums;
+﻿using CidadeInteligente.Domain.Enums;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateUser;

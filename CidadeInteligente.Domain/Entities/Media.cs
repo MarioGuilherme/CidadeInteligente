@@ -1,4 +1,4 @@
-﻿namespace CidadeInteligente.Core.Entities;
+﻿namespace CidadeInteligente.Domain.Entities;
 
 public class Media(string title, string? description, string fileName, string mimeType)
 {

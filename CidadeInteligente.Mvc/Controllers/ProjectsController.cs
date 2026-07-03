@@ -4,7 +4,7 @@ using CidadeInteligente.Application.Queries.GetProjectById;
 using CidadeInteligente.Application.Queries.GetProjects;
 using CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
 using CidadeInteligente.Application.Queries.GetUsers;
-using CidadeInteligente.Core.Enums;
+using CidadeInteligente.Domain.Enums;
 using CidadeInteligente.Mvc.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

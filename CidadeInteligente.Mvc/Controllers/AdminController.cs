@@ -1,7 +1,7 @@
 ﻿using CidadeInteligente.Application.Queries.GetAreas;
 using CidadeInteligente.Application.Queries.GetCourses;
 using CidadeInteligente.Application.Queries.GetUsers;
-using CidadeInteligente.Core.Enums;
+using CidadeInteligente.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

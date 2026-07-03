@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using CidadeInteligente.Core.Repositories;
-using CidadeInteligente.Core.Services;
+using CidadeInteligente.Domain.Repositories;
+using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Infrastructure.CloudServices;
 using CidadeInteligente.Infrastructure.Persistence;
 using CidadeInteligente.Infrastructure.Persistence.Repositories;

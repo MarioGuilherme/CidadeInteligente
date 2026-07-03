@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Domain.Entities;
 using System.Security.Claims;
 
 namespace CidadeInteligente.Mvc.Extensions;

@@ -1,6 +1,6 @@
-﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Notifications;
-using CidadeInteligente.Core.Specifications;
+﻿using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using static BCrypt.Net.BCrypt;
 using MediatR;

@@ -1,5 +1,5 @@
 ﻿@using CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser
-@using CidadeInteligente.Core.Enums
+@using CidadeInteligente.Domain.Enums
 @using static CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser.GetRelatedProjectsFromUserQueryResult
 @model GetRelatedProjectsFromUserQueryResult;
 
@@ -28,7 +28,7 @@
             {
                 <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-3">
                     <div class="card card-projeto">
-                        @if (project.Medias[0].Extension == ".mp4")
+                        @if (project.Medias[0].IsVideo)
                         {
                             <video class="d-block" style="width:inherit" preload="metadata" src="@project.Medias[0].Path"></video>
                         }

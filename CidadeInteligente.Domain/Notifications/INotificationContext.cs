@@ -1,4 +1,4 @@
-﻿namespace CidadeInteligente.Core.Notifications;
+﻿namespace CidadeInteligente.Domain.Notifications;
 
 public interface INotificationContext
 {

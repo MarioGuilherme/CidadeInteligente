@@ -1,7 +1,7 @@
-﻿using CidadeInteligente.Core.Common;
-using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Notifications;
-using CidadeInteligente.Core.Specifications;
+﻿using CidadeInteligente.Domain.Common;
+using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
@@ -31,7 +31,7 @@ public class GetRelatedProjectsFromUserQueryHandler(INotificationContext notific
                 p.ProjectId,
                 p.Title,
                 p.Description,
-                p.Medias.Select(m => new GetRelatedProjectsFromUserQueryResult.ProjectViewModel.MediaViewModel(m.MediaId, m.FileName)).ToList()))!;
+                p.Medias.Select(m => new GetRelatedProjectsFromUserQueryResult.ProjectViewModel.MediaViewModel(m.MediaId, m.FileName, m.MimeType)).ToList()))!;
 
         PagedResult<GetRelatedProjectsFromUserQueryResult.ProjectViewModel> pagedProjects = await _unitOfWork.Projects.GetPagedBySpecAsync(spec);
         return new(pagedProjects.Page,

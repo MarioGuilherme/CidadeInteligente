@@ -3,7 +3,7 @@ using CidadeInteligente.Application.Commands.DeleteUserById;
 using CidadeInteligente.Application.Commands.UpdateUser;
 using CidadeInteligente.Application.Queries.GetUserById;
 using CidadeInteligente.Application.Queries.GetUsers;
-using CidadeInteligente.Core.Enums;
+using CidadeInteligente.Domain.Enums;
 using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

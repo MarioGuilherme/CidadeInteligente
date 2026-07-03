@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace CidadeInteligente.Core.Specifications;
+namespace CidadeInteligente.Domain.Specifications;
 
 public abstract class Specification<T> where T : class
 {

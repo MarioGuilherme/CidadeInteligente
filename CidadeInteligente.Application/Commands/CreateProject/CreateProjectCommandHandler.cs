@@ -1,7 +1,7 @@
-﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Notifications;
-using CidadeInteligente.Core.Services;
-using CidadeInteligente.Core.Specifications;
+﻿using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Services;
+using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using System.Collections.Concurrent;

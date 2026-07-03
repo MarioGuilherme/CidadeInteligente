@@ -3,7 +3,7 @@ using CidadeInteligente.Application.Commands.DeleteAreaById;
 using CidadeInteligente.Application.Commands.UpdateArea;
 using CidadeInteligente.Application.Queries.GetAreaById;
 using CidadeInteligente.Application.Queries.GetAreas;
-using CidadeInteligente.Core.Enums;
+using CidadeInteligente.Domain.Enums;
 using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

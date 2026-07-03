@@ -1,7 +1,7 @@
-﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Common;
-using CidadeInteligente.Core.Repositories;
-using CidadeInteligente.Core.Specifications;
+﻿using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Common;
+using CidadeInteligente.Domain.Repositories;
+using CidadeInteligente.Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;

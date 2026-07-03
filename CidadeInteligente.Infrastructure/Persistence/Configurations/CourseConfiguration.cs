@@ -10,6 +10,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         builder.HasKey(c => c.CourseId);
 
+        builder.HasIndex(c => c.Description).IsUnique();
         builder.Property(c => c.Description).HasMaxLength(45);
 
         builder.HasMany(c => c.Projects)

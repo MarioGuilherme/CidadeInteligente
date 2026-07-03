@@ -15,6 +15,10 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] (CorrelationId={CorrelationId}) {Message:lj} {NewLine}{Exception}")
     .CreateLogger();
 
+Environment.SetEnvironmentVariable("Pagination:MaxPageSize", builder.Configuration["Pagination:MaxPageSize"]);
+
+builder.Services.AddSingleton(TimeProvider.System);
+
 builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication();

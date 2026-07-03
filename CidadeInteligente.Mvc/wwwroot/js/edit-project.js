@@ -11,13 +11,6 @@
                 $("select[name=areaId]")[0]
             ]);
 
-            project.title = $("input[name=title]").val().trim();
-            project.startedAt = $("input[name=startedAt]").val().trim();
-            project.finishedAt = $("input[name=finishedAt]").val().trim() || null;
-            project.description = $("textarea[name=description]").val().trim() || null;
-            project.areaId = +$("select[name=areaId]").val();
-            project.courseId = +$("select[name=courseId]").val();
-
             if (project.involvedUsers.length == 0) {
                 sweetAlert("warning", "Por favor, selecione pelo menos uma pessoa envolvido no projeto.");
                 return;
@@ -49,10 +42,10 @@
                 formData.append(`medias[${i}].title`, media.title);
                 formData.append(`medias[${i}].file`, media.file || new File([], media.fileName));
             });
-            const { status, body } = await restAPI.patchFormData(`v1/projects/${project.projectId}`, formData);
+            const { statusCode, notifications } = await restAPI.patchAsync(`v1/projects/${project.projectId}`, formData);
             toggleExitConfirmation(false);
 
-            switch (status) {
+            switch (statusCode) {
                 case 204:
                     sweetAlert("success", "Projeto salvo com sucesso!").then(({ value }) => value && location.reload());
                     break;
@@ -60,13 +53,11 @@
                     handleBadRequest(body);
                     break;
                 case 403:
-                    sweetAlert("warning", "Você não está envolvido e nem é o criador deste projeto!");
-                    break;
                 case 404:
-                    sweetAlert("warning", "Esse projeto não existe mais!");
+                    sweetAlert("warning", notifications[0]);
                     break;
                 default:
-                    sweetAlert("error", "Erro ao salvar alterações!");
+                    sweetAlert("error", notifications[0]);
                     break;
             }
         });

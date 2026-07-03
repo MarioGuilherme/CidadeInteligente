@@ -2,8 +2,8 @@
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
+using static BCrypt.Net.BCrypt;
 using MediatR;
-using Serilog;
 
 namespace CidadeInteligente.Application.Commands.ChangePasswordCommand;
 
@@ -26,18 +26,15 @@ public class ChangePasswordCommandHandler(INotificationContext notification, IUn
             return null;
         }
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
         if (DateTime.Now > user.TokenRecoverPasswordExpiration)
         {
             user.RemovePasswordResetTokenInformation();
-            await _unitOfWork.CommitAsync(cancellationToken);
+            await _unitOfWork.ExecuteInTransactionAsync(user.RemovePasswordResetTokenInformation, cancellationToken: cancellationToken);
             _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);
             return null;
         }
 
-        user.UpdatePassword(BCrypt.Net.BCrypt.HashPassword(request.NewPassword));
-        await _unitOfWork.CommitAsync(cancellationToken);
+        await _unitOfWork.ExecuteInTransactionAsync(() => user.UpdatePassword(HashPassword(request.NewPassword)), cancellationToken: cancellationToken);
 
         return Unit.Value;
     }

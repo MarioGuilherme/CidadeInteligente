@@ -6,12 +6,13 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
 
-public class GetUserByTokenRecoverPasswordQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<GetUserByTokenRecoverPasswordQuery, GetUserByTokenRecoverPasswordQueryResult?>
+public class GetUserByTokenRecoverPasswordCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, TimeProvider timeProvider) : IRequestHandler<GetUserByTokenRecoverPasswordCommand, GetUserByTokenRecoverPasswordCommandResult?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly TimeProvider _timeProvider = timeProvider;
 
-    public async Task<GetUserByTokenRecoverPasswordQueryResult?> Handle(GetUserByTokenRecoverPasswordQuery request, CancellationToken cancellationToken)
+    public async Task<GetUserByTokenRecoverPasswordCommandResult?> Handle(GetUserByTokenRecoverPasswordCommand request, CancellationToken cancellationToken)
     {
         Specification<User> spec = SpecificationBuilder<User>.Create()
             .Where(u => u.TokenRecoverPassword == request.Token)
@@ -25,11 +26,9 @@ public class GetUserByTokenRecoverPasswordQueryHandler(INotificationContext noti
             return null;
         }
 
-        if (DateTime.Now > user.TokenRecoverPasswordExpiration)
+        if (_timeProvider.GetUtcNow() > user.TokenRecoverPasswordExpiration)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            user.RemovePasswordResetTokenInformation();
-            await _unitOfWork.CommitAsync(cancellationToken);
+            await _unitOfWork.ExecuteInTransactionAsync(user.RemovePasswordResetTokenInformation, cancellationToken: cancellationToken);
             _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);
             return null;
         }

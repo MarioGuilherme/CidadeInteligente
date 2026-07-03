@@ -22,19 +22,15 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
 
     private IActionResult TransformResult(ResultExecutingContext context)
     {
-        // MVC: troca para a página de erro quando há notifications
         if (context.Result is ViewResult)
             return _notification.HasNotifications ? BuildErrorView(context) : context.Result;
 
-        // API: falhas de validação => 400 com os campos inválidos
         if (_notification.HasValidations)
             return new BadRequestObjectResult(new RestResponseWithInvalidFields { InvalidFields = _notification.Validations });
 
-        // API: notifications em resultados sem corpo => status mapeado
         if (_notification.HasNotifications && context.Result is NoContentResult or AcceptedResult)
             return BuildNotificationResult();
 
-        // API: envelopa ObjectResults de sucesso
         if (context.Result is ObjectResult { StatusCode: >= 200 and < 300 } objectResult)
             return WrapSuccessfulResult(objectResult);
 
@@ -80,7 +76,6 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
             return objectResult;
         }
 
-        // Value null: CreatedResult passa intacto; o resto vira resposta de notification
         return objectResult is CreatedResult
             || objectResult is CreatedAtRouteResult
             || objectResult is CreatedAtActionResult ? objectResult : BuildNotificationResult();
@@ -114,9 +109,9 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
         ]),
         (StatusCodes.Status409Conflict, [
             NotificationType.EmailAlreadyInUse,
-            NotificationType.CourseWithDependentProjects,
+            NotificationType.CourseWithDependentProjectsOrUser,
             NotificationType.AreaWithDependentProjects,
             NotificationType.UserWithDependentProjects
-        ]),
+        ])
     ];
 }

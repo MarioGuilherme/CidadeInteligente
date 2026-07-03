@@ -16,29 +16,24 @@ public class DeleteAreaByIdCommandHandler(INotificationContext notification, IUn
     {
         Specification<Area> specArea = SpecificationBuilder<Area>.Create()
             .Where(a => a.AreaId == request.AreaId)
-            .AsEditable()
             .Build();
 
-        Area? area = await _unitOfWork.Areas.GetBySpecAsync(specArea);
-        if (area is null)
+        if (!await _unitOfWork.Areas.AnyBySpecAsync(specArea))
         {
             _notification.AddNotification(NotificationType.AreaNotFound, [request.AreaId]);
             return null;
         }
 
-        Specification<Project> specProjectsFromArea = SpecificationBuilder<Project>.Create()
+        Specification<Project> specDependenteProjectsFromArea = SpecificationBuilder<Project>.Create()
             .Where(p => p.AreaId == request.AreaId)
             .Build();
-        bool areaHasDependentProjects = await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromArea);
-        if (areaHasDependentProjects)
+        if (await _unitOfWork.Projects.AnyBySpecAsync(specDependenteProjectsFromArea))
         {
             _notification.AddNotification(NotificationType.AreaWithDependentProjects, [request.AreaId]);
             return null;
         }
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        await _unitOfWork.Areas.DeleteAsync(area);
-        await _unitOfWork.CommitAsync(cancellationToken);
+        await _unitOfWork.Areas.DeleteByIdAsync(request.AreaId, cancellationToken);
 
         return Unit.Value;
     }

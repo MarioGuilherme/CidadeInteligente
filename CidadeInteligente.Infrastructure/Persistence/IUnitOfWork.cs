@@ -9,7 +9,27 @@ public interface IUnitOfWork : IDisposable
     IProjectRepository Projects { get; }
     IUserRepository Users { get; }
 
-    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
-    Task<int> CommitAsync(CancellationToken cancellationToken);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
+    Task<int> ExecuteInTransactionAsync(
+        Action operation,
+        Func<CancellationToken, Task>? onRollback = default,
+        CancellationToken cancellationToken = default);
+
+    Task<int> ExecuteInTransactionAsync(
+        Func<CancellationToken, Task> operation,
+        Func<CancellationToken, Task>? onRollback = default,
+        CancellationToken cancellationToken = default);
+
+    Task<T> ExecuteInTransactionAsync<T>(
+        Func<CancellationToken, Task<T>> operation,
+        Func<CancellationToken, Task>? onRollback = default,
+        CancellationToken cancellationToken = default);
+
+    //Task ExecuteInTransactionAsync(
+    //    Func<CancellationToken, Task> operation,
+    //    Func<CancellationToken, Task>? onRollback = null,
+    //    CancellationToken cancellationToken = default);
+
+    //Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+    //Task<int> CommitAsync(CancellationToken cancellationToken);
+    //Task RollbackAsync(CancellationToken cancellationToken = default);
 }

@@ -3,7 +3,6 @@ using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 
 namespace CidadeInteligente.Application.Queries.GetUserById;
 

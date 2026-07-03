@@ -168,18 +168,18 @@
     </div>
 </main>
 
-<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span>&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                <input type="hidden" name="entityId">
                 <form id="userForm">
-                    <input type="hidden" name="userId">
                     <div class="form-group">
                         <label class="text-dark">Nome</label>
                         <input class="form-control" maxlength="60" type="text" name="name">
@@ -201,7 +201,7 @@
                     <div class="form-group">
                         <label class="text-dark">Curso</label>
                         <div class="form-group">
-                            <select id="my-select" class="form-control" name="courseId">
+                            <select class="form-control" name="courseId">
                                 @foreach (GetCoursesQueryResult.CourseViewModel course in ViewBag.Courses)
                                 {
                                     <option value=@course.CourseId>@course.Description</option>
@@ -212,13 +212,14 @@
                     <div class="form-group">
                         <label>Tipo de Usuário</label>
                         <select class="form-control" name="role">
-                            <option value=@((byte)Role.Teacher)>@Role.Teacher.GetDescription()</option>
-                            <option value=@((byte)Role.Student)>@Role.Student.GetDescription()</option>
+                            @foreach (Role role in Enum.GetValues<Role>())
+                            {
+                                <option value=@((byte)role)>@role.GetDescription()</option>
+                            }
                         </select>
                     </div>
                 </form>
-                <form id="entityForm">
-                    <input type="hidden" name="entityId">
+                <form id="areaOrCourseForm">
                     <div class="form-group">
                         <label class="text-dark">Descrição</label>
                         <input class="form-control" maxlength="45" type="text" name="description">

@@ -15,11 +15,9 @@ public class DeleteCourseByIdCommandHandler(INotificationContext notification, I
     {
         Specification<Course> specCourse = SpecificationBuilder<Course>.Create()
             .Where(c => c.CourseId == request.CourseId)
-            .AsEditable()
             .Build();
 
-        Course? course = await _unitOfWork.Courses.GetBySpecAsync(specCourse);
-        if (course is null)
+        if (!await _unitOfWork.Courses.AnyBySpecAsync(specCourse))
         {
             _notification.AddNotification(NotificationType.CourseNotFound, [request.CourseId]);
             return null;
@@ -28,16 +26,16 @@ public class DeleteCourseByIdCommandHandler(INotificationContext notification, I
         Specification<Project> specProjectsFromCourse = SpecificationBuilder<Project>.Create()
             .Where(p => p.CourseId == request.CourseId)
             .Build();
-        bool areaHasDependentProjects = await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromCourse);
-        if (areaHasDependentProjects)
+        Specification<User> specUsersFromCourse = SpecificationBuilder<User>.Create()
+            .Where(u => u.CourseId == request.CourseId)
+            .Build();
+        if (await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromCourse) || await _unitOfWork.Users.AnyBySpecAsync(specUsersFromCourse))
         {
-            _notification.AddNotification(NotificationType.CourseWithDependentProjects, [request.CourseId]);
+            _notification.AddNotification(NotificationType.CourseWithDependentProjectsOrUser, [request.CourseId]);
             return null;
         }
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        await _unitOfWork.Courses.DeleteAsync(course);
-        await _unitOfWork.CommitAsync(cancellationToken);
+        await _unitOfWork.Courses.DeleteByIdAsync(request.CourseId, cancellationToken);
 
         return Unit.Value;
     }

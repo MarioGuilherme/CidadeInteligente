@@ -35,7 +35,7 @@ public class ProjectsController(IMediator mediator) : Controller
         ViewBag.Areas = getAreasQueryResult.Areas;
         ViewBag.Courses = getCoursesQueryResult.Courses;
 
-        return View();
+        return View("Form");
     }
 
     [HttpGet("projects/{projectId:int}/view", Name = "ViewProject")]
@@ -59,7 +59,7 @@ public class ProjectsController(IMediator mediator) : Controller
         ViewBag.Areas = getAreasQueryResult.Areas;
         ViewBag.Courses = getCoursesQueryResult.Courses;
 
-        return View(getProjectDetailsByIdQueryResult);
+        return View("Form", getProjectDetailsByIdQueryResult);
     }
 
     [HttpGet("projects/my")]

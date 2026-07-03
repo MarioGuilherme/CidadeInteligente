@@ -12,12 +12,7 @@ public class Area
         Description = description;
     }
 
-    public Area(IEnumerable<Project> projects) => Projects = [.. projects];
-
-    public Area(string description)
-    {
-        Description = description;
-    }
+    public Area(string description) => Description = description;
 
     public void Update(string description) => Description = description;
 }

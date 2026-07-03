@@ -31,7 +31,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
             request.InvolvedUsers,
             request.Medias.Select(m => new CreateProjectCommand.CreateMediaCommand(m.Title,
                 m.Description,
-                Path.GetExtension(m.File.FileName),
+                m.File.ContentType,
                 m.File.OpenReadStream)));
         int? projectId = await _mediator.Send(createProjectCommand);
         return CreatedAtRoute("ViewProject", new { projectId }, default);
@@ -41,7 +41,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
     public async Task<ActionResult> UpdateProject(int projectId, [FromForm] UpdateProjectRequest request)
     {
         UpdateProjectCommand updateProjectCommand = new(projectId,
-            User.UserId,
+            User.UserId!.Value,
             request.Title,
             request.AreaId,
             request.CourseId,
@@ -52,7 +52,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
             request.Medias.Select(m => new UpdateProjectCommand.UpdateMediaCommand(m.MediaId,
                 m.Title,
                 m.Description,
-                Path.GetExtension(m.File.FileName),
+                m.File.ContentType,
                 m.File.OpenReadStream)));
         await _mediator.Send(updateProjectCommand);
         return NoContent();

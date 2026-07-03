@@ -15,33 +15,22 @@ public class DeleteUserByIdCommandHandler(INotificationContext notification, IUn
     public async Task<Unit?> Handle(DeleteUserByIdCommand request, CancellationToken cancellationToken)
     {
         Specification<Project> specProjectsFromUser = SpecificationBuilder<Project>.Create()
-            .Where(u => u.CreatedByUserId == request.UserId || u.InvolvedUsers.Any(iu => iu.UserId == request.UserId))
+            .Where(p => p.CreatedByUserId == request.UserId || p.InvolvedUsers.Any(iu => iu.UserId == request.UserId))
             .Build();
-        bool userIsInvolvedInProjects = await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromUser);
-        if (userIsInvolvedInProjects)
+
+        if (await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromUser))
         {
             _notification.AddNotification(NotificationType.UserWithDependentProjects, [request.UserId]);
             return null;
         }
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
+        int deleted = await _unitOfWork.Users.DeleteByIdAsync(request.UserId, cancellationToken);
+        if (deleted == 0)
         {
-            int deleted = await _unitOfWork.Users.DeleteByIdAsync(request.UserId, cancellationToken);
-            if (deleted == 0)
-            {
-                await _unitOfWork.RollbackAsync(cancellationToken);
-                _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);
-                return null;
-            }
+            _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);
+            return null;
+        }
 
-            await _unitOfWork.CommitAsync(cancellationToken);
-            return Unit.Value;
-        }
-        catch
-        {
-            await _unitOfWork.RollbackAsync(cancellationToken);
-            throw;
-        }
+        return Unit.Value;
     }
 }

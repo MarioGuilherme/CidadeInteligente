@@ -3,7 +3,10 @@
     ViewData["ShowFooter"] = false;
 }
 
-<link rel="stylesheet" href="~/css/auth.css">
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/auth.css">
+}
 
 <div class="limiter">
     <div class="container-login100">
@@ -11,7 +14,7 @@
             <div class="container">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-12 col-md-5 painel">
-                        <div class="img-logo-cidade"><img src="~/img/iconAuth.png"></div>
+                        <div class="img-logo-cidade"><img src="~/img/icon-auth.png"></div>
                         <h3 class="text-center title mb-3">Login</h3>
                         <form id="formulario" class="form">
                             <div class="inputIcon">
@@ -39,32 +42,7 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(() => {
-        $(".btn-login").click(async () => {
-            formHasEmptyField($("form").serializeArray());
-
-            sweetAlertAwait("Fazendo login...");
-            const { status, body } = await restAPI.post("v1/auth/login", {
-                email: $("input[name=email]").val().trim(),
-                password: $("input[name=password]").val().trim()
-            });
-            toggleExitConfirmation(false);
-
-            switch (status) {
-                case 201:
-                    $(location).attr("href", "/");
-                    break;
-                case 400:
-                    handleBadRequest(body);
-                    break;
-                case 404:
-                    sweetAlert("error", "E-mail e/ou senha não coincidem!");
-                    break;
-                default:
-                    sweetAlert("error", "Um erro desconhecido ocorreu durante o seu login!");
-                    break;
-            }
-        });
-    });
-</script>
+@section Scripts
+{
+    <script src="~/js/login.js"></script>
+}

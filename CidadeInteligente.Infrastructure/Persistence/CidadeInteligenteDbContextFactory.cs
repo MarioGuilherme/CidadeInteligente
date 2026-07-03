@@ -16,7 +16,7 @@ public class CidadeInteligenteDbContextFactory : IDesignTimeDbContextFactory<Cid
 
         IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(basePath)
-            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("appsettings.Development.json", optional: false)
             .AddEnvironmentVariables()
             .Build();
 

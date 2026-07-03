@@ -10,9 +10,9 @@ public record GetProjectsQueryResult(int Page, int TotalPages, int ItemsCount, I
                 ? $"{Description![0..125]}..."
                 : Description;
 
-        public record MediaViewModel(int MediaId, string FileName)
+        public record MediaViewModel(int MediaId, string FileName, string MimeType)
         {
-            public string Extension => System.IO.Path.GetExtension(FileName);
+            public bool IsVideo { get; init; } = MimeType == "video/mp4";
             public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBlobURL")}/{FileName}";
         }
     }

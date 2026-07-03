@@ -1,28 +1,28 @@
-﻿using CidadeInteligente.Core.Entities;
+﻿using CidadeInteligente.Application.Queries.GetUserById;
+using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Enums;
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Serilog;
 using System.Security.Claims;
 using static BCrypt.Net.BCrypt;
 
-namespace CidadeInteligente.Application.Commands.LoginUser;
+namespace CidadeInteligente.Application.Queries.AuthenticateUser;
 
-public class LoginUserCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<LoginUserCommand, LoginUserCommandResult?>
+public class AuthenticateUserQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<AuthenticateUserQuery, AuthenticateUserQueryResult?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<LoginUserCommandResult?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<AuthenticateUserQueryResult?> Handle(AuthenticateUserQuery request, CancellationToken cancellationToken)
     {
-        Specification<User> spec = SpecificationBuilder<User>.Create()
+        Specification<User, UserReadModel?> spec = SpecificationBuilder<User>.Create()
             .Where(u => u.Email == request.Email)
-            .AsEditable()
-            .Build();
+            .WithProjection(u => new UserReadModel(u.UserId, u.Password, u.Role));
 
-        User? possibleUser = await _unitOfWork.Users.GetBySpecAsync(spec);
+        UserReadModel? possibleUser = await _unitOfWork.Users.GetBySpecAsync(spec);
         if (possibleUser is null || !Verify(request.Password, possibleUser.Password))
         {
             _notification.AddNotification(NotificationType.UserWithEmailNotFound);
@@ -36,4 +36,8 @@ public class LoginUserCommandHandler(INotificationContext notification, IUnitOfW
 
         return new(new(claimsIdentity));
     }
+
+    #region ReadModel
+    private sealed record UserReadModel(int UserId, string Password, Role Role);
+    #endregion
 }

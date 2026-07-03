@@ -4,6 +4,7 @@ using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
+using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.CreateUser;
 
@@ -14,25 +15,26 @@ public class CreateUserCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<int?> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        Specification<User> spec = SpecificationBuilder<User>.Create()
+        Specification<User> specEmailInUse = SpecificationBuilder<User>.Create()
             .Where(u => u.Email == request.Email)
             .Build();
 
-        bool isEmailAlreadyInUse = await _unitOfWork.Users.AnyBySpecAsync(spec);
-        if (isEmailAlreadyInUse)
+        if (await _unitOfWork.Users.AnyBySpecAsync(specEmailInUse))
         {
             _notification.AddNotification(NotificationType.EmailAlreadyInUse);
             return null;
         }
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         User user = new(request.CourseId,
-            request.Name,
-            request.Email,
-            BCrypt.Net.BCrypt.HashPassword(request.Password),
-            request.Role);
-        await _unitOfWork.Users.CreateAsync(user);
-        await _unitOfWork.CommitAsync(cancellationToken);
+           request.Name,
+           request.Email,
+           HashPassword(request.Password),
+           request.Role);
+
+        await _unitOfWork.ExecuteInTransactionAsync(async ct =>
+        {
+            await _unitOfWork.Users.CreateAsync(user);
+        }, cancellationToken: cancellationToken);
 
         return user.UserId;
     }

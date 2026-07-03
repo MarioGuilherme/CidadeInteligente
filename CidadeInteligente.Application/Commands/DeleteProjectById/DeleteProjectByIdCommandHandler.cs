@@ -20,6 +20,7 @@ public class DeleteProjectByIdCommandHandler(INotificationContext notification, 
             .Where(p => p.ProjectId == request.ProjectId)
             .AsEditable()
             .Build();
+
         Project? project = await _unitOfWork.Projects.GetBySpecAsync(specProject);
         if (project is null)
         {
@@ -33,10 +34,22 @@ public class DeleteProjectByIdCommandHandler(INotificationContext notification, 
             return null;
         }
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        await Task.WhenAll(project.Medias.Select(m => _fileStorage.DeleteFileAsync(m.FileName)));
-        await _unitOfWork.Projects.DeleteAsync(project);
-        await _unitOfWork.CommitAsync(cancellationToken);
+        await _unitOfWork.ExecuteInTransactionAsync(async _ =>
+        {
+            await _unitOfWork.Projects.DeleteAsync(project);
+        }, cancellationToken: cancellationToken);
+
+        await Task.WhenAll(project.Medias.Select(async m =>
+        {
+            try
+            {
+                await _fileStorage.DeleteFileAsync(m.FileName, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Falha ao remover arquivo {FileName} do projeto {ProjectId} já excluído", m.FileName, project.ProjectId);
+            }
+        }));
 
         return Unit.Value;
     }

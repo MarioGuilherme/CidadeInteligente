@@ -1,7 +1,7 @@
-﻿@using CidadeInteligente.Core.Enums
-@using CidadeInteligente.Core.Models;
+﻿@using CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser
+@using CidadeInteligente.Core.Enums
 @using static CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser.GetRelatedProjectsFromUserQueryResult
-@model PaginationResult<ProjectViewModel>;
+@model GetRelatedProjectsFromUserQueryResult;
 
 @{
     ViewData["Title"] = "Meus Projetos";
@@ -122,7 +122,7 @@
         <div class="row justify-content-center mt-3 pages">
             @for (int i = 1; i <= Model.TotalPages; i++)
             {
-                if (i != Model.CurrentPage)
+                if (i != Model.Page)
                 {
                     <a href="/meus-projetos?page=@i">
                         <button class="btn btn-default-red m-1">@i</button>

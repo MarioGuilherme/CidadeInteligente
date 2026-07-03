@@ -1,12 +1,8 @@
 ﻿using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Specifications.Interfaces;
 
 namespace CidadeInteligente.Core.Repositories;
 
-public interface IAreaRepository
+public interface IAreaRepository : ISpecificationRepository<Area>
 {
-    Task AddAsync(Area area);
-    void Delete(Area area);
-    Task<List<Area>> GetAllAsync();
-    Task<Area?> GetByIdAsync(int areaId, bool tracking = false);
-    Task<bool> HaveProjectsAsync(int areaId);
 }

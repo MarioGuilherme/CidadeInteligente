@@ -1,6 +1,8 @@
+using CidadeInteligente.Application.Commands.CreateCourse;
 using CidadeInteligente.Application.Commands.CreateProject;
 using CidadeInteligente.Application.Commands.DeleteProjectById;
 using CidadeInteligente.Application.Commands.UpdateProject;
+using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Enums;
 using CidadeInteligente.Mvc.Extensions;
 using CidadeInteligente.Mvc.Requests.v1;
@@ -31,9 +33,8 @@ public class ProjectsApiController(IMediator mediator) : Controller
                 m.Description,
                 Path.GetExtension(m.File.FileName),
                 m.File.OpenReadStream)));
-        int projectId = await _mediator.Send(createProjectCommand);
-        Response.Headers.Location = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/projects/{projectId}/view";
-        return StatusCode(201);
+        int? projectId = await _mediator.Send(createProjectCommand);
+        return CreatedAtRoute("ViewProject", new { projectId }, default);
     }
 
     [HttpPatch("{projectId:int}")]
@@ -60,7 +61,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
     [HttpDelete("{projectId:int}")]
     public async Task<ActionResult> DeleteProject(int projectId)
     {
-        DeleteProjectByIdCommand deleteProjectByIdCommand = new(projectId, User.UserId);
+        DeleteProjectByIdCommand deleteProjectByIdCommand = new(projectId, User.UserId!.Value);
         await _mediator.Send(deleteProjectByIdCommand);
         return NoContent();
     }

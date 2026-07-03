@@ -1,15 +1,9 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Models;
+using CidadeInteligente.Core.Specifications.Interfaces;
 
 namespace CidadeInteligente.Core.Repositories;
 
-public interface IProjectRepository
+public interface IProjectRepository : ISpecificationRepository<Project>
 {
-    Task AddAsync(Project project);
     void DeleteMedia(Media media);
-    void DeleteProject(Project project);
-    Task<PaginationResult<Project>> GetAllAsync(int page);
-    Task<Project?> GetByIdAsync(int projectId, bool tracking = false);
-    Task<Project?> GetDetailsById(int projectId);
-    Task<Media?> GetMediaById(int mediaId);
 }

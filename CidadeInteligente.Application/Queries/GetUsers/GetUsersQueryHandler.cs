@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Application.Extensions;
 using CidadeInteligente.Core.Entities;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
@@ -11,14 +12,14 @@ public class GetUsersQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetU
 
     public async Task<GetUsersQueryResult> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        List<User> users = await _unitOfWork.Users.GetAllAsync();
-        return new GetUsersQueryResult(users.Select(u => new GetUsersQueryResult.UserViewModel(
-            u.UserId,
-            u.Name,
-            u.Email,
-            u.Course.Description,
-            u.CourseId,
-            u.Role.GetDescription(),
-            (byte)u.Role)));
+        Specification<User, GetUsersQueryResult.UserViewModel> spec = SpecificationBuilder<User>.Create()
+            .WithProjection(u => new GetUsersQueryResult.UserViewModel(u.UserId,
+                u.Name,
+                u.Email,
+                u.Course.Description,
+                u.Role.GetDescription()))!;
+
+        IEnumerable<GetUsersQueryResult.UserViewModel> users = await _unitOfWork.Users.GetAllBySpecAsync(spec);
+        return new GetUsersQueryResult(users);
     }
 }

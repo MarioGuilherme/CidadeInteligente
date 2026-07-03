@@ -1,53 +1,15 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Models;
+using CidadeInteligente.Core.Common;
 using CidadeInteligente.Core.Repositories;
+using CidadeInteligente.Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
-public class ProjectRepository(CidadeInteligenteDbContext dbContext) : IProjectRepository
+public class ProjectRepository(CidadeInteligenteDbContext dbContext) : SpecificationRepositoryBase<Project>(dbContext), IProjectRepository
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
-
-    public async Task AddAsync(Project project)
-    {
-        await _dbContext.Projects.AddAsync(project);
-        _dbContext.Users.AttachRange(project.InvolvedUsers);
-    }
+    private readonly DbSet<Project> _dbSet = dbContext.Set<Project>();
 
     public void DeleteMedia(Media media) => _dbContext.Medias.Remove(media);
-
-    public void DeleteProject(Project project)
-    {
-        _dbContext.Medias.RemoveRange(project.Medias);
-        _dbContext.Projects.Remove(project);
-    }
-
-    public Task<PaginationResult<Project>> GetAllAsync(int page) => _dbContext.Projects
-        .Include(p => p.Medias)
-        .AsNoTracking()
-        .GetPaged(page);
-
-    public async Task<Project?> GetByIdAsync(int projectId, bool tracking = false) => tracking
-        ? await _dbContext.Projects.Include(p => p.Medias)
-            .Include(p => p.InvolvedUsers)
-            .Include(p => p.Area)
-            .Include(p => p.Course)
-            .FirstOrDefaultAsync(p => p.ProjectId == projectId)
-        : await _dbContext.Projects.Include(p => p.Medias)
-            .Include(p => p.InvolvedUsers)
-            .Include(p => p.Area)
-            .Include(p => p.Course)
-            .AsNoTracking().FirstOrDefaultAsync(p => p.ProjectId == projectId);
-
-
-    public Task<Project?> GetDetailsById(int projectId) => _dbContext.Projects
-        .Include(p => p.Area)
-        .Include(p => p.Course)
-        .Include(p => p.Medias)
-        .Include(p => p.InvolvedUsers)
-        .AsNoTracking()
-        .FirstOrDefaultAsync(p => p.ProjectId == projectId);
-
-    public Task<Media?> GetMediaById(int mediaId) => _dbContext.Medias.FirstOrDefaultAsync(m => m.MediaId == mediaId);
 }

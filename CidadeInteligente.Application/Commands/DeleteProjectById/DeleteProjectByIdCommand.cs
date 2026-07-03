@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Commands.DeleteProjectById;
 
-public record DeleteProjectByIdCommand(int ProjectId, int? CurrentUserId) : IRequest<Unit?> { }
+public record DeleteProjectByIdCommand(int ProjectId, int CurrentUserId) : IRequest<Unit?> { }

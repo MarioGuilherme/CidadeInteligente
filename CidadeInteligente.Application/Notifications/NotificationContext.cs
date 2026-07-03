@@ -1,4 +1,6 @@
-﻿using CidadeInteligente.Core.Notifications;
+﻿using CidadeInteligente.Application.Extensions;
+using CidadeInteligente.Core.Notifications;
+using Serilog;
 
 namespace CidadeInteligente.Application.Notifications;
 
@@ -17,7 +19,11 @@ public sealed class NotificationContext : INotificationContext
         .ToDictionary(g => g.Key, g => g.Select(n => n.Item2).ToArray());
 
     public void AddNotification(NotificationType notificationType, IEnumerable<object>? @params = default)
-        => _notifications.Add(new(notificationType, @params));
+    {
+        Notification notification = new(notificationType, @params);
+        Log.Warning(notification.Type.GetDescription(), @params);
+        _notifications.Add(notification);
+    }
 
     public void AddValidation(string key, string value) => _validations.Add(new(key, value));
 }

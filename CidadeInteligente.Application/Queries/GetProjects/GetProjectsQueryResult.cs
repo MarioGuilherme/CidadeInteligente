@@ -1,9 +1,6 @@
-﻿using CidadeInteligente.Core.Models;
-
-namespace CidadeInteligente.Application.Queries.GetProjects;
+﻿namespace CidadeInteligente.Application.Queries.GetProjects;
 
 public record GetProjectsQueryResult(int Page, int TotalPages, int ItemsCount, IEnumerable<GetProjectsQueryResult.ProjectViewModel> Data)
-    : PaginationResult<GetProjectsQueryResult.ProjectViewModel>(Page, TotalPages, ItemsCount, Data)
 {
     public record ProjectViewModel(int ProjectId, string Title, string? Description, IList<ProjectViewModel.MediaViewModel> Medias)
     {

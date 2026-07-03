@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,25 +14,34 @@ public class DeleteUserByIdCommandHandler(INotificationContext notification, IUn
 
     public async Task<Unit?> Handle(DeleteUserByIdCommand request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
-        if (user is null)
+        Specification<Project> specProjectsFromUser = SpecificationBuilder<Project>.Create()
+            .Where(u => u.CreatedByUserId == request.UserId || u.InvolvedUsers.Any(iu => iu.UserId == request.UserId))
+            .Build();
+        bool userIsInvolvedInProjects = await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromUser);
+        if (userIsInvolvedInProjects)
         {
-            Log.Warning("User with ID {UserId} not found.", request.UserId);
-            _notification.AddNotification(NotificationType.UserNotFound);
-            return null;
-        }
-
-        if (await _unitOfWork.Users.IsInvolvedOrCreatedProjectsAsync(request.UserId))
-        {
-            Log.Warning("User with ID {UserId} has dependent projects and cannot be deleted.", request.UserId);
             _notification.AddNotification(NotificationType.UserWithDependentProjects, [request.UserId]);
             return null;
         }
 
         await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        _unitOfWork.Users.Delete(user);
-        await _unitOfWork.CommitAsync(cancellationToken);
+        try
+        {
+            int deleted = await _unitOfWork.Users.DeleteByIdAsync(request.UserId, cancellationToken);
+            if (deleted == 0)
+            {
+                await _unitOfWork.RollbackAsync(cancellationToken);
+                _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);
+                return null;
+            }
 
-        return Unit.Value;
+            await _unitOfWork.CommitAsync(cancellationToken);
+            return Unit.Value;
+        }
+        catch
+        {
+            await _unitOfWork.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }

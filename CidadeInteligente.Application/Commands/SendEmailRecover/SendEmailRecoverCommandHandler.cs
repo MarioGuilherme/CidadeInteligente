@@ -1,6 +1,7 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Core.Services;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +19,22 @@ public class SendEmailRecoverCommandHandler(INotificationContext notification, I
 
     public async Task<Unit?> Handle(SendEmailRecoverCommand request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.Users.GetByEmailAsync(request.Email, true);
+        //Specification<User> spec = SpecificationBuilder<User>.Create()
+        //    .Where(u => u.Email == request.Email)
+        //    .WithProjection(u => new(u.UserId, u.Password, u.Role))
+        //    .NoTracking()
+        //    .Build();
 
+        //User? user = await _unitOfWork.Users.GetProjectionBySpecAsync(spec);
+
+        Specification<User> spec = SpecificationBuilder<User>.Create()
+            .Where(u => u.Email == request.Email)
+            .AsEditable()
+            .Build();
+
+        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
         if (user is null)
         {
-            Log.Warning("User with email {Email} not found", request.Email);
             _notification.AddNotification(NotificationType.UserWithEmailNotFound);
             return null;
         }

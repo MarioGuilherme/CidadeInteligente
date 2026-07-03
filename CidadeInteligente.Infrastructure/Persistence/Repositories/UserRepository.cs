@@ -1,62 +1,19 @@
 ﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Models;
 using CidadeInteligente.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
-public class UserRepository(CidadeInteligenteDbContext dbContext) : IUserRepository
+public class UserRepository(CidadeInteligenteDbContext dbContext) : SpecificationRepositoryBase<User>(dbContext), IUserRepository
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
-    public async Task CreateAsync(User user)
+    public async ValueTask CreateAsync(User user)
     {
         await _dbContext.Users.AddAsync(user);
     }
 
-    public void Delete(User user) => _dbContext.Users.Remove(user);
-
-    public Task<List<User>> GetAllAsync() => _dbContext.Users
-        .Include(u => u.Course)
-        .AsNoTracking()
-        .ToListAsync();
-
-    public Task<User?> GetByEmailAsync(string email, bool tracking = false) => tracking
-        ? _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email)
-        : _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
-
-    public Task<User?> GetByIdAsync(int userId, bool tracking = false) => tracking
-        ? _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId)
-        : _dbContext.Users.Include(u => u.Course).AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
-
-    public Task<User?> GetByTokenRecoverPasswordAsync(string tokenRecoverPassword) => _dbContext.Users.FirstOrDefaultAsync(u => u.TokenRecoverPassword == tokenRecoverPassword);
-
-    public async Task<PaginationResult<Project>> GetInvolvedAndCreatedProjectsFromUser(int userId, int page)
-    {
-        User user = await _dbContext.Users
-            .AsNoTracking()
-            .Include(u => u.InvolvedProjects)
-            .ThenInclude(p => p.Medias)
-            .Include(u => u.CreatedProjects)
-            .ThenInclude(p => p.Medias)
-            .FirstAsync(u => u.UserId == userId);
-
-        return user.CreatedProjects.Concat(user.InvolvedProjects).DistinctBy(p => p.ProjectId).GetPaged(page);
-    }
-
-    public Task<bool> IsEmailInUseAsync(string email, int userId = default, CancellationToken cancellationToken = default) => _dbContext.Users
-        .AnyAsync(u => u.Email == email && u.UserId != userId, cancellationToken);
-
-    public async Task<bool> IsInvolvedOrCreatedProjectsAsync(int userId)
-    {
-        User user = await _dbContext.Users
-            .Include(u => u.InvolvedProjects)
-            .Include(u => u.CreatedProjects)
-            .AsNoTracking()
-            .FirstAsync(u => u.UserId == userId);
-
-        return user.InvolvedProjects.Count != 0 || user.CreatedProjects.Count != 0;
-    }
-
-    public Task<bool> UserIdExistAsync(int userId) => _dbContext.Users.AnyAsync(u => u.UserId == userId);
+    public Task<int> DeleteByIdAsync(int userId, CancellationToken cancellationToken) => _dbContext.Users
+        .Where(u => u.UserId == userId)
+        .ExecuteDeleteAsync(cancellationToken);
 }

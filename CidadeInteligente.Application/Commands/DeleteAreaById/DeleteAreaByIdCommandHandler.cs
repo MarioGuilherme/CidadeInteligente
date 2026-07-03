@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,23 +14,30 @@ public class DeleteAreaByIdCommandHandler(INotificationContext notification, IUn
 
     public async Task<Unit?> Handle(DeleteAreaByIdCommand request, CancellationToken cancellationToken)
     {
-        Area? area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId);
+        Specification<Area> specArea = SpecificationBuilder<Area>.Create()
+            .Where(a => a.AreaId == request.AreaId)
+            .AsEditable()
+            .Build();
+
+        Area? area = await _unitOfWork.Areas.GetBySpecAsync(specArea);
         if (area is null)
         {
-            Log.Warning("Area with ID {AreaId} ​​not found.", request.AreaId);
             _notification.AddNotification(NotificationType.AreaNotFound, [request.AreaId]);
             return null;
         }
 
-        if (await _unitOfWork.Areas.HaveProjectsAsync(request.AreaId))
+        Specification<Project> specProjectsFromArea = SpecificationBuilder<Project>.Create()
+            .Where(p => p.AreaId == request.AreaId)
+            .Build();
+        bool areaHasDependentProjects = await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromArea);
+        if (areaHasDependentProjects)
         {
-            Log.Warning("Area with ID {AreaId} has dependent projects and cannot be deleted.", request.AreaId);
             _notification.AddNotification(NotificationType.AreaWithDependentProjects, [request.AreaId]);
             return null;
         }
 
         await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        _unitOfWork.Areas.Delete(area);
+        await _unitOfWork.Areas.DeleteAsync(area);
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return Unit.Value;

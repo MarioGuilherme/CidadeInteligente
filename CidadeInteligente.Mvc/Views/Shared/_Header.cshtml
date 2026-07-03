@@ -21,7 +21,7 @@
                     {
                         if (User.IsInRole(nameof(Role.Teacher)))
                         {
-                            <a class="dropdown-item@(Context.Request.Path == "/create" ? " disabledItemDropDown" : string.Empty)" href="/create">
+                            <a class="dropdown-item@(Context.Request.Path == "/projects/create" ? " disabledItemDropDown" : string.Empty)" href="/projects/create">
                                 Criar
                             </a>
                         }

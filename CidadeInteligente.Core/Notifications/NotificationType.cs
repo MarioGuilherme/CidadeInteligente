@@ -17,5 +17,5 @@ public enum NotificationType : byte
     [Description("The user with specific Token was not found.")] UserWithTokenNotFound,
     [Description("The user with specific email was not found.")] UserWithEmailNotFound,
     [Description("The token for password recovery has expired.")] TokenRecoverPasswordExpired,
-    [Description("Email {0} is already in use by another user.")] EmailAlreadyInUse
+    [Description("The supplied email address is already in use.")] EmailAlreadyInUse
 }

@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Serilog;
@@ -13,17 +14,32 @@ public class UpdateUserCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<Unit?> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.Users.GetByIdAsync(request.UserId, true);
+        //Specification<User> spec = SpecificationBuilder<User>.Create()
+        //    .Where(u => u.UserId == request.UserId)
+        //    .AsEditable()
+        //    .Build();
+
+        //User? user = await _unitOfWork.Users.GetProjectionBySpecAsync(spec);
+
+        Specification<User> spec = SpecificationBuilder<User>.Create()
+            .Where(u => u.UserId == request.UserId)
+            .AsEditable()
+            .Build();
+
+        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
         if (user is null)
         {
-            Log.Warning("User with ID {UserId} not found.", request.UserId);
             _notification.AddNotification(NotificationType.UserNotFound);
             return null;
         }
 
-        if (await _unitOfWork.Users.IsEmailInUseAsync(request.Email, user.UserId, cancellationToken))
+        Specification<User> specEmailInUse = SpecificationBuilder<User>.Create()
+            .Where(u => u.UserId != request.UserId && u.Email == request.Email)
+            .Build();
+
+        bool isEmailAlreadyInUse = await _unitOfWork.Users.AnyBySpecAsync(specEmailInUse);
+        if (isEmailAlreadyInUse)
         {
-            Log.Warning("Email {Email} is already in use by another user.", request.Email);
             _notification.AddNotification(NotificationType.EmailAlreadyInUse);
             return null;
         }

@@ -1,8 +1,8 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 
 namespace CidadeInteligente.Application.Commands.DeleteCourseById;
 
@@ -13,23 +13,30 @@ public class DeleteCourseByIdCommandHandler(INotificationContext notification, I
 
     public async Task<Unit?> Handle(DeleteCourseByIdCommand request, CancellationToken cancellationToken)
     {
-        Course? course = await _unitOfWork.Courses.GetByIdAsync(request.CourseId);
+        Specification<Course> specCourse = SpecificationBuilder<Course>.Create()
+            .Where(c => c.CourseId == request.CourseId)
+            .AsEditable()
+            .Build();
+
+        Course? course = await _unitOfWork.Courses.GetBySpecAsync(specCourse);
         if (course is null)
         {
-            Log.Warning("Course with ID {CourseId} ​​not found.", request.CourseId);
-            _notification.AddNotification(NotificationType.CourseNotFound);
+            _notification.AddNotification(NotificationType.CourseNotFound, [request.CourseId]);
             return null;
         }
 
-        if (await _unitOfWork.Courses.HaveProjectsAsync(request.CourseId))
+        Specification<Project> specProjectsFromCourse = SpecificationBuilder<Project>.Create()
+            .Where(p => p.CourseId == request.CourseId)
+            .Build();
+        bool areaHasDependentProjects = await _unitOfWork.Projects.AnyBySpecAsync(specProjectsFromCourse);
+        if (areaHasDependentProjects)
         {
-            Log.Warning("Course with ID {CourseId} has dependent projects and cannot be deleted.", request.CourseId);
-            _notification.AddNotification(NotificationType.CourseWithDependentProjects);
+            _notification.AddNotification(NotificationType.CourseWithDependentProjects, [request.CourseId]);
             return null;
         }
 
         await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        _unitOfWork.Courses.Delete(course);
+        await _unitOfWork.Courses.DeleteAsync(course);
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return Unit.Value;

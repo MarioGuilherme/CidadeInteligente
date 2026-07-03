@@ -8,6 +8,8 @@ public interface IUnitOfWork : IDisposable
     ICourseRepository Courses { get; }
     IProjectRepository Projects { get; }
     IUserRepository Users { get; }
-    Task BeginTransactionAsync(CancellationToken cancellationToken);
+
+    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
     Task<int> CommitAsync(CancellationToken cancellationToken);
+    Task RollbackAsync(CancellationToken cancellationToken = default);
 }

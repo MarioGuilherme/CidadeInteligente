@@ -1,8 +1,8 @@
 ﻿using CidadeInteligente.Core.Entities;
 using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 
 namespace CidadeInteligente.Application.Queries.GetCourseById;
 
@@ -13,14 +13,17 @@ public class GetCourseByIdQueryHandler(INotificationContext notification, IUnitO
 
     public async Task<GetCourseByIdQueryResult?> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        Course? course = await _unitOfWork.Courses.GetByIdAsync(request.CourseId);
+        Specification<Course, GetCourseByIdQueryResult?> spec = SpecificationBuilder<Course>.Create()
+            .Where(c => c.CourseId == request.CourseId)
+            .WithProjection(c => new GetCourseByIdQueryResult(c.CourseId, c.Description));
+
+        GetCourseByIdQueryResult? course = await _unitOfWork.Courses.GetBySpecAsync(spec);
         if (course is null)
         {
-            Log.Warning("Course with ID {CourseId} ​​not found.", request.CourseId);
-            _notification.AddNotification(NotificationType.CourseNotFound);
+            _notification.AddNotification(NotificationType.CourseNotFound, [request.CourseId]);
             return null;
         }
 
-        return new(course.CourseId, course.Description);
+        return course;
     }
 }

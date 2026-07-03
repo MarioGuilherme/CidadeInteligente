@@ -17,32 +17,61 @@ public class UnitOfWork(CidadeInteligenteDbContext dbContext,
     public IProjectRepository Projects { get; } = projects;
     public IUserRepository Users { get; } = users;
 
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken) => _transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
-
-    public async Task<int> CommitAsync(CancellationToken cancellationToken)
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
+        if (_transaction is not null)
+            throw new InvalidOperationException("A transaction is already in progress.");
+
+        _transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
+    {
+        if (_transaction is null)
+            throw new InvalidOperationException("There is no active transaction to confirm.");
+
         try
         {
             int rowsAffected = await _dbContext.SaveChangesAsync(cancellationToken);
-            await _transaction!.CommitAsync(cancellationToken);
+            await _transaction.CommitAsync(cancellationToken);
             return rowsAffected;
         }
-        catch (Exception)
+        catch
         {
-            await _transaction!.RollbackAsync(cancellationToken);
+            await RollbackAsync(cancellationToken);
             throw;
         }
+        finally
+        {
+            await DisposeTransactionAsync();
+        }
+    }
+
+    public async Task RollbackAsync(CancellationToken cancellationToken = default)
+    {
+        if (_transaction is null) return;
+
+        try
+        {
+            await _transaction.RollbackAsync(cancellationToken);
+        }
+        finally
+        {
+            await DisposeTransactionAsync();
+        }
+    }
+
+    private async Task DisposeTransactionAsync()
+    {
+        if (_transaction is null) return;
+
+        await _transaction.DisposeAsync();
+        _transaction = null;
     }
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-            _dbContext.Dispose();
+        _transaction?.Dispose();
+        _dbContext.Dispose();
     }
 }

@@ -17,6 +17,31 @@ public class User
     public virtual ICollection<Project> InvolvedProjects { get; private set; } = [];
     public virtual ICollection<Project> CreatedProjects { get; private set; } = [];
 
+    public User(int userId, int courseId, string name, string email, Role role)
+    {
+        UserId = userId;
+        CourseId = courseId;
+        Name = name;
+        Email = email;
+        Role = role;
+    }
+
+    public User(int userId, string password, Role role)
+    {
+        UserId = userId;
+        Password = password;
+        Role = role;
+    }
+
+    public User(int userId, Course course, string name, string email, Role role)
+    {
+        UserId = userId;
+        Course = course;
+        Name = name;
+        Email = email;
+        Role = role;
+    }
+
     public User(int userId, int courseId, string name, string email, string password, Role role)
     {
         UserId = userId;

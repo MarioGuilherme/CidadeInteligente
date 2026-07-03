@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Core.Notifications;
+﻿using CidadeInteligente.Domain.Notifications;
 using CidadeInteligente.Mvc.Extensions;
 using CidadeInteligente.Mvc.Responses;
 using CidadeInteligente.Mvc.ViewModels;

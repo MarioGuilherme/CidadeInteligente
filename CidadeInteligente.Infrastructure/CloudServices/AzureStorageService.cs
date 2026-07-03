@@ -1,5 +1,5 @@
 ﻿using Azure.Storage.Blobs;
-using CidadeInteligente.Core.Services;
+using CidadeInteligente.Domain.Services;
 
 namespace CidadeInteligente.Infrastructure.CloudServices;
 

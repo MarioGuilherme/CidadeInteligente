@@ -1,4 +1,4 @@
-﻿namespace CidadeInteligente.Core.Entities;
+﻿namespace CidadeInteligente.Domain.Entities;
 
 public class Area
 {

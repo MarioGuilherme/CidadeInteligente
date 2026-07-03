@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Core.Enums;
+﻿using CidadeInteligente.Domain.Enums;
 
 namespace CidadeInteligente.Mvc.Requests.v1;
 

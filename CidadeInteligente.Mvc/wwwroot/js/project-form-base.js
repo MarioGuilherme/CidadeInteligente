@@ -110,7 +110,7 @@
         $(".medias").on("click", ".btn-remove-media", function () {
             const indexMediaToDelete = [...$(".media")].indexOf($(this).parents(".media")[0]);
             setTimeout(() => $(this).parents(".col-12").remove(), 1000);
-            $(this).parents(".col-12").hide(500);
+            $(this).parents(".col-12").hide(150);
             project.medias.splice(indexMediaToDelete, 1);
         });
 

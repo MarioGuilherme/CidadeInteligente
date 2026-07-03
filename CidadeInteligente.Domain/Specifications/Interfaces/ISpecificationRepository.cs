@@ -1,6 +1,6 @@
-﻿using CidadeInteligente.Core.Common;
+﻿using CidadeInteligente.Domain.Common;
 
-namespace CidadeInteligente.Core.Specifications.Interfaces;
+namespace CidadeInteligente.Domain.Specifications.Interfaces;
 
 public interface ISpecificationRepository<T> where T : class
 {

@@ -1,4 +1,4 @@
-﻿namespace CidadeInteligente.Core.Services;
+﻿namespace CidadeInteligente.Domain.Services;
 
 public interface IEmailService
 {

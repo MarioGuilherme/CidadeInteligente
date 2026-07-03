@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Core.Services;
+﻿using CidadeInteligente.Domain.Services;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 

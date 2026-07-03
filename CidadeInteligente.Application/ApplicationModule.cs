@@ -1,6 +1,6 @@
 ﻿using CidadeInteligente.Application.Notifications;
 using CidadeInteligente.Application.Queries.AuthenticateUser;
-using CidadeInteligente.Core.Notifications;
+using CidadeInteligente.Domain.Notifications;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;

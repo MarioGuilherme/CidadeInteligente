@@ -1,8 +1,8 @@
 ﻿using CidadeInteligente.Application.Queries.GetUserById;
-using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Enums;
-using CidadeInteligente.Core.Notifications;
-using CidadeInteligente.Core.Specifications;
+using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Enums;
+using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;

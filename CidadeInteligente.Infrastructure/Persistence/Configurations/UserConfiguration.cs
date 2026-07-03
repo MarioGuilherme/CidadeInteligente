@@ -1,5 +1,5 @@
-﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Enums;
+﻿using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

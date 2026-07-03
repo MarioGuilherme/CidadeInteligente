@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace CidadeInteligente.Core.Notifications;
+namespace CidadeInteligente.Domain.Notifications;
 
 public enum NotificationType : byte
 {

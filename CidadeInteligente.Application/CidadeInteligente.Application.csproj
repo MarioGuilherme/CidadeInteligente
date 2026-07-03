@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CidadeInteligente.Core\CidadeInteligente.Core.csproj" />
+    <ProjectReference Include="..\CidadeInteligente.Domain\CidadeInteligente.Domain.csproj" />
     <ProjectReference Include="..\CidadeInteligente.Infrastructure\CidadeInteligente.Infrastructure.csproj" />
   </ItemGroup>
 

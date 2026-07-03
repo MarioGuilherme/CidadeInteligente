@@ -1,5 +1,5 @@
-﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Repositories;
+﻿using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;

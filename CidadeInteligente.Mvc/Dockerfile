@@ -22,7 +22,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["CidadeInteligente.Mvc/CidadeInteligente.Mvc.csproj", "CidadeInteligente.Mvc/"]
 COPY ["CidadeInteligente.Application/CidadeInteligente.Application.csproj", "CidadeInteligente.Application/"]
-COPY ["CidadeInteligente.Core/CidadeInteligente.Core.csproj", "CidadeInteligente.Core/"]
+COPY ["CidadeInteligente.Domain/CidadeInteligente.Domain.csproj", "CidadeInteligente.Domain/"]
 COPY ["CidadeInteligente.Infrastructure/CidadeInteligente.Infrastructure.csproj", "CidadeInteligente.Infrastructure/"]
 RUN dotnet restore "./CidadeInteligente.Mvc/CidadeInteligente.Mvc.csproj"
 COPY . .

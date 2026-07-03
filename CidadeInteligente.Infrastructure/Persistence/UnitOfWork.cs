@@ -1,4 +1,4 @@
-﻿using CidadeInteligente.Core.Repositories;
+﻿using CidadeInteligente.Domain.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using Serilog;
 

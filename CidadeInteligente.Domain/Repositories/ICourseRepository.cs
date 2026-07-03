@@ -1,7 +1,7 @@
-﻿using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Specifications.Interfaces;
+﻿using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Specifications.Interfaces;
 
-namespace CidadeInteligente.Core.Repositories;
+namespace CidadeInteligente.Domain.Repositories;
 
 public interface ICourseRepository : ISpecificationRepository<Course>
 {

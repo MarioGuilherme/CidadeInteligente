@@ -1,6 +1,6 @@
 ﻿using CidadeInteligente.Application.Extensions;
-using CidadeInteligente.Core.Entities;
-using CidadeInteligente.Core.Specifications;
+using CidadeInteligente.Domain.Entities;
+using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 

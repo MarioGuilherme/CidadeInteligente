@@ -3,7 +3,7 @@ using CidadeInteligente.Application.Commands.DeleteCourseById;
 using CidadeInteligente.Application.Commands.UpdateCourse;
 using CidadeInteligente.Application.Queries.GetCourseById;
 using CidadeInteligente.Application.Queries.GetCourses;
-using CidadeInteligente.Core.Enums;
+using CidadeInteligente.Domain.Enums;
 using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

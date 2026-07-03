@@ -1,23 +1,5 @@
-﻿namespace CidadeInteligente.Core.Common;
+﻿namespace CidadeInteligente.Domain.Common;
 
-//public record PagedResult<T>
-//{
-//    public int PageSize = 8;
-//    public int CurrentPage { get; set; }
-//    public int TotalPages { get; set; }
-//    public int ItemsCount { get; set; }
-//    public IEnumerable<T> Data { get; set; } = null!;
-
-//    public PagedResult() { }
-
-//    public PagedResult(int page, int totalPages, int itemsCount, IEnumerable<T> data)
-//    {
-//        CurrentPage = page;
-//        TotalPages = totalPages;
-//        ItemsCount = itemsCount;
-//        Data = data;
-//    }
-//}
 public record PagedResult<T>
 {
     public IReadOnlyList<T> Items { get; }

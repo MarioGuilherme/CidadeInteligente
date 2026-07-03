@@ -25,7 +25,7 @@ public class GetProjectByIdQueryHandler(INotificationContext notification, IUnit
                 p.StartedAt,
                 p.FinishedAt,
                 p.InvolvedUsers.Select(iu => new GetProjectByIdQueryResult.ProjectUserViewModel(iu.UserId, iu.Name)),
-                p.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName))));
+                p.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId, m.Title, m.Description, m.FileName, m.MimeType))));
 
         GetProjectByIdQueryResult? project = await _unitOfWork.Projects.GetBySpecAsync(spec);
         if (project is null)

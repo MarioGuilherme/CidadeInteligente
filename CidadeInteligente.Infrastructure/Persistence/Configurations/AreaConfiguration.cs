@@ -10,6 +10,7 @@ public class AreaConfiguration : IEntityTypeConfiguration<Area>
     {
         builder.HasKey(a => a.AreaId);
 
+        builder.HasIndex(a => a.Description).IsUnique();
         builder.Property(a => a.Description).HasMaxLength(45);
 
         builder.HasMany(a => a.Projects)

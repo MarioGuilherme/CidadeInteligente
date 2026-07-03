@@ -6,7 +6,11 @@
     ViewData["Title"] = $"Projeto - {Model.ProjectId}";
 }
 
-<link rel="stylesheet" href="~/css/header.css" />
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/header.css" />
+    <link rel="stylesheet" href="~/css/projects.css">
+}
 
 <partial name="_Header" />
 
@@ -68,7 +72,7 @@
                 <div class="col-12 col-sm-12 col-lg-3 col-md-3 mt-2">
                     <div class="card">
                         <div class="card-body text-center">
-                            @if (media.Extension == ".mp4")
+                            @if (media.IsVideo)
                             {
                                 <video class="d-block" style="width:-webkit-fill-available" preload="metadata" controls src=@media.Path></video>
                             }
@@ -86,16 +90,8 @@
     </div>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-    $(document).ready(() => {
-        $(".btn-generate-qrcode").click(() => {
-            Swal.fire({
-                html: `<div class="qrCode mb-1 d-flex justify-content-center"></div>`,
-                background: "rgb(70, 5, 7)",
-                showConfirmButton: false
-            });
-            new QRCode(document.querySelector(".qrCode"), window.location.href);
-        });
-    })
-</script>
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="~/js/view-project.js"></script>
+}

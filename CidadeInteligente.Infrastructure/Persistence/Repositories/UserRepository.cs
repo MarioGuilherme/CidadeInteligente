@@ -8,6 +8,8 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : Specificatio
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
+    public void Attach(User user) => _dbContext.Users.Attach(user);
+
     public async ValueTask CreateAsync(User user)
     {
         await _dbContext.Users.AddAsync(user);

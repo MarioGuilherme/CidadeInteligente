@@ -3,7 +3,6 @@ using CidadeInteligente.Core.Notifications;
 using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 
 namespace CidadeInteligente.Application.Commands.UpdateCourse;
 
@@ -14,7 +13,6 @@ public class UpdateCourseCommandHandler(INotificationContext notification, IUnit
 
     public async Task<Unit?> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        //Course? course = await _unitOfWork.Courses.GetByIdAsync(request.CourseId, true);
         Specification<Course> specCourse = SpecificationBuilder<Course>.Create()
             .Where(c => c.CourseId == request.CourseId)
             .AsEditable()
@@ -27,9 +25,17 @@ public class UpdateCourseCommandHandler(INotificationContext notification, IUnit
             return null;
         }
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        course.Update(request.Description);
-        await _unitOfWork.CommitAsync(cancellationToken);
+        Specification<Course> specCourseDescriptionInUse = SpecificationBuilder<Course>.Create()
+            .Where(c => c.CourseId != request.CourseId && c.Description == request.Description)
+            .Build();
+
+        if (await _unitOfWork.Courses.AnyBySpecAsync(specCourseDescriptionInUse))
+        {
+            _notification.AddNotification(NotificationType.CourseAlreadyExists, [request.Description]);
+            return null;
+        }
+
+        await _unitOfWork.ExecuteInTransactionAsync(() => course.Update(request.Description), cancellationToken: cancellationToken);
 
         return Unit.Value;
     }

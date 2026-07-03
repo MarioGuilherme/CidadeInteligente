@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace CidadeInteligente.Application.Commands.LoginUser;
+namespace CidadeInteligente.Application.Queries.AuthenticateUser;
 
-public class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
+public class AuthenticateUserQueryValidator : AbstractValidator<AuthenticateUserQuery>
 {
-    public LoginUserCommandValidator()
+    public AuthenticateUserQueryValidator()
     {
         RuleFor(u => u.Email)
             .NotEmpty().WithMessage("É necessário informar o e-mail do usuário!")

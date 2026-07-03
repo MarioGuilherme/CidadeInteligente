@@ -1,5 +1,5 @@
-﻿using CidadeInteligente.Application.Commands.LoginUser;
-using CidadeInteligente.Application.Notifications;
+﻿using CidadeInteligente.Application.Notifications;
+using CidadeInteligente.Application.Queries.AuthenticateUser;
 using CidadeInteligente.Core.Notifications;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -23,7 +23,7 @@ public static class ApplicationModule
 
         private IServiceCollection AddMediatR()
         {
-            services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<LoginUserCommand>());
+            services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<AuthenticateUserQuery>());
 
             return services;
         }
@@ -32,7 +32,7 @@ public static class ApplicationModule
         {
             services
                 .AddFluentValidationAutoValidation(o => o.DisableDataAnnotationsValidation = true)
-                .AddValidatorsFromAssemblyContaining<LoginUserCommandValidator>();
+                .AddValidatorsFromAssemblyContaining<AuthenticateUserQueryValidator>();
 
             return services;
         }

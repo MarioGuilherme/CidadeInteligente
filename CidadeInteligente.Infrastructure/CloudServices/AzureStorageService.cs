@@ -7,12 +7,12 @@ public class AzureStorageService(BlobContainerClient blobContainerClient) : IFil
 {
     private readonly BlobContainerClient _blobContainerClient = blobContainerClient;
 
-    public Task DeleteFileAsync(string fileName) => _blobContainerClient.DeleteBlobIfExistsAsync(fileName);
+    public Task DeleteFileAsync(string fileName, CancellationToken cancellationToken) => _blobContainerClient.DeleteBlobIfExistsAsync(fileName, cancellationToken: cancellationToken);
 
-    public async Task<string> UploadOrUpdateFileAsync(string fileName, Stream stream)
+    public async Task<string> UploadOrUpdateFileAsync(string fileName, Stream stream, CancellationToken cancellationToken)
     {
         BlobClient blobClient = _blobContainerClient.GetBlobClient(fileName);
-        await blobClient.UploadAsync(stream, overwrite: true);
+        await blobClient.UploadAsync(stream, overwrite: true, cancellationToken: cancellationToken);
         return fileName;
     }
 }

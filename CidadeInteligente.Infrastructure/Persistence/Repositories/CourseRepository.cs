@@ -9,4 +9,8 @@ public class CourseRepository(CidadeInteligenteDbContext dbContext) : Specificat
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
     private readonly DbSet<Course> _dbSet = dbContext.Set<Course>();
+
+    public Task<int> DeleteByIdAsync(int courseId, CancellationToken cancellationToken) => _dbContext.Courses
+        .Where(c => c.CourseId == courseId)
+        .ExecuteDeleteAsync(cancellationToken);
 }

@@ -2,7 +2,7 @@
     "use strict";
 
     $(document).ready(() => {
-        $(".btn-new-project").click(async () => {
+        $(".btn-save").click(async () => {
             formHasEmptyField([
                 ...$(".medias").find("input"),
                 $("input[name=title]")[0],
@@ -51,10 +51,10 @@
                     formData.append(`medias[${index}].description`, media.description);
             });
 
-            const { status, body, headers } = await restAPI.postFormData("v1/projects", formData);
+            const { statusCode, body: { notifications }, headers } = await restAPI.postAsync("v1/projects", formData);
             toggleExitConfirmation(false);
 
-            switch (status) {
+            switch (statusCode) {
                 case 201:
                     Swal.fire({
                         icon: "success",
@@ -65,19 +65,14 @@
                     new QRCode($(".qrCode")[0], headers.get("Location"));
                     cleanAllFields();
                     $(".medias").empty();
-                    project.title = null;
-                    project.date = null;
-                    project.description = null;
-                    project.areaId = null;
-                    project.courseId = null;
-                    project.involvedUsers = [];
-                    project.medias = [];
+                    project.title = project.description = project.date = project.areaId = project.courseId = null;
+                    project.involvedUsers = project.medias = [];
                     break;
                 case 400:
-                    handleBadRequest(body);
+                    handleBadRequest(notifications);
                     break;
                 case 500:
-                    sweetAlert("error", "Um erro desconhecido ocorreu ao criar o projeto!");
+                    sweetAlert("error", notifications[0]);
                     break;
             }
         });

@@ -37,6 +37,9 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 
                     b.HasKey("AreaId");
 
+                    b.HasIndex("Description")
+                        .IsUnique();
+
                     b.ToTable("Areas");
 
                     b.HasData(
@@ -72,6 +75,9 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
 
                     b.HasKey("CourseId");
 
+                    b.HasIndex("Description")
+                        .IsUnique();
+
                     b.ToTable("Courses");
 
                     b.HasData(
@@ -98,6 +104,11 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -277,7 +288,7 @@ namespace CidadeInteligente.Infrastructure.Persistence.Migrations
                     b.HasOne("CidadeInteligente.Core.Entities.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Course");

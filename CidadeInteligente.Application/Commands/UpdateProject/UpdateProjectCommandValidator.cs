@@ -52,8 +52,8 @@ public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectComm
             RuleFor(m => m.Description)
                 .MaximumLength(300).WithMessage("A descrição da mídia não pode exceder 300 caracteres!");
 
-            RuleFor(m => m.Extension)
-                .NotEmpty().WithMessage("É necessário informar a extensão da mídia!");
+            RuleFor(m => m.MimeType)
+                .NotEmpty().WithMessage("É necessário informar o tipo da mídia!");
         }
     }
 }

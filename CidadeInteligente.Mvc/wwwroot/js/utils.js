@@ -36,6 +36,14 @@ const formHasEmptyField = form => {
         }
 }
 
+const buildDataFromForm = form => [...form.find("input, textarea, select")].reduce((acc, field) => {
+    const trimmedNullableValue = field.value.trim() || null;
+    acc[field.name] = field.type == "text" ? trimmedNullableValue : +trimmedNullableValue;
+    return acc;
+}, {});
+
+const hasUndefinedOrNullOrEmptyField = dataJson => Object.values(dataJson).some(f => f == undefined || f == null || f === "");
+
 const cleanAllFields = () => {
     $(".user").attr("involved", false);
     $(".medias-uploaded").empty();
@@ -43,4 +51,5 @@ const cleanAllFields = () => {
     $("select").prop("selectedIndex", 0);
 }
 
-const handleBadRequest = errors => sweetAlert("warning", "Campos inválidos", `<ul>${errors.map(v => `<li>${v}</li>`).join("")}</ul>`);
+const handleBadRequest = notifications => sweetAlert("warning", "Campos inválidos", `<ul>${notifications.map(v => `<li>${v}</li>`).join("")}</ul>`);
+const handleResponseAsync = async (statusCode, handlers) => handlers[statusCode] ? await handlers[statusCode]() : sweetAlert("error", "Erro!", "Ocorreu um erro inesperado.");

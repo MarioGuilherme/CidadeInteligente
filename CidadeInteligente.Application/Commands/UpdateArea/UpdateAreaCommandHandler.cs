@@ -14,7 +14,6 @@ public class UpdateAreaCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<Unit?> Handle(UpdateAreaCommand request, CancellationToken cancellationToken)
     {
-        //Area? area = await _unitOfWork.Areas.GetByIdAsync(request.AreaId, true);
         Specification<Area> specArea = SpecificationBuilder<Area>.Create()
             .Where(a => a.AreaId == request.AreaId)
             .AsEditable()
@@ -26,10 +25,17 @@ public class UpdateAreaCommandHandler(INotificationContext notification, IUnitOf
             _notification.AddNotification(NotificationType.AreaNotFound);
             return null;
         }
+        Specification<Area> specCourseDescriptionInUse = SpecificationBuilder<Area>.Create()
+            .Where(a => a.AreaId != request.AreaId && a.Description == request.Description)
+            .Build();
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        area.Update(request.Description);
-        await _unitOfWork.CommitAsync(cancellationToken);
+        if (await _unitOfWork.Areas.AnyBySpecAsync(specCourseDescriptionInUse))
+        {
+            _notification.AddNotification(NotificationType.AreaAlreadyExists, [request.Description]);
+            return null;
+        }
+
+        await _unitOfWork.ExecuteInTransactionAsync(() => area.Update(request.Description), cancellationToken: cancellationToken);
 
         return Unit.Value;
     }

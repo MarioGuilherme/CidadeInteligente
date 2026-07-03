@@ -4,7 +4,7 @@ using CidadeInteligente.Core.Services;
 using CidadeInteligente.Core.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
+using System.Collections.Concurrent;
 
 namespace CidadeInteligente.Application.Commands.CreateProject;
 
@@ -40,19 +40,44 @@ public class CreateProjectCommandHandler(INotificationContext notification, IUni
             request.StartedAt,
             request.FinishedAt);
 
-        foreach (int involvedUser in request.InvolvedUsers)
-            project.InvolvedUsers.Add(new User(involvedUser));
+        ConcurrentBag<Media> uploadedMedias = [];
 
-        foreach (CreateProjectCommand.CreateMediaCommand media in request.Medias)
+        await _unitOfWork.ExecuteInTransactionAsync(async _ =>
         {
-            await using Stream stream = media.OpenStream();
-            string fileName = await _fileStorage.UploadOrUpdateFileAsync($"{Guid.NewGuid():N}{media.Extension}", stream);
-            project.Medias.Add(new Media(media.Title, media.Description, fileName));
-        }
+            foreach (int involvedUserId in request.InvolvedUsers)
+            {
+                Specification<User> specNewInvolvedUser = SpecificationBuilder<User>.Create()
+                    .Where(u => u.UserId == involvedUserId)
+                    .AsEditable()
+                    .Build();
 
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        await _unitOfWork.Projects.AddAsync(project);
-        await _unitOfWork.CommitAsync(cancellationToken);
+                User? newUserInvolved = await _unitOfWork.Users.GetBySpecAsync(specNewInvolvedUser);
+                if (newUserInvolved is null)
+                {
+                    _notification.AddNotification(NotificationType.UserNotFound, [involvedUserId]);
+                    continue;
+                }
+                project.InvolvedUsers.Add(newUserInvolved);
+            }
+
+            await Task.WhenAll(request.Medias.Select(async m =>
+            {
+                await using Stream stream = m.OpenStream();
+                string fileName = Guid.NewGuid().ToString("N");
+                Media media = new(m.Title, m.Description, fileName, m.MimeType);
+                await _fileStorage.UploadOrUpdateFileAsync(fileName, stream, cancellationToken);
+                uploadedMedias.Add(media);
+            }));
+
+            foreach (Media uploadedMedia in uploadedMedias)
+                project.Medias.Add(uploadedMedia);
+
+            await _unitOfWork.Projects.AddAsync(project);
+        },
+        onRollback: async ct =>
+        {
+            await Task.WhenAll(uploadedMedias.Select(m => _fileStorage.DeleteFileAsync(m.FileName, ct)));
+        }, cancellationToken);
 
         return project.ProjectId;
     }

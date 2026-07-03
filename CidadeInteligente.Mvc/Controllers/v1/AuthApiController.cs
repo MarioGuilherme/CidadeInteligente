@@ -1,6 +1,6 @@
 ﻿using CidadeInteligente.Application.Commands.ChangePasswordCommand;
-using CidadeInteligente.Application.Commands.LoginUser;
 using CidadeInteligente.Application.Commands.SendEmailRecover;
+using CidadeInteligente.Application.Queries.AuthenticateUser;
 using CidadeInteligente.Mvc.Requests.v1;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -17,17 +17,17 @@ public class AuthApiController(IMediator mediator) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] AuthenticateUserRequest request)
     {
-        LoginUserCommand loginUserCommand = new(request.Email, request.Password);
-        LoginUserCommandResult? loginUserCommandResult = await _mediator.Send(loginUserCommand);
+        AuthenticateUserQuery authenticateUserQuery = new(request.Email, request.Password);
+        AuthenticateUserQueryResult? authenticateUserQueryResult = await _mediator.Send(authenticateUserQuery);
 
-        if (loginUserCommandResult is null)
+        if (authenticateUserQueryResult is null)
         {
             return default;
         }
 
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
-            loginUserCommandResult!.ClaimsPrincipal,
+            authenticateUserQueryResult!.ClaimsPrincipal,
             new AuthenticationProperties
             {
                 IsPersistent = true,

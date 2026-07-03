@@ -23,8 +23,8 @@ public class AuthController(IMediator mediator) : Controller
     {
         if (User.Identity?.IsAuthenticated ?? false) return Redirect("/");
 
-        GetUserByTokenRecoverPasswordQuery getUserByTokenRecoverPasswordQuery = new(token);
-        GetUserByTokenRecoverPasswordQueryResult? getUserByTokenRecoverPasswordQueryResult = await _mediator.Send(getUserByTokenRecoverPasswordQuery);
+        GetUserByTokenRecoverPasswordCommand getUserByTokenRecoverPasswordQuery = new(token);
+        GetUserByTokenRecoverPasswordCommandResult? getUserByTokenRecoverPasswordQueryResult = await _mediator.Send(getUserByTokenRecoverPasswordQuery);
         return View(getUserByTokenRecoverPasswordQueryResult);
     }
 

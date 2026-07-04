@@ -1,5 +1,4 @@
-﻿using CidadeInteligente.Application.Queries.GetUserById;
-using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Enums;
 using CidadeInteligente.Domain.Notifications;
 using CidadeInteligente.Domain.Specifications;

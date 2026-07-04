@@ -1,5 +1,4 @@
-﻿using CidadeInteligente.Application.Queries.GetAreas;
-using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;

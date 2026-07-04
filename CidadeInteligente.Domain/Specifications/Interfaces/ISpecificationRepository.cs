@@ -4,14 +4,6 @@ namespace CidadeInteligente.Domain.Specifications.Interfaces;
 
 public interface ISpecificationRepository<T> where T : class
 {
-    //Task<T?> GetBySpecAsync(Specification<T> spec);
-    //Task<T?> GetProjectionBySpecAsync(Specification<T> spec);
-    //Task<IEnumerable<T>> GetAllProjectionsBySpecAsync(Specification<T> spec);
-    //Task<PagedResult<T>> GetPagedProjectionAsync(Specification<T> spec);
-    //Task<int> CountBySpecAsync(Specification<T> spec);
-    //Task<bool> AnyBySpecAsync(Specification<T> spec);
-
-
     Task<T?> GetBySpecAsync(Specification<T> spec);
     Task<IEnumerable<T>> GetAllBySpecAsync(Specification<T> spec);
     Task<PagedResult<T>> GetPagedBySpecAsync(Specification<T> spec);

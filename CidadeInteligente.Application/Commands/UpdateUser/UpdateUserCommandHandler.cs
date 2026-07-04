@@ -19,11 +19,11 @@ public class UpdateUserCommandHandler(INotificationContext notification, IUnitOf
             .Build();
 
         User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
-        //if (user is null)
-        //{
-        //    _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);
-        //    return null;
-        //}
+        if (user is null)
+        {
+            _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);
+            return null;
+        }
 
         Specification<User> specEmailInUse = SpecificationBuilder<User>.Create()
             .Where(u => u.UserId != request.UserId && u.Email == request.Email)

@@ -1,8 +1,6 @@
-using CidadeInteligente.Application.Commands.CreateCourse;
 using CidadeInteligente.Application.Commands.CreateProject;
 using CidadeInteligente.Application.Commands.DeleteProjectById;
 using CidadeInteligente.Application.Commands.UpdateProject;
-using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Enums;
 using CidadeInteligente.Mvc.Extensions;
 using CidadeInteligente.Mvc.Requests.v1;

@@ -3,7 +3,6 @@ using CidadeInteligente.Domain.Notifications;
 using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
-using Serilog;
 using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.CreateUser;

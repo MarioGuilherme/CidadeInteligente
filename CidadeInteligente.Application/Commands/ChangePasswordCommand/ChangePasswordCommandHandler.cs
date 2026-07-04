@@ -2,8 +2,8 @@
 using CidadeInteligente.Domain.Notifications;
 using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Infrastructure.Persistence;
-using static BCrypt.Net.BCrypt;
 using MediatR;
+using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.ChangePasswordCommand;
 

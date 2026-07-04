@@ -1,8 +1,10 @@
-﻿using CidadeInteligente.Application.Notifications;
+﻿using CidadeInteligente.Application.Behaviors;
+using CidadeInteligente.Application.Notifications;
 using CidadeInteligente.Application.Queries.AuthenticateUser;
 using CidadeInteligente.Domain.Notifications;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CidadeInteligente.Application;
@@ -24,6 +26,7 @@ public static class ApplicationModule
         private IServiceCollection AddMediatR()
         {
             services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<AuthenticateUserQuery>());
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
         }

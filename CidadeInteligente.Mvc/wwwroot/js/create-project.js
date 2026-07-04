@@ -65,8 +65,9 @@
                     new QRCode($(".qrCode")[0], headers.get("Location"));
                     cleanAllFields();
                     $(".medias").empty();
-                    project.title = project.description = project.date = project.areaId = project.courseId = null;
-                    project.involvedUsers = project.medias = [];
+                    project.title = project.description = project.startedAt = project.finishedAt = project.areaId = project.courseId = null;
+                    project.involvedUsers = [];
+                    project.medias = [];
                     break;
                 case 400:
                     handleBadRequest(notifications);

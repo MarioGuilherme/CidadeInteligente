@@ -30,7 +30,7 @@
                     <div class="card card-projeto">
                         @if (project.Medias[0].IsVideo)
                         {
-                            <video class="d-block" style="width:inherit" preload="metadata" src="@project.Medias[0].Path"></video>
+                            <video loop muted autoplay class="d-block" style="width:inherit" preload="metadata" src="@project.Medias[0].Path"></video>
                         }
                         else
                         {
@@ -38,16 +38,7 @@
                         }
                         <div class="card-body">
                             <h5 class="card-title">@project.Title</h5>
-                            <p class="card-text">
-                                @if (project.Description is not null)
-                                {
-                                    @(project.Description.Length < 125 ? project.Description : $"{project.Description[0..125]}...")
-                                }
-                                else
-                                {
-                                    <small>Sem descrição</small>
-                                }
-                            </p>
+                            <p class="card-text">@project.Description</p>
                         </div>
                         <a href="/projects/@project.ProjectId/view" class="btn btn-block mt-2 btn-view-project">Ver Projeto</a>
                         @if (User.IsInRole(nameof(Role.Teacher)))

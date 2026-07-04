@@ -34,10 +34,11 @@ public class AreasController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateArea([FromBody] CreateAreaCommand command)
+    public async Task<ActionResult> CreateArea([FromBody] CreateAreaRequest request)
     {
-        int? areaId = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetAreaById), new { areaId }, command);
+        CreateAreaCommand createAreaCommand = new(request.Description);
+        int? areaId = await _mediator.Send(createAreaCommand);
+        return CreatedAtAction(nameof(GetAreaById), new { areaId }, request);
     }
 
     [HttpPatch("{areaId:int}")]

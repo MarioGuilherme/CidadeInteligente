@@ -1,7 +1,8 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetUserById;
@@ -13,15 +14,14 @@ public class GetUserByIdQueryHandler(INotificationContext notification, IUnitOfW
 
     public async Task<GetUserByIdQueryResult?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        Specification<User, GetUserByIdQueryResult?> spec = SpecificationBuilder<User>.Create()
-            .Where(u => u.UserId == request.UserId)
-            .WithProjection(u => new GetUserByIdQueryResult(u.UserId,
+        Specification<User, GetUserByIdQueryResult?> getUserByIdSpec = UserSpecifications.GetById(request.UserId)
+            .WithProjection<GetUserByIdQueryResult>(u => new(u.UserId,
                 u.CourseId,
                 u.Name,
                 u.Email,
                 (byte)u.Role));
 
-        GetUserByIdQueryResult? getUserByIdQueryResult = await _unitOfWork.Users.GetBySpecAsync(spec);
+        GetUserByIdQueryResult? getUserByIdQueryResult = await _unitOfWork.Users.GetBySpecAsync(getUserByIdSpec, cancellationToken);
         if (getUserByIdQueryResult is null)
         {
             _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);

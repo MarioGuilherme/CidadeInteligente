@@ -1,28 +1,29 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Enums;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
+using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
-using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Queries.AuthenticateUser;
 
-public class AuthenticateUserQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<AuthenticateUserQuery, AuthenticateUserQueryResult?>
+public class AuthenticateUserQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher) : IRequestHandler<AuthenticateUserQuery, AuthenticateUserQueryResult?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IPasswordHasher _passwordHasher = passwordHasher;
 
     public async Task<AuthenticateUserQueryResult?> Handle(AuthenticateUserQuery request, CancellationToken cancellationToken)
     {
-        Specification<User, UserReadModel?> spec = SpecificationBuilder<User>.Create()
-            .Where(u => u.Email == request.Email)
-            .WithProjection(u => new UserReadModel(u.UserId, u.Password, u.Role));
+        Specification<User, UserReadModel?> getUserByEmailSpec = UserSpecifications.GetByEmailAndExceptUserId(request.Email)
+            .WithProjection<UserReadModel>(u => new(u.UserId, u.Password, u.Role)!);
 
-        UserReadModel? possibleUser = await _unitOfWork.Users.GetBySpecAsync(spec);
-        if (possibleUser is null || !Verify(request.Password, possibleUser.Password))
+        UserReadModel? possibleUser = await _unitOfWork.Users.GetBySpecAsync(getUserByEmailSpec, cancellationToken);
+        if (possibleUser is null || !_passwordHasher.Verify(request.Password, possibleUser.Password))
         {
             _notification.AddNotification(NotificationType.UserWithEmailNotFound);
             return null;

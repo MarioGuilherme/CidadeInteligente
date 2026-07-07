@@ -11,10 +11,7 @@ public class SpecificationBuilder<T> where T : class
         _spec = spec ?? throw new ArgumentNullException(nameof(spec));
     }
 
-    public static SpecificationBuilder<T> Create()
-    {
-        return new(new BaseSpecification<T>());
-    }
+    public static SpecificationBuilder<T> Create() => new (new BaseSpecification<T>());
 
     public SpecificationBuilder<T> Where(Expression<Func<T, bool>> criteria)
     {
@@ -64,30 +61,15 @@ public class SpecificationBuilder<T> where T : class
         return this;
     }
 
-    public SpecificationBuilder<T> AsReadOnly()
-    {
-        _spec.DisableTracking();
-        _spec.EnableSplitQuery();
-        return this;
-    }
-
-    public SpecificationBuilder<T> AsEditable()
-    {
-        return this;
-    }
-
     public Specification<T> Build()
     {
         return _spec;
     }
 
-    public Specification<T, TResult?> WithProjection<TResult>(
-        Expression<Func<T, TResult?>> selector)
+    public Specification<T, TResult?> WithProjection<TResult>(Expression<Func<T, TResult?>> selector)
     {
-        if (selector is null)
-            throw new ArgumentNullException(nameof(selector));
-
+        ArgumentNullException.ThrowIfNull(selector);
         _spec.DisableTracking();
-        return new Specification<T, TResult?>(_spec, selector);
+        return new(_spec, selector);
     }
 }

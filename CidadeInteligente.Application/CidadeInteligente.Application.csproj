@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CidadeInteligente.Domain\CidadeInteligente.Domain.csproj" />
-    <ProjectReference Include="..\CidadeInteligente.Infrastructure\CidadeInteligente.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

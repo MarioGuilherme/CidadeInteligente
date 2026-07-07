@@ -1,6 +1,4 @@
-﻿using CidadeInteligente.Domain.Repositories;
-
-namespace CidadeInteligente.Infrastructure.Persistence;
+﻿namespace CidadeInteligente.Domain.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {

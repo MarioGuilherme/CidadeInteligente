@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cidade-inteligente-mvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cidade-inteligente-mvc
+  template:
+    metadata:
+      labels:
+        app: cidade-inteligente-mvc
+    spec:
+      containers:
+      - name: cidade-inteligente-mvc
+        image: marioguilhermedev/cidade-inteligente-mvc:latest
+        ports:
+        - containerPort: 8080
+
+          # Startup: allows time for the app to start up (migrations, connections, etc.)
+          # before the other probes start counting.
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 30      # 30 tentativas...
+            periodSeconds: 5          # ...a cada 5s = até 150s para subir
+
+          # Liveness: "is the process stuck/dead?" If it fails
+          # repeatedly, k8s KILLS and restarts the pod.
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 0    # startupProbe has already covered the initial delay.
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          # Readiness: "is ready to receive traffic NOW?" If it fails,
+          # k8s removes the pod from the Service (without restarting it) until it passes again
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+        envFrom:
+        - configMapRef:
+            name: cidade-inteligente-mvc-configmap
+        - secretRef:
+            name: cidade-inteligente-mvc-secret
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"

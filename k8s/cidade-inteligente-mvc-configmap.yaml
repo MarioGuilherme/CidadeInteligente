@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cidade-inteligente-mvc-configmap
+data:
+  ASPNETCORE_URLS: http://+:8080
+  AzureStorage__ContainerName: project-medias
+  SendGrid__SenderEmail: ""
+  Pagination__MaxPageSize: "8"

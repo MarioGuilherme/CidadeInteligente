@@ -1,8 +1,11 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Areas;
+using CidadeInteligente.Domain.Specifications.Courses;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
 using System.Collections.Concurrent;
 
@@ -16,17 +19,13 @@ public class CreateProjectCommandHandler(INotificationContext notification, IUni
 
     public async Task<int?> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
-        Specification<Area> specArea = SpecificationBuilder<Area>.Create()
-            .Where(a => a.AreaId == request.AreaId)
-            .Build();
-        Specification<Course> specCourse = SpecificationBuilder<Course>.Create()
-            .Where(c => c.CourseId == request.CourseId)
-            .Build();
+        Specification<Area> getAreaByIdSpec = AreaSpecifications.GetById(request.AreaId).Build();
+        Specification<Course> getCourseByIdSpec = CourseSpecifications.GetById(request.CourseId).Build();
 
-        if (!await _unitOfWork.Areas.AnyBySpecAsync(specArea))
+        if (!await _unitOfWork.Areas.AnyBySpecAsync(getAreaByIdSpec, cancellationToken))
             _notification.AddNotification(NotificationType.AreaNotFound, [request.AreaId]);
 
-        if (!await _unitOfWork.Courses.AnyBySpecAsync(specCourse))
+        if (!await _unitOfWork.Courses.AnyBySpecAsync(getCourseByIdSpec, cancellationToken))
             _notification.AddNotification(NotificationType.CourseNotFound, [request.CourseId]);
 
         if (_notification.HasNotifications)
@@ -46,12 +45,8 @@ public class CreateProjectCommandHandler(INotificationContext notification, IUni
         {
             foreach (int involvedUserId in request.InvolvedUsers)
             {
-                Specification<User> specNewInvolvedUser = SpecificationBuilder<User>.Create()
-                    .Where(u => u.UserId == involvedUserId)
-                    .AsEditable()
-                    .Build();
-
-                User? newUserInvolved = await _unitOfWork.Users.GetBySpecAsync(specNewInvolvedUser);
+                Specification<User> getUserByIdSpec = UserSpecifications.GetById(involvedUserId).Build();
+                User? newUserInvolved = await _unitOfWork.Users.GetBySpecAsync(getUserByIdSpec, cancellationToken);
                 if (newUserInvolved is null)
                 {
                     _notification.AddNotification(NotificationType.UserNotFound, [involvedUserId]);
@@ -72,7 +67,7 @@ public class CreateProjectCommandHandler(INotificationContext notification, IUni
             foreach (Media uploadedMedia in uploadedMedias)
                 project.Medias.Add(uploadedMedia);
 
-            await _unitOfWork.Projects.AddAsync(project);
+            await _unitOfWork.Projects.AddAsync(project, cancellationToken);
         },
         onRollback: async ct =>
         {

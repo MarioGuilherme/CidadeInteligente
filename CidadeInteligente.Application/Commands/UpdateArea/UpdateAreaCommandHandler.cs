@@ -1,7 +1,9 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Areas;
+using CidadeInteligente.Domain.Specifications.Courses;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.UpdateArea;
@@ -13,22 +15,18 @@ public class UpdateAreaCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<Unit?> Handle(UpdateAreaCommand request, CancellationToken cancellationToken)
     {
-        Specification<Area> specArea = SpecificationBuilder<Area>.Create()
-            .Where(a => a.AreaId == request.AreaId)
-            .AsEditable()
-            .Build();
-
-        Area? area = await _unitOfWork.Areas.GetBySpecAsync(specArea);
+        Specification<Area> getAreaByIdSpec = AreaSpecifications.GetById(request.AreaId).Build();
+        Area? area = await _unitOfWork.Areas.GetBySpecAsync(getAreaByIdSpec, cancellationToken);
         if (area is null)
         {
             _notification.AddNotification(NotificationType.AreaNotFound);
             return null;
         }
+
         Specification<Area> specCourseDescriptionInUse = SpecificationBuilder<Area>.Create()
             .Where(a => a.AreaId != request.AreaId && a.Description == request.Description)
             .Build();
-
-        if (await _unitOfWork.Areas.AnyBySpecAsync(specCourseDescriptionInUse))
+        if (await _unitOfWork.Areas.AnyBySpecAsync(specCourseDescriptionInUse, cancellationToken))
         {
             _notification.AddNotification(NotificationType.AreaAlreadyExists, [request.Description]);
             return null;

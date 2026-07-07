@@ -1,7 +1,8 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Courses;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.UpdateCourse;
@@ -13,12 +14,8 @@ public class UpdateCourseCommandHandler(INotificationContext notification, IUnit
 
     public async Task<Unit?> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        Specification<Course> specCourse = SpecificationBuilder<Course>.Create()
-            .Where(c => c.CourseId == request.CourseId)
-            .AsEditable()
-            .Build();
-
-        Course? course = await _unitOfWork.Courses.GetBySpecAsync(specCourse);
+        Specification<Course> getCourseByIdSpec = CourseSpecifications.GetById(request.CourseId).Build();
+        Course? course = await _unitOfWork.Courses.GetBySpecAsync(getCourseByIdSpec, cancellationToken);
         if (course is null)
         {
             _notification.AddNotification(NotificationType.CourseNotFound);
@@ -28,8 +25,7 @@ public class UpdateCourseCommandHandler(INotificationContext notification, IUnit
         Specification<Course> specCourseDescriptionInUse = SpecificationBuilder<Course>.Create()
             .Where(c => c.CourseId != request.CourseId && c.Description == request.Description)
             .Build();
-
-        if (await _unitOfWork.Courses.AnyBySpecAsync(specCourseDescriptionInUse))
+        if (await _unitOfWork.Courses.AnyBySpecAsync(specCourseDescriptionInUse, cancellationToken))
         {
             _notification.AddNotification(NotificationType.CourseAlreadyExists, [request.Description]);
             return null;

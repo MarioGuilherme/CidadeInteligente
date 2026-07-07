@@ -12,7 +12,7 @@ public static class ClaimsExtensions
             get
             {
                 if (principal.Identity!.IsAuthenticated)
-                    return int.Parse(principal.Claims.First(c => c.Type == nameof(User.UserId)).Value);
+                    return int.Parse(principal.Claims.First(c => c.Type is nameof(User.UserId)).Value);
 
                 return default;
             }

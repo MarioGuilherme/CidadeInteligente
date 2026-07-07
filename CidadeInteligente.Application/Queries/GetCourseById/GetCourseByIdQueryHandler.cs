@@ -1,7 +1,8 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Courses;
 using MediatR;
 
 namespace CidadeInteligente.Application.Queries.GetCourseById;
@@ -13,11 +14,10 @@ public class GetCourseByIdQueryHandler(INotificationContext notification, IUnitO
 
     public async Task<GetCourseByIdQueryResult?> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        Specification<Course, GetCourseByIdQueryResult?> spec = SpecificationBuilder<Course>.Create()
-            .Where(c => c.CourseId == request.CourseId)
-            .WithProjection(c => new GetCourseByIdQueryResult(c.CourseId, c.Description));
+        Specification<Course, GetCourseByIdQueryResult?> getCourseByIdSpec = CourseSpecifications.GetById(request.CourseId)
+            .WithProjection<GetCourseByIdQueryResult>(c => new(c.CourseId, c.Description));
 
-        GetCourseByIdQueryResult? course = await _unitOfWork.Courses.GetBySpecAsync(spec);
+        GetCourseByIdQueryResult? course = await _unitOfWork.Courses.GetBySpecAsync(getCourseByIdSpec, cancellationToken);
         if (course is null)
         {
             _notification.AddNotification(NotificationType.CourseNotFound, [request.CourseId]);

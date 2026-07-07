@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="CidadeInteligente.Application\CidadeInteligente.Application.csproj" Id="b793cc1c-3a4b-4158-a442-d8333aa670d5" />
+  <Project Path="CidadeInteligente.Domain/CidadeInteligente.Domain.csproj" Id="a751b9ba-510a-4f04-9dc0-31af7370ab1b" />
+  <Project Path="CidadeInteligente.Infrastructure/CidadeInteligente.Infrastructure.csproj" Id="a219ea2f-1554-41ea-ac6a-b224ed5debfe" />
+  <Project Path="CidadeInteligente.Mvc\CidadeInteligente.Mvc.csproj" Id="812e2266-1c1d-457b-9d83-35fa351805c7" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+</Solution>

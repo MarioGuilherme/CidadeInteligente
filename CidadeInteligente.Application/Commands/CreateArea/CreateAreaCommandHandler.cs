@@ -1,7 +1,7 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateArea;
@@ -16,8 +16,7 @@ public class CreateAreaCommandHandler(INotificationContext notification, IUnitOf
         Specification<Area> specCourseDescriptionInUse = SpecificationBuilder<Area>.Create()
             .Where(a => a.Description == request.Description)
             .Build();
-
-        if (await _unitOfWork.Areas.AnyBySpecAsync(specCourseDescriptionInUse))
+        if (await _unitOfWork.Areas.AnyBySpecAsync(specCourseDescriptionInUse, cancellationToken))
         {
             _notification.AddNotification(NotificationType.AreaAlreadyExists, [request.Description]);
             return null;
@@ -27,7 +26,7 @@ public class CreateAreaCommandHandler(INotificationContext notification, IUnitOf
 
         await _unitOfWork.ExecuteInTransactionAsync(async ct =>
         {
-            await _unitOfWork.Areas.AddAsync(area);
+            await _unitOfWork.Areas.AddAsync(area, ct);
         }, cancellationToken: cancellationToken);
 
         return area.AreaId;

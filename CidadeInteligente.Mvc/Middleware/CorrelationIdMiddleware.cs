@@ -1,11 +1,13 @@
 ﻿using Serilog;
 using Serilog.Context;
+using Serilog.Core;
 
 namespace CidadeInteligente.Mvc.Middleware;
 
-public class CorrelationIdMiddleware(RequestDelegate next)
+public class CorrelationIdMiddleware(RequestDelegate next, ILogger<CorrelationIdMiddleware> logger)
 {
     private readonly RequestDelegate _next = next;
+    private readonly ILogger<CorrelationIdMiddleware> _logger = logger;
 
     public async Task Invoke(HttpContext context)
     {
@@ -15,7 +17,7 @@ public class CorrelationIdMiddleware(RequestDelegate next)
 
         using (LogContext.PushProperty("CorrelationId", correlationId))
         {
-            Log.Information("Start of request with CorrelationId {CorrelationId}.", correlationId);
+            _logger.LogInformation("Start of request with CorrelationId {CorrelationId}.", correlationId);
             await _next(context);
         }
     }

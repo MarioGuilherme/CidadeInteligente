@@ -24,8 +24,7 @@ public abstract class Specification<T> where T : class
 
     internal void AddInclude(Expression<Func<T, object>> includeExpression)
     {
-        if (includeExpression is null)
-            throw new ArgumentNullException(nameof(includeExpression));
+        ArgumentNullException.ThrowIfNull(includeExpression);
         Includes.Add(includeExpression);
     }
 
@@ -39,9 +38,9 @@ public abstract class Specification<T> where T : class
     internal void ApplyPaging(int pageNumber, int pageSize)
     {
         if (pageNumber < 1)
-            throw new ArgumentException("Page number deve ser maior que 0", nameof(pageNumber));
+            throw new ArgumentException("Page number must be greater than 0", nameof(pageNumber));
         if (pageSize < 1)
-            throw new ArgumentException("Page size deve ser maior que 0", nameof(pageSize));
+            throw new ArgumentException("Page size must be greater than 0", nameof(pageSize));
 
         PageNumber = pageNumber;
         PageSize = pageSize;
@@ -52,8 +51,7 @@ public abstract class Specification<T> where T : class
 
     internal void SetOrderBy(Expression<Func<T, object>> orderBy, bool descending = false)
     {
-        if (orderBy is null)
-            throw new ArgumentNullException(nameof(orderBy));
+        ArgumentNullException.ThrowIfNull(orderBy);
 
         if (descending)
             OrderByDescending = orderBy;
@@ -66,6 +64,14 @@ public abstract class Specification<T> where T : class
     internal void EnableSplitQuery() => IsSplitQuery = true;
 }
 
-public class BaseSpecification<T> : Specification<T> where T : class
+public sealed class Specification<T, TResult> where T : class
 {
+    public Specification<T> Query { get; }
+    public Expression<Func<T, TResult?>> Selector { get; }
+
+    internal Specification(Specification<T> query, Expression<Func<T, TResult?>> selector)
+    {
+        Query = query ?? throw new ArgumentNullException(nameof(query));
+        Selector = selector ?? throw new ArgumentNullException(nameof(selector));
+    }
 }

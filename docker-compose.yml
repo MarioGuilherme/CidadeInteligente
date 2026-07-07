@@ -4,6 +4,10 @@ services:
     build:
       context: .
       dockerfile: CidadeInteligente.Mvc/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CidadeInteligente;User=sa;Password=Adm1n23%;TrustServerCertificate=True
+      - AzureStorage__ConnectionString=
+      - SendGrid__ApiKey=
 
   db:
     image: mcr.microsoft.com/mssql/server

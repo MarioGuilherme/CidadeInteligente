@@ -30,11 +30,11 @@
                     <div class="card card-projeto">
                         @if (project.Medias[0].IsVideo)
                         {
-                            <video loop muted autoplay class="d-block" style="width:inherit" preload="metadata" src="@project.Medias[0].Path"></video>
+                            <video loop muted autoplay class="d-block" style="width:inherit" preload="metadata" src=@project.Medias[0].Path></video>
                         }
                         else
                         {
-                            <img class="card-img-top img-card" src="@project.Medias[0].Path">
+                            <img class="card-img-top img-card" src=@project.Medias[0].Path>
                         }
                         <div class="card-body">
                             <h5 class="card-title">@project.Title</h5>

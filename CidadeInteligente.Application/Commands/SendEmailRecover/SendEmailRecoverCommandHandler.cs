@@ -1,8 +1,9 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Text;
@@ -18,12 +19,8 @@ public class SendEmailRecoverCommandHandler(INotificationContext notification, I
 
     public async Task<Unit?> Handle(SendEmailRecoverCommand request, CancellationToken cancellationToken)
     {
-        Specification<User> spec = SpecificationBuilder<User>.Create()
-            .Where(u => u.Email == request.Email)
-            .AsEditable()
-            .Build();
-
-        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
+        Specification<User> getUserByEmailSpecification = UserSpecifications.GetByEmailAndExceptUserId(request.Email).Build();
+        User? user = await _unitOfWork.Users.GetBySpecAsync(getUserByEmailSpecification, cancellationToken);
         if (user is null)
         {
             _notification.AddNotification(NotificationType.UserWithEmailNotFound);

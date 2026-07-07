@@ -1,8 +1,10 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Projects;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
 using Serilog;
 using System.Collections.Concurrent;
@@ -17,14 +19,12 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
 
     public async Task<Unit?> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
-        Specification<Project> specProject = SpecificationBuilder<Project>.Create()
+        Specification<Project> getProjectByIdSpec = ProjectSpecifications.GetById(request.ProjectId)
              .Include(p => p.Medias)
              .Include(p => p.InvolvedUsers)
-             .Where(p => p.ProjectId == request.ProjectId)
-             .AsEditable()
              .Build();
 
-        Project? project = await _unitOfWork.Projects.GetBySpecAsync(specProject);
+        Project? project = await _unitOfWork.Projects.GetBySpecAsync(getProjectByIdSpec, cancellationToken);
         if (project is null)
         {
             _notification.AddNotification(NotificationType.ProjectNotFound, [request.ProjectId]);
@@ -60,12 +60,8 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
 
             foreach (int involvedUserId in request.InvolvedUsers.Where(iuId => !currentUserIds.Contains(iuId)))
             {
-                Specification<User> specNewInvolvedUser = SpecificationBuilder<User>.Create()
-                    .Where(u => u.UserId == involvedUserId)
-                    .AsEditable()
-                    .Build();
-
-                User? newUserInvolved = await _unitOfWork.Users.GetBySpecAsync(specNewInvolvedUser);
+                Specification<User> getUserByIdSpec = UserSpecifications.GetById(involvedUserId).Build();
+                User? newUserInvolved = await _unitOfWork.Users.GetBySpecAsync(getUserByIdSpec, cancellationToken);
                 if (newUserInvolved is null)
                 {
                     _notification.AddNotification(NotificationType.UserNotFound, [involvedUserId]);
@@ -77,7 +73,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
 
             foreach (Media m in mediasToRemove)
             {
-                _unitOfWork.Projects.DeleteMedia(m);
+                //_unitOfWork.Projects.DeleteMedia(m);
                 project.Medias.Remove(m);
             }
 

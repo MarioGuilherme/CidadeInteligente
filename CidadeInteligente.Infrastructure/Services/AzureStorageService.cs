@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using CidadeInteligente.Domain.Services;
 
-namespace CidadeInteligente.Infrastructure.CloudServices;
+namespace CidadeInteligente.Infrastructure.Services;
 
 public class AzureStorageService(BlobContainerClient blobContainerClient) : IFileStorage
 {

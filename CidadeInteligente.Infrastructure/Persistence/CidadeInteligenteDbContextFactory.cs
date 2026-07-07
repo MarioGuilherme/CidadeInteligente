@@ -20,7 +20,7 @@ public class CidadeInteligenteDbContextFactory : IDesignTimeDbContextFactory<Cid
             .AddEnvironmentVariables()
             .Build();
 
-        string? connectionString = configuration.GetConnectionString("CidadeInteligenteDb");
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
 
         DbContextOptions<CidadeInteligenteDbContext> options = new DbContextOptionsBuilder<CidadeInteligenteDbContext>()
             .UseSqlServer(connectionString)

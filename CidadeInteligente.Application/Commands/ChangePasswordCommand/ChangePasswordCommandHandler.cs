@@ -1,25 +1,23 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
+using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
-using static BCrypt.Net.BCrypt;
 
 namespace CidadeInteligente.Application.Commands.ChangePasswordCommand;
 
-public class ChangePasswordCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork) : IRequestHandler<ChangePasswordCommand, Unit?>
+public class ChangePasswordCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher) : IRequestHandler<ChangePasswordCommand, Unit?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IPasswordHasher _passwordHasher = passwordHasher;
 
     public async Task<Unit?> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        Specification<User> spec = SpecificationBuilder<User>.Create()
-            .Where(u => u.TokenRecoverPassword == request.Token)
-            .AsEditable()
-            .Build();
-
-        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
+        Specification<User> getUserByTokenSpec = UserSpecifications.GetByToken(request.Token).Build();
+        User? user = await _unitOfWork.Users.GetBySpecAsync(getUserByTokenSpec, cancellationToken);
         if (user is null)
         {
             _notification.AddNotification(NotificationType.UserWithTokenNotFound);
@@ -34,7 +32,7 @@ public class ChangePasswordCommandHandler(INotificationContext notification, IUn
             return null;
         }
 
-        await _unitOfWork.ExecuteInTransactionAsync(() => user.UpdatePassword(HashPassword(request.NewPassword)), cancellationToken: cancellationToken);
+        await _unitOfWork.ExecuteInTransactionAsync(() => user.UpdatePassword(_passwordHasher.Hash(request.NewPassword)), cancellationToken: cancellationToken);
 
         return Unit.Value;
     }

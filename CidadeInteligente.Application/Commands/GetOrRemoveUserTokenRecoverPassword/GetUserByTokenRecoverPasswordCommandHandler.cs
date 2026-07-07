@@ -1,7 +1,9 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Courses;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
@@ -14,12 +16,9 @@ public class GetUserByTokenRecoverPasswordCommandHandler(INotificationContext no
 
     public async Task<GetUserByTokenRecoverPasswordCommandResult?> Handle(GetUserByTokenRecoverPasswordCommand request, CancellationToken cancellationToken)
     {
-        Specification<User> spec = SpecificationBuilder<User>.Create()
-            .Where(u => u.TokenRecoverPassword == request.Token)
-            .AsEditable()
-            .Build();
 
-        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
+        Specification<User> getUserByTokenSpec = UserSpecifications.GetByToken(request.Token).Build();
+        User? user = await _unitOfWork.Users.GetBySpecAsync(getUserByTokenSpec, cancellationToken);
         if (user is null)
         {
             _notification.AddNotification(NotificationType.UserWithTokenNotFound);

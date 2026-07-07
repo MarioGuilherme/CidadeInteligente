@@ -8,14 +8,7 @@ using Prometheus;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog();
-
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] (CorrelationId={CorrelationId}) {Message:lj} {NewLine}{Exception}")
-    .CreateLogger();
-
-Environment.SetEnvironmentVariable("Pagination:MaxPageSize", builder.Configuration["Pagination:MaxPageSize"]);
+builder.Host.UseSerilog((ctx, cfg) => cfg.ReadFrom.Configuration(ctx.Configuration));
 
 builder.Services.AddSingleton(TimeProvider.System);
 
@@ -24,37 +17,36 @@ builder.Services
     .AddApplication();
 
 builder.Services
-    .AddControllers(options => options.Filters.Add<NotificationResultFilter>())
+    .AddHealthChecks()
+    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!, name: "database");
+
+IMvcBuilder mvcBuilder = builder.Services
+    .AddControllersWithViews(options => options.Filters.Add<NotificationResultFilter>())
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
-builder.Services.AddHealthChecks();
-
 #if DEBUG
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-#else
-builder.Services.AddControllersWithViews();
+mvcBuilder.AddRazorRuntimeCompilation();
 #endif
 
 WebApplication app = builder.Build();
 
-using AsyncServiceScope asyncServiceScope = app.Services.CreateAsyncScope();
-IServiceProvider services = asyncServiceScope.ServiceProvider;
-
 #region Ensures the database is created at startup.
-try
+using (AsyncServiceScope migrationScope = app.Services.CreateAsyncScope())
 {
-    CidadeInteligenteDbContext context = services.GetRequiredService<CidadeInteligenteDbContext>();
-    if ((await context.Database.GetPendingMigrationsAsync()).Any())
-        await context.Database.MigrateAsync();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Error during database initialization.");
+    CidadeInteligenteDbContext context = migrationScope.ServiceProvider.GetRequiredService<CidadeInteligenteDbContext>();
+    try
+    {
+        if ((await context.Database.GetPendingMigrationsAsync()).Any())
+            await context.Database.MigrateAsync();
+    }
+    catch (Exception ex)
+    {
+        ILogger<Program> logger = migrationScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogCritical(ex, "Error during database initialization.");
+        throw;
+    }
 }
 #endregion
-
-app.UseSerilogRequestLogging();
-app.UseMetricServer();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -63,6 +55,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseRouting();

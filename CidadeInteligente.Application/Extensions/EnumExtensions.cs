@@ -5,15 +5,18 @@ namespace CidadeInteligente.Application.Extensions;
 
 public static class EnumExtensions
 {
-    public static string GetDescription(this Enum value)
+    extension(Enum @enum)
     {
-        FieldInfo? fieldInfo = value.GetType().GetField(value.ToString());
+        public string GetDescription()
+        {
+            FieldInfo? fieldInfo = @enum.GetType().GetField(@enum.ToString());
 
-        if (fieldInfo is null) return value.ToString();
+            if (fieldInfo is null) return @enum.ToString();
 
-        if (fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes && attributes.Length != 0)
-            return attributes.First().Description;
+            if (fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes && attributes.Length != 0)
+                return attributes.First().Description;
 
-        return value.ToString();
+            return @enum.ToString();
+        }
     }
 }

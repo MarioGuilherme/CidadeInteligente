@@ -1,92 +1,60 @@
 ﻿using CidadeInteligente.Domain.Common;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Domain.Specifications.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
-
 
 public abstract class SpecificationRepositoryBase<T>(CidadeInteligenteDbContext context) : ISpecificationRepository<T> where T : class
 {
     protected readonly CidadeInteligenteDbContext Context = context;
     protected readonly DbSet<T> DbSet = context.Set<T>();
-
-    public async Task<T?> GetBySpecAsync(Specification<T> spec)
+    
+    public async Task AddAsync(T entity, CancellationToken cancellationToken)
     {
-        return await ApplySpecification(spec).FirstOrDefaultAsync();
+        await DbSet.AddAsync(entity, cancellationToken);
     }
 
-    public async Task<IEnumerable<T>> GetAllBySpecAsync(Specification<T> spec)
+    public async Task<bool> AnyBySpecAsync(Specification<T> spec, CancellationToken cancellationToken)
     {
-        return await ApplySpecification(spec).ToListAsync();
+        return await ApplyCriteriaOnly(spec).AnyAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<T>> GetPagedBySpecAsync(Specification<T> spec)
+    public async Task<int> DeleteByPredicateAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
     {
-        int totalCount = await ApplyCriteriaOnly(spec).CountAsync();
-        List<T> items = await ApplySpecification(spec).ToListAsync();
-
-        return new PagedResult<T>(items, totalCount, spec.PageNumber, spec.PageSize);
+        return await DbSet.Where(predicate).ExecuteDeleteAsync(cancellationToken);
     }
 
-    public async Task<TResult?> GetBySpecAsync<TResult>(Specification<T, TResult> spec)
+    public async Task<List<TResult>> GetAllBySpecAsync<TResult>(Specification<T, TResult> spec, CancellationToken cancellationToken)
     {
         return await ApplySpecification(spec.Query)
             .Select(spec.Selector)
-            .FirstOrDefaultAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TResult>> GetAllBySpecAsync<TResult>(Specification<T, TResult> spec)
+    public async Task<T?> GetBySpecAsync(Specification<T> spec, CancellationToken cancellationToken)
+    {
+        return await ApplySpecification(spec).FirstOrDefaultAsync(cancellationToken);
+    }
+ 
+    public async Task<TResult?> GetBySpecAsync<TResult>(Specification<T, TResult> spec, CancellationToken cancellationToken)
     {
         return await ApplySpecification(spec.Query)
             .Select(spec.Selector)
-            .ToListAsync();
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<TResult>> GetPagedBySpecAsync<TResult>(Specification<T, TResult> spec)
+    public async Task<PagedResult<TResult>> GetPagedBySpecAsync<TResult>(Specification<T, TResult> spec, CancellationToken cancellationToken)
     {
-        const int pageSize = 8;
+        int totalCount = await ApplyCriteriaOnly(spec.Query).CountAsync(cancellationToken);
+        int page = ClampPage(spec.Query.PageNumber, spec.Query.PageSize, totalCount);
 
-        Specification<T> countSpec = SpecificationBuilder<T>.Create().Build();
-        int totalCount = await CountBySpecAsync(countSpec);
-        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-        int page = spec.Query.PageNumber < 1 ? 1 : spec.Query.PageNumber;
-        if (totalPages > 0 && page > totalPages)
-            page = totalPages;
-
-        List<TResult> items = (await ApplySpecification(spec.Query)
+        List<TResult> items = await ApplySpecification(spec.Query)
             .Select(spec.Selector)
-            .ToListAsync())!;
+            .ToListAsync(cancellationToken);
 
-        return new PagedResult<TResult>(items, totalCount, spec.Query.PageNumber, spec.Query.PageSize);
-    }
-
-    public async Task<int> CountBySpecAsync(Specification<T> spec)
-    {
-        return await ApplyCriteriaOnly(spec).CountAsync();
-    }
-
-    public async Task<bool> AnyBySpecAsync(Specification<T> spec)
-    {
-        return await ApplyCriteriaOnly(spec).AnyAsync();
-    }
-
-    public async Task AddAsync(T entity)
-    {
-        await DbSet.AddAsync(entity);
-    }
-
-    public Task UpdateAsync(T entity)
-    {
-        DbSet.Update(entity);
-        return Task.CompletedTask;
-    }
-
-    public Task DeleteAsync(T entity)
-    {
-        DbSet.Remove(entity);
-        return Task.CompletedTask;
+        return new(items, totalCount, page, spec.Query.PageSize);
     }
 
     protected IQueryable<T> ApplySpecification(Specification<T> spec)
@@ -128,5 +96,17 @@ public abstract class SpecificationRepositoryBase<T>(CidadeInteligenteDbContext 
             query = query.Where(spec.Criteria);
 
         return query;
+    }
+
+    private static int ClampPage(int requestedPage, int pageSize, int totalCount)
+    {
+        if (pageSize < 1) return 1;
+
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        int page = requestedPage < 1 ? 1 : requestedPage;
+        if (totalPages > 0 && page > totalPages)
+            page = totalPages;
+
+        return page;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace CidadeInteligente.Infrastructure.Persistence.Repositories;
 
@@ -8,14 +7,8 @@ public class UserRepository(CidadeInteligenteDbContext dbContext) : Specificatio
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
 
-    public void Attach(User user) => _dbContext.Users.Attach(user);
-
-    public async ValueTask CreateAsync(User user)
+    public async ValueTask CreateAsync(User user, CancellationToken cancellationToken)
     {
-        await _dbContext.Users.AddAsync(user);
+        await _dbContext.Users.AddAsync(user, cancellationToken);
     }
-
-    public Task<int> DeleteByIdAsync(int userId, CancellationToken cancellationToken) => _dbContext.Users
-        .Where(u => u.UserId == userId)
-        .ExecuteDeleteAsync(cancellationToken);
 }

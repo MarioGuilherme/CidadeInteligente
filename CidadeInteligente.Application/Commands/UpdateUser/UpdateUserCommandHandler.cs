@@ -1,7 +1,8 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.UpdateUser;
@@ -13,23 +14,16 @@ public class UpdateUserCommandHandler(INotificationContext notification, IUnitOf
 
     public async Task<Unit?> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        Specification<User> spec = SpecificationBuilder<User>.Create()
-            .Where(u => u.UserId == request.UserId)
-            .AsEditable()
-            .Build();
-
-        User? user = await _unitOfWork.Users.GetBySpecAsync(spec);
+        Specification<User> getUserByIdSpec = UserSpecifications.GetById(request.UserId).Build();
+        User? user = await _unitOfWork.Users.GetBySpecAsync(getUserByIdSpec, cancellationToken);
         if (user is null)
         {
             _notification.AddNotification(NotificationType.UserNotFound, [request.UserId]);
             return null;
         }
 
-        Specification<User> specEmailInUse = SpecificationBuilder<User>.Create()
-            .Where(u => u.UserId != request.UserId && u.Email == request.Email)
-            .Build();
-
-        if (await _unitOfWork.Users.AnyBySpecAsync(specEmailInUse))
+        Specification<User> getUserByEmailExceptUserIdSpec = UserSpecifications.GetByEmailAndExceptUserId(request.Email, request.UserId).Build();
+        if (await _unitOfWork.Users.AnyBySpecAsync(getUserByEmailExceptUserIdSpec, cancellationToken))
         {
             _notification.AddNotification(NotificationType.EmailAlreadyInUse);
             return null;

@@ -1,14 +1,18 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Projects;
 using MediatR;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace CidadeInteligente.Application.Commands.DeleteProjectById;
 
-public class DeleteProjectByIdCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<DeleteProjectByIdCommand, Unit?>
+public class DeleteProjectByIdCommandHandler(INotificationContext notification,
+    IUnitOfWork unitOfWork,
+    IFileStorage fileStorage,
+    ILogger<DeleteProjectByIdCommandHandler> logger) : IRequestHandler<DeleteProjectByIdCommand, Unit?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -16,12 +20,8 @@ public class DeleteProjectByIdCommandHandler(INotificationContext notification, 
 
     public async Task<Unit?> Handle(DeleteProjectByIdCommand request, CancellationToken cancellationToken)
     {
-        Specification<Project> specProject = SpecificationBuilder<Project>.Create()
-            .Where(p => p.ProjectId == request.ProjectId)
-            .AsEditable()
-            .Build();
-
-        Project? project = await _unitOfWork.Projects.GetBySpecAsync(specProject);
+        Specification<Project> getProjectByIdSpec = ProjectSpecifications.GetById(request.ProjectId).Build();
+        Project? project = await _unitOfWork.Projects.GetBySpecAsync(getProjectByIdSpec, cancellationToken);
         if (project is null)
         {
             _notification.AddNotification(NotificationType.ProjectNotFound, [request.ProjectId]);
@@ -34,10 +34,7 @@ public class DeleteProjectByIdCommandHandler(INotificationContext notification, 
             return null;
         }
 
-        await _unitOfWork.ExecuteInTransactionAsync(async _ =>
-        {
-            await _unitOfWork.Projects.DeleteAsync(project);
-        }, cancellationToken: cancellationToken);
+        await _unitOfWork.Projects.DeleteByPredicateAsync(p => p.ProjectId == request.ProjectId, cancellationToken);
 
         await Task.WhenAll(project.Medias.Select(async m =>
         {
@@ -47,7 +44,7 @@ public class DeleteProjectByIdCommandHandler(INotificationContext notification, 
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Falha ao remover arquivo {FileName} do projeto {ProjectId} já excluído", m.FileName, project.ProjectId);
+                logger.LogError(ex, "Falha ao remover arquivo {FileName} do projeto {ProjectId} já excluído", m.FileName, project.ProjectId);
             }
         }));
 

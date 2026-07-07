@@ -14,9 +14,8 @@ public record GetProjectByIdQueryResult(int ProjectId,
 {
     public record ProjectUserViewModel(int UserId, string Name);
 
-    public record MediaDetailsViewModel(int MediaId, string Title, string? Description, string FileName, string MimeType)
+    public record MediaDetailsViewModel(int MediaId, string Title, string? Description, string Path, string MimeType)
     {
         public bool IsVideo { get; init; } = MimeType == "video/mp4";
-        public string Path => $"{Environment.GetEnvironmentVariable("AzureStorageBlobURL")}/{FileName}";
     }
 }

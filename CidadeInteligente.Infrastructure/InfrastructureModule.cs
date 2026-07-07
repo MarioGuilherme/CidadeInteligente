@@ -1,8 +1,8 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using CidadeInteligente.Application.Options;
 using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Services;
-using CidadeInteligente.Infrastructure.CloudServices;
 using CidadeInteligente.Infrastructure.Persistence;
 using CidadeInteligente.Infrastructure.Persistence.Repositories;
 using CidadeInteligente.Infrastructure.Services;
@@ -33,8 +33,10 @@ public static class InfrastructureModule
 
         private IServiceCollection AddPersistence(IConfiguration configuration)
         {
-            string connectionString = configuration.GetConnectionString("CidadeInteligenteDb")!;
+            string connectionString = configuration.GetConnectionString("DefaultConnection")!;
             services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddOptions<PaginationOptions>().BindConfiguration("Pagination");
 
             return services;
         }
@@ -71,28 +73,39 @@ public static class InfrastructureModule
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
 
+            services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+
             return services;
         }
 
         private IServiceCollection AddFileStorage(IConfiguration configuration)
         {
-            string connectionString = configuration["AzureStorage:ConnectionString"]!;
-            string containerName = configuration["AzureStorage:ContainerName"]!;
+            string? connectionString = configuration["AzureStorage:ConnectionString"];
 
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                services.AddSingleton<IFileStorage, NoOpFileStorage>();
+                return services;
+            }
+
+            string containerName = configuration["AzureStorage:ContainerName"] ?? "project-medias";
             BlobContainerClient blobContainerClient = new(connectionString, containerName);
             blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
 
-            Environment.SetEnvironmentVariable("AzureStorageBlobURL", blobContainerClient.Uri.ToString());
+            services.Configure<AzureStorageOptions>(options =>
+            {
+                options.ConnectionString = connectionString;
+                options.ContainerName = containerName;
+                options.BlobUrl = blobContainerClient.Uri.ToString();
+            });
 
             services.AddSingleton<IFileStorage, AzureStorageService>(_ => new(blobContainerClient));
-
             return services;
         }
 
         private IServiceCollection AddEmailService(IConfiguration configuration)
         {
             services.AddHttpContextAccessor();
-
             services.AddSingleton<IEmailService, SendGridEmailService>(_ =>
             {
                 string apiKey = configuration["SendGrid:ApiKey"]!;

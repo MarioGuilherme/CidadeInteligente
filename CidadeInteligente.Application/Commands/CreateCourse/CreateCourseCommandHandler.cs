@@ -1,7 +1,8 @@
 ﻿using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Notifications;
+using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Infrastructure.Persistence;
+using CidadeInteligente.Domain.Specifications.Courses;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateCourse;
@@ -16,8 +17,7 @@ public class CreateCourseCommandHandler(INotificationContext notification, IUnit
         Specification<Course> specCourseDescriptionInUse = SpecificationBuilder<Course>.Create()
             .Where(a => a.Description == request.Description)
             .Build();
-
-        if (await _unitOfWork.Courses.AnyBySpecAsync(specCourseDescriptionInUse))
+        if (await _unitOfWork.Courses.AnyBySpecAsync(specCourseDescriptionInUse, cancellationToken))
         {
             _notification.AddNotification(NotificationType.CourseAlreadyExists, [request.Description]);
             return null;
@@ -27,7 +27,7 @@ public class CreateCourseCommandHandler(INotificationContext notification, IUnit
 
         await _unitOfWork.ExecuteInTransactionAsync(async ct =>
         {
-            await _unitOfWork.Courses.AddAsync(course);
+            await _unitOfWork.Courses.AddAsync(course, ct);
         }, cancellationToken: cancellationToken);
 
         return course.CourseId;

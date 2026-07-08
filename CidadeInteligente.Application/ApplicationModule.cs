@@ -33,6 +33,8 @@ public static class ApplicationModule
 
         private IServiceCollection AddFluentValidation()
         {
+            ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+
             services
                 .AddFluentValidationAutoValidation(o => o.DisableDataAnnotationsValidation = true)
                 .AddValidatorsFromAssemblyContaining<AuthenticateUserQueryValidator>();

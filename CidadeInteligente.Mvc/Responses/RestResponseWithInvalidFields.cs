@@ -2,5 +2,5 @@
 
 public record RestResponseWithInvalidFields
 {
-    public IReadOnlyDictionary<string, string[]> InvalidFields { get; init; } = new Dictionary<string, string[]>();
+    public IReadOnlyDictionary<string, string[]> Notifications { get; init; } = new Dictionary<string, string[]>();
 }

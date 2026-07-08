@@ -14,14 +14,7 @@
 {
     <link rel="stylesheet" href="~/css/header.css">
     <link rel="stylesheet" href="~/css/form.css" />
-    @if (isUpdate)
-    {
-        <link rel="stylesheet" href="~/css/edit-project.css" />
-    }
-    else
-    {
-        <link rel="stylesheet" href="~/css/create-project.css" />
-    }
+    <link rel="stylesheet" href="~/css/project-form.css" />
 }
 
 <partial name="_Header" />
@@ -33,12 +26,12 @@
         </div>
         <div class="formContent">
             <form class="form">
-                <input type="hidden" name="projectId" value=@Model?.ProjectId>
+                <input type="hidden" name="projectId" value="@Model?.ProjectId">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 input-form-title">
                         <div class="form-group">
                             <label>Título</label>
-                            <input value="@Model?.Title" type="text" maxlength="100" name="title" class="form-control" placeholder="Digite o titulo">
+                            <input value="@Model?.Title" required type="text" maxlength="100" name="title" class="form-control" placeholder="Digite o titulo">
                         </div>
                     </div>
                 </div>
@@ -48,18 +41,18 @@
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label>Área do projeto</label>
-                                    <select class="form-control" name="areaId">
+                                    <select required class="form-control" name="areaId">
                                         @foreach (AreaViewModel area in ViewBag.Areas)
                                         {
-                                            <option selected="@(Model?.AreaId == area.AreaId)" value=@area.AreaId>@area.Description</option>
+                                            <option selected="@(Model?.AreaId == area.AreaId)" value="@area.AreaId">@area.Description</option>
                                         }
                                     </select>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
-                                    <label for="my-select">Curso do projeto</label>
-                                    <select id="my-select" class="form-control" name="courseId">
+                                    <label for="courseId">Curso do projeto</label>
+                                    <select required id="courseId" class="form-control" name="courseId">
                                         @foreach (CourseViewModel course in ViewBag.Courses)
                                         {
                                             <option selected="@(Model?.CourseId == course.CourseId)" value=@course.CourseId>@course.Description</option>
@@ -70,24 +63,24 @@
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label>Data de ínicio do projeto</label>
-                                    <input class="form-control" max=@string.Join('-', DateTime.Now.ToShortDateString().Split('/').Reverse()) value="@(isUpdate ? string.Join('-', Model!.StartedAt.ToString().Split('/').Reverse()) : string.Empty)" type="date" name="startedAt">
+                                    <input required class="form-control" max=@DateTime.Now.ToString("yyyy-MM-dd") value="@(isUpdate ? Model!.StartedAt.ToString("yyyy-MM-dd") : string.Empty)" type="date" name="startedAt">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label>Data de término do projeto</label>
-                                    <input class="form-control" max=@string.Join('-', DateTime.Now.ToShortDateString().Split('/').Reverse()) value="@(Model?.FinishedAt is not null ? string.Join('-', Model.FinishedAt!.ToString()!.Split('/').Reverse()) : string.Empty)" type="date" name="finishedAt">
+                                    <input class="form-control" max=@DateTime.Now.ToString("yyyy-MM-dd") value="@(Model?.FinishedAt is not null ? Model.FinishedAt.Value.ToString("yyyy-MM-dd") : string.Empty)" type="date" name="finishedAt">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-sm-4 col-lg-4 col-md-4">
                         <div class="form-group">
-                            <label for="my-select">Pessoas Envolvidas</label>
+                            <label>Pessoas Envolvidas</label>
                             <div class="users">
                                 @foreach (UserViewModel user in ViewBag.Users)
                                 {
-                                    <div class="user" id=@user.UserId involved=@(isUpdate && Model!.InvolvedUsers.Any(u => u.UserId == user.UserId) ? "true" : "false")>
+                                    <div class="user" id="@user.UserId" involved=@(isUpdate && Model!.InvolvedUsers.Any(u => u.UserId == user.UserId) ? "true" : "false")>
                                         <span>@user.MinorName</span>
                                     </div>
                                 }
@@ -98,8 +91,8 @@
                 <div class="row mt-3">
                     <div class="col-12 col-md-12">
                         <div class="form-group">
-                            <label for="my-textarea">Descrição</label>
-                            <textarea class="form-control" name="description" maxlength="800" rows="5">@(Model?.Description ?? string.Empty)</textarea>
+                            <label for="description">Descrição</label>
+                            <textarea id="description" class="form-control" name="description" maxlength="800" rows="5">@(Model?.Description ?? string.Empty)</textarea>
                         </div>
                     </div>
                 </div>
@@ -121,15 +114,15 @@
                     @foreach (MediaDetailsViewModel media in Model?.Medias ?? Enumerable.Empty<MediaDetailsViewModel>())
                     {
                         <div class="col-12 col-sm-12 col-lg-3 col-md-3 my-3">
-                            <div class="card media" id=@media.MediaId>
+                            <div class="card media" id="@media.MediaId">
                                 <div class="card-body">
                                     @if (media.IsVideo)
                                     {
-                                        <video class="d-block" style="width:100%" preload="metadata" controls src=@media.Path></video>
+                                        <video class="d-block" style="width:100%" preload="metadata" controls src="@media.Path"></video>
                                     }
                                     else
                                     {
-                                        <img class="d-block w-100 img-card" src=@media.Path>
+                                        <img class="d-block w-100 img-card" src="@media.Path">
                                     }
                                     <div class="row my-1">
                                         <div class="col-12 col-lg-6">
@@ -139,7 +132,7 @@
                                             </button>
                                         </div>
                                         <div class="col-12 col-lg-6">
-                                            <button type="button" class="btn w-100 btn-remove-media btn-default-red my-1" id=@media.MediaId>
+                                            <button type="button" class="btn w-100 btn-remove-media btn-default-red my-1" id="@media.MediaId">
                                                 <i class="mdi mdi-trash-can-outline"></i>
                                                 Apagar
                                             </button>
@@ -147,7 +140,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input maxlength="60" class="form-control" type="text" value=@media.Title>
+                                        <input required maxlength="60" class="form-control" type="text" value="@media.Title">
                                     </div>
                                     <div class="form-group">
                                         <label>Descrição</label>
@@ -170,14 +163,6 @@
 
 @section Scripts
 {
-    <script src="~/js/project-form-base.js"></script>
-    @if (isUpdate)
-    {
-        <script src="~/js/edit-project.js"></script>
-    }
-    else
-    {
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-        <script src="~/js/create-project.js"></script>
-    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="~/js/project-form.js"></script>
 }

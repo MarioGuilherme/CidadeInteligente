@@ -15,7 +15,17 @@
         `;
         const resetDataTableAsync = async () => {
             const entityName = getCurrentEntityName();
-            const { statusCode, data, notifications } = await restAPI.getAsync(`v1/${entityName}`);
+            const { statusCode, data, notifications } = await restApi.getAsync(`v1/${entityName}`);
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", `Ocorreu um erro durante a atualização da tabela.`);
+                return;
+            }
+
+            if (statusCode !== 200) {
+                showNotifications(notifications, statusCode);
+                return;
+            }
+
             const dataTable = $(`div#${entityName} table`).DataTable();
 
             if (entityName == "courses")
@@ -49,48 +59,41 @@
             $("select[name=courseId]").append(courses.reduce((acc, { courseId, description }) => acc + `<option value=${courseId}>${description}</option>`, ""));
         }
 
-        $(".btn-save").click(async () => {
+        screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-save"), async () => {
             const entityName = getCurrentEntityName();
-            const dataJson = buildDataFromForm($(`.modal form#${entityName == "users" ? "userForm" : "areaOrCourseForm"}`));
-            if (hasUndefinedOrNullOrEmptyField(dataJson)) {
-                sweetAlert("warning", "Há campo(s) vazio(s) que precisam ser preenchido(s)!");
+            const entityId = +$(".modal input[name=entityId]").val().trim() || null;
+            const isUpdate = !!entityId;
+            $("div#passwordInputs input").attr("required", entityName === "users" && !isUpdate);
+
+            if (hasEmptyField($(`.modal form#${entityName === "users" ? "userForm" : "areaOrCourseForm"}`))) return;
+
+            const dataJson = buildDataFromForm($(`.modal form#${entityName === "users" ? "userForm" : "areaOrCourseForm"}`));
+            sweetAlertUtils.sweetAlertBlockingScreen(`${isUpdate ? "Atualizando" : "Criando"} registro`);
+
+            const { statusCode, data, notifications } = isUpdate
+                ? await restApi.patchAsync(`v1/${entityName}/${entityId}`, dataJson)
+                : await restApi.postAsync(`v1/${entityName}`, dataJson);
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", `Ocorreu um erro durante a ${isUpdate ? "atualização" : "criação"} do registro.`);
                 return;
             }
 
-            const entityId = +$(".modal input[name=entityId]").val().trim() || null;
-            const isUpdate = !!entityId;
-            sweetAlertAwait(`${isUpdate ? "Atualizando" : "Criando"} registro`);
-            const { statusCode, data, notifications } = isUpdate
-                ? await restAPI.patchAsync(`v1/${entityName}/${+entityId}`, dataJson)
-                : await restAPI.postAsync(`v1/${entityName}`, dataJson);
-            toggleExitConfirmation(false);
-
-            switch (statusCode) {
-                case 201:
-                case 204:
-                    resetDataTableAsync();
-                    $(".modal").modal("hide");
-                    cleanAllFields();
-                    sweetAlert("success", `Registro ${isUpdate ? "atualizado" : "criado"} com sucesso!`);
-                    break;
-                case 400:
-                    handleBadRequest(notifications);
-                    break;
-                case 500:
-                    sweetAlert("error", "Um erro desconhecido ocorreu ao cadastrar o usuário!");
-                    break;
-                default:
-                    sweetAlert("warning", notifications[0]);
-                    break;
+            if (statusCode !== 204 && statusCode !== 201) {
+                showNotifications(notifications, statusCode);
+                return;
             }
+
+            resetDataTableAsync();
+            $(".modal").modal("hide");
+            sweetAlertUtils.sweetAlertAsync("success", `Registro ${isUpdate ? "atualizado" : "criado"} com sucesso!`);
         });
 
         $("button[data-target='#formModal']").click(() => {
-            cleanAllFields();
+            clearAllFields();
 
             $(".modal-title").html("Novo registro");
 
-            if (getCurrentEntityName() == "users") {
+            if (getCurrentEntityName() === "users") {
                 $("form#areaOrCourseForm").hide();
                 $("form#userForm, #passwordInputs").show();
                 return;
@@ -100,16 +103,26 @@
             $("form#userForm").hide();
         });
 
-        $("tbody").on("click", ".btn-edit", async function () {
-            sweetAlertAwait("Buscando os dados deste registro");
+        screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreenEventDelegate($("tbody"), ".btn-edit", async button => {
+            sweetAlertUtils.sweetAlertBlockingScreen("Buscando os dados deste registro");
+
             const entityName = getCurrentEntityName();
-            const { statusCode, data, notifications } = await restAPI.getAsync(`v1/${entityName}/${$(this).attr("id")}`);
+            const { statusCode, data, notifications } = await restApi.getAsync(`v1/${entityName}/${$(button).attr("id")}`);
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", "Ocorreu um erro durante a busca do registro.");
+                return;
+            }
+
+            if (statusCode !== 200) {
+                showNotifications(notifications, statusCode);
+                return;
+            }
 
             $(".modal-title").html("Editar Registro");
             $("#passwordInputs").hide();
             $("input[name=entityId]").val(data.userId ?? data.areaId ?? data.courseId);
 
-            if (entityName == "users") {
+            if (entityName === "users") {
                 $("form#areaOrCourseForm").hide();
                 $("form#userForm").show();
                 $("input[name=name]").val(data.name);
@@ -122,48 +135,30 @@
                 $("input[name=description]").val(data.description);
             }
 
-            $(".modal").modal("show");
             swal.close();
-            toggleExitConfirmation(false);
-        });
+            $(".modal").modal("show");
+        })
 
-        $("tbody").on("click", ".btn-delete", async function () {
-            const { value } = await Swal.fire({
-                html: `<h2 style="color: white">Deseja mesmo excluir este registro?</h2>`,
-                background: "rgb(70, 5, 7)",
-                icon: "question",
-                showCancelButton: true,
-                allowOutsideClick: false,
-                confirmButtonText: "Sim",
-                confirmButtonColor: "#d9534f",
-                cancelButtonText: "Não",
-                cancelButtonColor: "#f0ad4e"
-            });
-
+        screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreenEventDelegate($("tbody"), ".btn-delete", async button => {
+            const { value } = await sweetAlertUtils.sweetAlertQuestionAsync("Deseja mesmo excluir este registro");
             if (!value) return;
-            
-            sweetAlertAwait("Apagando registro");
+
+            sweetAlertUtils.sweetAlertBlockingScreen("Apagando registro");
             const entityName = getCurrentEntityName();
-            const { statusCode, data, notifications } = await restAPI.deleteAsync(`v1/${entityName}/${$(this).attr("id")}`);
 
-            toggleExitConfirmation(false);
-
-            switch (statusCode) {
-                case 204:
-                    await resetDataTableAsync();
-                    sweetAlert("success", "Registro apagado com sucesso!");
-                    break;
-                case 400:
-                    handleBadRequest(notifications);
-                    break;
-                case 404:
-                case 409:
-                    sweetAlert("warning", notifications[0]);
-                    break;
-                case 500:
-                    sweetAlert("error", notifications[0]);
-                    break;
+            const { statusCode, data, notifications } = await restApi.deleteAsync(`v1/${entityName}/${$(button).attr("id")}`);
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", "Ocorreu um erro durante a exclusão do registro.");
+                return;
             }
+
+            if (statusCode !== 204) {
+                showNotifications(notifications, statusCode);
+                return;
+            }
+
+            await resetDataTableAsync();
+            sweetAlertUtils.sweetAlertAsync("success", "Registro apagado com sucesso!");
         });
     });
 })(jQuery);

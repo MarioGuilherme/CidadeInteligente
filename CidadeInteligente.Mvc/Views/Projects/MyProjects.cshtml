@@ -28,13 +28,13 @@
             {
                 <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-3">
                     <div class="card card-projeto">
-                        @if (project.Medias[0].IsVideo)
+                        @if (project.Medias.First().IsVideo)
                         {
-                            <video loop muted autoplay class="d-block" style="width:inherit" preload="metadata" src=@project.Medias[0].Path></video>
+                            <video loop muted autoplay class="d-block" style="width:inherit" preload="metadata" src="@project.Medias.First().Path"></video>
                         }
                         else
                         {
-                            <img class="card-img-top img-card" src=@project.Medias[0].Path>
+                            <img class="card-img-top img-card" src="@project.Medias.First().Path">
                         }
                         <div class="card-body">
                             <h5 class="card-title">@project.Title</h5>
@@ -44,7 +44,7 @@
                         @if (User.IsInRole(nameof(Role.Teacher)))
                         {
                             <a href="/projects/@project.ProjectId/edit" class="btn mt-2 btn-edit-project">Editar</a>
-                            <button id=@project.ProjectId class="btn mt-2 btn-delete-project">Excluir</button>
+                            <button id="@project.ProjectId" class="btn mt-2 btn-delete-project">Excluir</button>
                         }
                     </div>
                 </div>

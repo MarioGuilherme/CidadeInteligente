@@ -2,27 +2,24 @@
     "use strict";
 
     $(document).ready(() => {
-        $(".btn-recover").click(async () => {
-            formHasEmptyField($("form").serializeArray());
+        screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-recover"), async () => {
+            if (hasEmptyField($("form"))) return;
 
-            sweetAlertAwait("Enviando email de recuperação");
-            const { statusCode, notifications } = await restAPI.patchAsync("v1/auth/send-email-recover", { email: $("input[name=email]").val().trim() });
-            toggleExitConfirmation(false);
-
-            switch (statusCode) {
-                case 204:
-                    sweetAlert("success", "Se este e-mail pertencer à uma conta, será feito o envio das instruções para redefinição de senha!").then(({ value }) => value && $(location).attr("href", "/login"));
-                    break;
-                case 400:
-                    handleBadRequest(notifications);
-                    break;
-                case 424:
-                    sweetAlert("warning", notifications[0]);
-                    break;
-                default:
-                    sweetAlert("error", notifications[0]);
-                    break;
+            sweetAlertUtils.sweetAlertBlockingScreen("Enviando email de recuperação");
+            const { statusCode, notifications } = await restApi.patchAsync("v1/auth/send-email-recover", { email: $("input[name=email]").val().trim() });
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", "Ocorreu um erro durante o envio de e-mail de recuperação de senha!");
+                return;
             }
+
+            if (statusCode !== 204) {
+                showNotifications(notifications, statusCode);
+                return;
+            }
+
+            await sweetAlertUtils.sweetAlertAsync("success", "Se este e-mail pertencer à uma conta, será feito o envio das instruções para redefinição de senha!");
+            toggleAskBeforeExit(false);
+            $(location).attr("href", "/login");
         });
     });
 })(jQuery);

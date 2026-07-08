@@ -47,13 +47,13 @@ public class User
         Role = role;
     }
 
-    public void UpdatePassword(string newPassword)
+    public void UpdatePasswordAndRemoveTokenInformations(string newPassword)
     {
         Password = newPassword;
-        RemovePasswordResetTokenInformation();
+        RemoveTokenInformations();
     }
 
-    public void RemovePasswordResetTokenInformation()
+    public void RemoveTokenInformations()
     {
         TokenRecoverPassword = null;
         TokenRecoverPasswordExpiration = null;

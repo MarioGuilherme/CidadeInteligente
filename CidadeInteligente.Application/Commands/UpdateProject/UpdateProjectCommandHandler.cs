@@ -72,10 +72,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
             }
 
             foreach (Media m in mediasToRemove)
-            {
-                //_unitOfWork.Projects.DeleteMedia(m);
                 project.Medias.Remove(m);
-            }
 
             List<UpdateProjectCommand.UpdateMediaCommand> newMediaCommands = [.. request.Medias.Where(m => m.MediaId is null)];
             await Task.WhenAll(newMediaCommands.Select(async cmd =>
@@ -97,9 +94,9 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
                 if (stream.Length > 0)
                 {
                     await _fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, stream, cancellationToken);
-                    mediaDb.Update(cmd.Title, cmd.Description, cmd.MimeType);
+                    mediaUpdates.Add((mediaDb, cmd.Title, cmd.Description, cmd.OpenStream));
                 }
-                mediaUpdates.Add((mediaDb, cmd.Title, cmd.Description, cmd.OpenStream));
+                mediaDb.Update(cmd.Title, cmd.Description, cmd.MimeType);
             }
         },
         onRollback: async ct =>

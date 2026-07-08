@@ -64,10 +64,10 @@
                                                 <td>@user.Course</td>
                                                 <td>@user.RoleDescription</td>
                                                 <td>
-                                                    <button id=@user.UserId class="btn btn-edit btn-strong-gray">
+                                                    <button id="@user.UserId" class="btn btn-edit btn-strong-gray">
                                                         <i class="fa fa-solid fa-pencil"></i> Editar
                                                     </button>
-                                                    <button id=@user.UserId class="btn btn-delete btn-strong-red">
+                                                    <button id="@user.UserId" class="btn btn-delete btn-strong-red">
                                                         <i class="fa fa-solid fa-trash"></i> Apagar
                                                     </button>
                                                 </td>
@@ -106,10 +106,10 @@
                                                 <td>@area.AreaId</td>
                                                 <td>@area.Description</td>
                                                 <td>
-                                                    <button id=@area.AreaId class="btn btn-edit btn-strong-gray">
+                                                    <button id="@area.AreaId" class="btn btn-edit btn-strong-gray">
                                                         <i class="fa fa-solid fa-pencil"></i> Editar
                                                     </button>
-                                                    <button id=@area.AreaId class="btn btn-delete btn-strong-red">
+                                                    <button id="@area.AreaId" class="btn btn-delete btn-strong-red">
                                                         <i class="fa fa-solid fa-trash"></i> Apagar
                                                     </button>
                                                 </td>
@@ -148,10 +148,10 @@
                                                 <td>@course.CourseId</td>
                                                 <td>@course.Description</td>
                                                 <td>
-                                                    <button id=@course.CourseId class="btn btn-edit btn-strong-gray">
+                                                    <button id="@course.CourseId" class="btn btn-edit btn-strong-gray">
                                                         <i class="fa fa-solid fa-pencil"></i> Editar
                                                     </button>
-                                                    <button id=@course.CourseId class="btn btn-delete btn-strong-red">
+                                                    <button id="@course.CourseId" class="btn btn-delete btn-strong-red">
                                                         <i class="fa fa-solid fa-trash"></i> Apagar
                                                     </button>
                                                 </td>
@@ -178,43 +178,43 @@
                 </button>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="entityId">
+                <input required type="hidden" name="entityId">
                 <form id="userForm">
                     <div class="form-group">
                         <label class="text-dark">Nome</label>
-                        <input class="form-control" maxlength="60" type="text" name="name">
+                        <input required class="form-control" maxlength="60" type="text" name="name">
                     </div>
                     <div class="form-group">
                         <label class="text-dark">E-mail</label>
-                        <input class="form-control" maxlength="60" type="text" name="email">
+                        <input required class="form-control" maxlength="60" type="text" name="email">
                     </div>
                     <div id="passwordInputs">
                         <div class="form-group">
                             <label class="text-dark">Senha</label>
-                            <input class="form-control" maxlength="60" type="password" name="password">
+                            <input required class="form-control" maxlength="60" type="password" name="password">
                         </div>
                         <div class="form-group">
                             <label class="text-dark">Confirmar Senha</label>
-                            <input class="form-control" maxlength="60" type="password" name="confirmPassword">
+                            <input required class="form-control" maxlength="60" type="password" name="confirmPassword">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="text-dark">Curso</label>
                         <div class="form-group">
-                            <select class="form-control" name="courseId">
+                            <select required class="form-control" name="courseId">
                                 @foreach (GetCoursesQueryResult.CourseViewModel course in ViewBag.Courses)
                                 {
-                                    <option value=@course.CourseId>@course.Description</option>
+                                    <option value="@course.CourseId">@course.Description</option>
                                 }
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Tipo de Usuário</label>
-                        <select class="form-control" name="role">
+                        <select required class="form-control" name="role">
                             @foreach (Role role in Enum.GetValues<Role>())
                             {
-                                <option value=@((byte)role)>@role.GetDescription()</option>
+                                <option value="@((byte)role)">@role.GetDescription()</option>
                             }
                         </select>
                     </div>
@@ -222,7 +222,7 @@
                 <form id="areaOrCourseForm">
                     <div class="form-group">
                         <label class="text-dark">Descrição</label>
-                        <input class="form-control" maxlength="45" type="text" name="description">
+                        <input required class="form-control" maxlength="45" type="text" name="description">
                     </div>
                 </form>
             </div>

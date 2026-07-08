@@ -31,17 +31,17 @@
             }
             else foreach (ProjectViewModel project in Model.Data)
             {
-                bool hasMoreThanOneMedia = project.Medias.Count > 1;
+                bool hasMoreThanOneMedia = project.Medias.Count() > 1;
                 <div class="col-12 col-sm-12 col-lg-3 col-md-3 mb-2">
                     <div class="card">
                         <div id="mediaIndicators-@project.ProjectId" class="carousel slide" data-ride="carousel">
                             @if (hasMoreThanOneMedia)
                             {
                                 <ol class="carousel-indicators">
-                                    <li data-target="#mediaIndicators-@project.ProjectId" data-slide-to=@project.Medias.First().MediaId class="active"></li>
-                                    @for (int i = 1; i < project.Medias.Count; i++)
+                                    <li data-target="#mediaIndicators-@project.ProjectId" data-slide-to="@project.Medias.First().MediaId" class="active"></li>
+                                    @for (int i = 1; i < project.Medias.Count(); i++)
                                     {
-                                        <li data-target="#mediaIndicators-@project.ProjectId" data-slide-to=@project.Medias[i].MediaId></li>
+                                        <li data-target="#mediaIndicators-@project.ProjectId" data-slide-to="@project.Medias.ElementAt(i).MediaId"></li>
                                     }
                                 </ol>
                             }
@@ -49,29 +49,29 @@
                                 @if (project.Medias.First().IsVideo)
                                 {
                                     <div class="carousel-item active">
-                                        <video loop muted autoplay class="d-block" style="width:inherit" preload="metadata" src=@project.Medias.First().Path></video>
+                                        <video loop muted autoplay class="d-block" style="width:inherit" preload="metadata" src="@project.Medias.First().Path"></video>
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="carousel-item active">
-                                        <img class="d-block w-100 img-card" src=@project.Medias.First().Path>
+                                        <img class="d-block w-100 img-card" src="@project.Medias.First().Path">
                                     </div>
                                 }
                                 @if (hasMoreThanOneMedia)
                                 {
-                                    for (int i = 1; i < project.Medias.Count; i++)
+                                    for (int i = 1; i < project.Medias.Count(); i++)
                                     {
-                                        if (project.Medias[i].IsVideo)
+                                        if (project.Medias.ElementAt(i).IsVideo)
                                         {
                                             <div class="carousel-item">
-                                                <video class="d-block" style="width:inherit" preload="metadata" src=@project.Medias[i].Path></video>
+                                                <video class="d-block" style="width:inherit" preload="metadata" src="@project.Medias.ElementAt(i).Path"></video>
                                             </div>
                                         }
                                         else
                                         {
                                             <div class="carousel-item">
-                                                <img class="d-block w-100 img-card" src=@project.Medias[i].Path>
+                                                <img class="d-block w-100 img-card" src="@project.Medias.ElementAt(i).Path">
                                             </div>
                                         }
                                     }

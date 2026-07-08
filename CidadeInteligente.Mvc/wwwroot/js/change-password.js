@@ -2,38 +2,33 @@
     "use strict";
 
     $(document).ready(() => {
-        $(".btn-changePassword").click(async () => {
-            formHasEmptyField($("form").serializeArray());
+        screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-changePassword"), async () => {
+            if (hasEmptyField($("form"))) return;
 
             if ($("input[type=password]:eq(0)").val() != $("input[type=password]:eq(1)").val()) {
-                sweetAlert("error", "As senhas não conferem");
+                sweetAlertUtils.sweetAlertAsync("warning", "As senhas não conferem");
                 return;
             }
 
-            sweetAlertAwait("Enviando email de recuperação");
-            const { statusCode, notifications } = await restAPI.patch("auth/changePassword", {
+            sweetAlertUtils.sweetAlertBlockingScreen("Enviando email de recuperação");
+            const { statusCode, notifications } = await restApi.patchAsync("v1/auth/change-password", {
                 newPassword: $("input[type=password]:eq(0)").val(),
                 confirmNewPassword: $("input[type=password]:eq(1)").val(),
                 token: $("input[name=token]").val()
             });
-            toggleExitConfirmation(false);
-
-            switch (statusCode) {
-                case 204:
-                    await sweetAlert("success", "Senha redefinida com sucesso!");
-                    $(location).attr("href", "/");
-                    break;
-                case 400:
-                    handleBadRequest(notifications);
-                    break;
-                case 404:
-                case 410:
-                    sweetAlert("warning", notifications[0]);
-                    break;
-                default:
-                    sweetAlert("error", notifications[0]);
-                    break;
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", "Ocorreu um erro durante a atualização da senha!");
+                return;
             }
+
+            if (statusCode !== 204) {
+                showNotifications(notifications, statusCode);
+                return;
+            }
+
+            toggleAskBeforeExit(false);
+            await sweetAlertUtils.sweetAlertAsync("success", "Senha redefinida com sucesso!");
+            $(location).attr("href", "/");
         });
     });
 })(jQuery);

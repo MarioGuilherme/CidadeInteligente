@@ -74,11 +74,11 @@
                         <div class="card-body text-center">
                             @if (media.IsVideo)
                             {
-                                <video class="d-block" style="width:-webkit-fill-available" preload="metadata" controls src=@media.Path></video>
+                                <video class="d-block" style="width:-webkit-fill-available" preload="metadata" controls src="@media.Path"></video>
                             }
                             else
                             {
-                                <img class="d-block w-100 img-card" alt=@media.Title src=@media.Path>
+                                <img class="d-block w-100 img-card" alt=@media.Title src="@media.Path">
                             }
                             <div class="form-group mt-2"><h4>@media.Title</h4></div>
                             <div class="form-group">@media.Description</div>

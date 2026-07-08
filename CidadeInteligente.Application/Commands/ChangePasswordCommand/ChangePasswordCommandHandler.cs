@@ -26,13 +26,13 @@ public class ChangePasswordCommandHandler(INotificationContext notification, IUn
 
         if (DateTime.Now > user.TokenRecoverPasswordExpiration)
         {
-            user.RemovePasswordResetTokenInformation();
-            await _unitOfWork.ExecuteInTransactionAsync(user.RemovePasswordResetTokenInformation, cancellationToken: cancellationToken);
+            user.RemoveTokenInformations();
+            await _unitOfWork.ExecuteInTransactionAsync(user.RemoveTokenInformations, cancellationToken: cancellationToken);
             _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);
             return null;
         }
 
-        await _unitOfWork.ExecuteInTransactionAsync(() => user.UpdatePassword(_passwordHasher.Hash(request.NewPassword)), cancellationToken: cancellationToken);
+        await _unitOfWork.ExecuteInTransactionAsync(() => user.UpdatePasswordAndRemoveTokenInformations(_passwordHasher.Hash(request.NewPassword)), cancellationToken: cancellationToken);
 
         return Unit.Value;
     }

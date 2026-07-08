@@ -31,14 +31,14 @@ public static class ProjectValidationRules
     {
         public IRuleBuilderOptions<T, DateOnly> ProjectStartedAt() => ruleBuilder
             .NotEmpty().WithMessage("The project start date is required")
-            .LessThanOrEqualTo(_ => DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project start date cannot be in the future");
+            .LessThanOrEqualTo(_ => ProjectConstraints.StartedAtMaxDateOnly).WithMessage("The project start date cannot be in the future");
     }
 
     extension<T>(IRuleBuilder<T, DateOnly?> ruleBuilder)
     {
         public IRuleBuilderOptions<T, DateOnly?> ProjectFinishedAt(Expression<Func<T, DateOnly?>> startedAtSelector) => ruleBuilder
             .GreaterThanOrEqualTo(startedAtSelector).WithMessage("The project finish date cannot be before the start date")
-            .LessThanOrEqualTo(_ => DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project finish date cannot be in the future");
+            .LessThanOrEqualTo(_ => ProjectConstraints.FinishedAtMaxDateOnly).WithMessage("The project finish date cannot be in the future");
     }
 
     extension<T>(IRuleBuilder<T, IEnumerable<int>> ruleBuilder)

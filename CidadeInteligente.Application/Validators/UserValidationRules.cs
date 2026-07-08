@@ -10,7 +10,7 @@ public static class UserValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> UserId(string? messageWhenEmpty = default) => ruleBuilder
-            .GreaterThan(0).WithMessage(messageWhenEmpty ?? "The user identifier is invalid");
+            .RequiredId(messageWhenEmpty ?? "The user identifier is invalid");
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)

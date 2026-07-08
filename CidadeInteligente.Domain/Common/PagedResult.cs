@@ -7,14 +7,12 @@ public record PagedResult<T>
     public int PageSize { get; }
     public int TotalItems { get; }
     public int TotalPages { get; }
-    public bool HasPrevious => Page > 1;
-    public bool HasNext => Page < TotalPages;
 
-    public PagedResult(IReadOnlyList<T> items, int totalItems, int pageNumber, int pageSize)
+    public PagedResult(IReadOnlyList<T> items, int totalItems, int page, int pageSize)
     {
         Items = items;
         TotalItems = totalItems;
-        Page = pageNumber;
+        Page = page;
         PageSize = pageSize;
         TotalPages = pageSize > 0
             ? (int)Math.Ceiling(totalItems / (double)pageSize)

@@ -43,9 +43,9 @@ public class SpecificationBuilder<T> where T : class
         return this;
     }
 
-    public SpecificationBuilder<T> PageBy(int pageNumber, int pageSize)
+    public SpecificationBuilder<T> PageBy(int page, int pageSize)
     {
-        _spec.ApplyPaging(pageNumber, pageSize);
+        _spec.ApplyPaging(page, pageSize);
         return this;
     }
 

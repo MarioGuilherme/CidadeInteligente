@@ -25,7 +25,7 @@ public class AuthenticateUserQueryHandler(INotificationContext notification, IUn
         UserReadModel? possibleUser = await _unitOfWork.Users.GetBySpecAsync(getUserByEmailSpec, cancellationToken);
         if (possibleUser is null || !_passwordHasher.Verify(request.Password, possibleUser.Password))
         {
-            _notification.AddNotification(NotificationType.UserWithEmailNotFound);
+            _notification.AddNotification(NotificationType.InvalidLoginCredentials);
             return null;
         }
 

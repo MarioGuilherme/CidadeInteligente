@@ -21,11 +21,7 @@ public class SendEmailRecoverCommandHandler(INotificationContext notification, I
     {
         Specification<User> getUserByEmailSpecification = UserSpecifications.GetByEmailAndExceptUserId(request.Email).Build();
         User? user = await _unitOfWork.Users.GetBySpecAsync(getUserByEmailSpecification, cancellationToken);
-        if (user is null)
-        {
-            _notification.AddNotification(NotificationType.UserWithEmailNotFound);
-            return null;
-        }
+        if (user is null) return Unit.Value;
 
         await _unitOfWork.ExecuteInTransactionAsync(user.SaveNewTokenToRecoverPassword, cancellationToken: cancellationToken);
         string rawHtmlBody = await File.ReadAllTextAsync("./Views/Auth/BodyEmail.html", cancellationToken);

@@ -2,30 +2,26 @@
     "use strict";
 
     $(document).ready(() => {
-        $(".btn-login").click(async () => {
-            formHasEmptyField($("form").serializeArray());
+        screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-login"), async () => {
+            if (hasEmptyField($("form"))) return;
 
-            sweetAlertAwait("Fazendo login...");
-            const { statusCode, notifications } = await restAPI.postAsync("v1/auth/login", {
-                email: $("input[name=email]").val().trim(),
-                password: $("input[name=password]").val().trim()
+            sweetAlertUtils.sweetAlertBlockingScreen("Fazendo login");
+            const { statusCode, notifications } = await restApi.postAsync("v1/auth/login", {
+                email: $("input[name=email]").val().trim() || null,
+                password: $("input[name=password]").val().trim() || null
             });
-            toggleExitConfirmation(false);
-
-            switch (statusCode) {
-                case 201:
-                    $(location).attr("href", "/");
-                    break;
-                case 400:
-                    handleBadRequest(notifications);
-                    break;
-                case 404:
-                    sweetAlert("warning", notifications[0]);
-                    break;
-                default:
-                    sweetAlert("error", notifications[0]);
-                    break;
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", "Ocorreu um erro durante o login!");
+                return;
             }
+
+            if (statusCode !== 201) {
+                showNotifications(notifications, statusCode);
+                return;
+            }
+
+            toggleAskBeforeExit(false);
+            $(location).attr("href", "/");
         });
     });
 })(jQuery);

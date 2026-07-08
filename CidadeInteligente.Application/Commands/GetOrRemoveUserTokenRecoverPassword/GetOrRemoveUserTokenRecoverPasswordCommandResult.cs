@@ -1,0 +1,3 @@
+﻿namespace CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
+
+public record GetOrRemoveUserTokenRecoverPasswordCommandResult(string UserName, string Token);

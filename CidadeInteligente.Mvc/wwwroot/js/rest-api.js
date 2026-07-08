@@ -1,58 +1,61 @@
-class RestAPI {
-    /**
-     * URL Base para a API Rest da aplicação
-     * @type {string}
-     */
-    BASE_URL = "/api";
+class RestApi {
+    #BASE_URL = "/api";
+    #BASE_RESPONSE = {
+        statusCode: null,
+        headers: null,
+        data: null,
+        notifications: null
+    };
 
-    baseRequestAsync = async (url, method, data = null) => {
-        const requestMetadata = this.buildRequestMetadata(data, method);
+    #baseRequestAsync = async (url, method, data = null) => {
+        const requestMetadata = this.#buildRequestMetadata(data);
+        const cleanUrl = url.replace(/^\/+/, "");
 
-        const response = await fetch(`${this.BASE_URL}/${url}`, {
-            method,
-            ...requestMetadata
-        });
+        try {
+            const response = await fetch(`${this.#BASE_URL}/${cleanUrl}`, {
+                method,
+                ...requestMetadata
+            });
 
-        return await this.handleResponseAsync(response);
+            return await this.#handleResponseAsync(response);
+        } catch (error) {
+            console.error(error);
+            return this.#BASE_RESPONSE;
+        }
     }
 
-    handleResponseAsync = async response => {
-        const responseBody = await response.text();
+    #handleResponseAsync = async response => {
         const baseResponse = {
+            ...this.#BASE_RESPONSE,
             statusCode: response.status,
-            headers: response.headers,
-            body: {
-                data: null,
-                notifications: null
-            }
+            headers: response.headers
         };
 
-        const body = responseBody == "" ? null : JSON.parse(responseBody);
-        if (body) {
-            baseResponse.data = body.data;
-            baseResponse.notifications = body.notifications;
+        const contentType = response.headers.get("content-type") ?? "";
+        if (contentType.includes("application/json")) {
+            const body = await response.json();
+            baseResponse.data ??= body?.data;
+            baseResponse.notifications ??= body?.notifications;
         }
 
         return baseResponse;
     }
 
-    buildRequestMetadata = data => {
-        const request = { headers: null, body: null };
+    #buildRequestMetadata = data => {
+        const request = {};
 
-        if (!data) {
-            delete request.headers;
+        if (!data)
             return request;
-        }
 
         if (data instanceof FormData) {
-            delete request.headers;
             request.body = data;
             return request;
         }
 
-        if (typeof data == "object") {
+        if (typeof data === "object") {
             request.headers = {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                ...request.headers
             };
             request.body = JSON.stringify(data);
         }
@@ -60,21 +63,25 @@ class RestAPI {
         return request;
     }
 
-    async getAsync(url) {
-        return await this.baseRequestAsync(url, "GET");
+    getAsync = async url => {
+        return this.#baseRequestAsync(url, "GET");
     }
 
-    async postAsync(url, data) {
-        return await this.baseRequestAsync(url, "POST", data);
+    postAsync = async (url, data) => {
+        return this.#baseRequestAsync(url, "POST", data);
     }
 
-    async patchAsync(url, data) {
-        return await this.baseRequestAsync(url, "PATCH", data);
+    patchAsync = async (url, data) => {
+        return this.#baseRequestAsync(url, "PATCH", data);
     }
 
-    async deleteAsync(url) {
-        return await this.baseRequestAsync(url, "DELETE");
+    putAsync = async (url, data) => {
+        return this.#baseRequestAsync(url, "PUT", data);
+    }
+
+    deleteAsync = async (url, data = null) => {
+        return this.#baseRequestAsync(url, "DELETE", data);
     }
 }
 
-const restAPI = new RestAPI;
+const restApi = new RestApi;

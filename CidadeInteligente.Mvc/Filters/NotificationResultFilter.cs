@@ -26,7 +26,7 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
             return _notification.HasNotifications ? BuildErrorView(context) : context.Result;
 
         if (_notification.HasValidations)
-            return new BadRequestObjectResult(new RestResponseWithInvalidFields { InvalidFields = _notification.Validations });
+            return new BadRequestObjectResult(new RestResponseWithInvalidFields { Notifications = _notification.Validations });
 
         if (_notification.HasNotifications && context.Result is NoContentResult or AcceptedResult)
             return BuildNotificationResult();

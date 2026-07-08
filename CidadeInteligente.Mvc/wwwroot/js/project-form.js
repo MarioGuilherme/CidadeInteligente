@@ -1,46 +1,125 @@
-﻿const project = {
-    projectId: +$("input[name=projectId]").val() || null,
-    title: $("input[name=title]").val().trim() || null,
-    startedAt: $("input[name=startedAt]").val() || null,
-    finishedAt: $("input[name=finishedAt]").val() || null,
-    description: $("textarea[name=description]").val()?.trim() || null,
-    areaId: +$("select[name=areaId]").val() || null,
-    courseId: +$("select[name=courseId]").val() || null,
-    involvedUsers: $(".user[involved=true]").toArray().map(e => +$(e).attr("id")),
-    medias: $(".media").toArray().map(e => ({
-        mediaId: +$(e).attr("id"),
-        title: $(e).find("input").val().trim(),
-        description: $(e).find("textarea").val()?.trim() || null,
-        file: null,
-        fileName: $(e).find("img, video").attr("src").split("/").at(-1),
-        preview: {
-            extension: $(e).find("img, video").attr("src").split(".").at(-1),
-            path: $(e).find("img, video").attr("src")
-        }
-    }))
-};
-
-(function ($) {
+﻿(function ($) {
     "use strict";
 
     $(document).ready(() => {
+        const project = {
+            projectId: +$("input[name=projectId]").val() || null,
+            title: $("input[name=title]").val().trim() || null,
+            startedAt: $("input[name=startedAt]").val() || null,
+            finishedAt: $("input[name=finishedAt]").val() || null,
+            description: $("textarea[name=description]").val()?.trim() || null,
+            areaId: +$("select[name=areaId]").val() || null,
+            courseId: +$("select[name=courseId]").val() || null,
+            involvedUsers: $(".user[involved=true]").toArray().map(e => +$(e).attr("id")),
+            medias: $(".media").toArray().map(e => ({
+                mediaId: +$(e).attr("id"),
+                title: $(e).find("input").val().trim(),
+                description: $(e).find("textarea").val()?.trim() || null,
+                file: null,
+                fileName: $(e).find("img, video").attr("src").split("/").at(-1),
+                preview: {
+                    extension: $(e).find("img, video").attr("src").split(".").at(-1),
+                    path: $(e).find("img, video").attr("src")
+                }
+            }))
+        };
+
+        screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-save"), async () => {
+            if (hasEmptyField($("form")))
+                return;
+
+            if (project.involvedUsers.length == 0) {
+                sweetAlertUtils.sweetAlertAsync("warning", "Por favor, selecione pelo menos uma pessoa envolvida no projeto!");
+                return;
+            }
+
+            if (project.medias.length == 0) {
+                sweetAlertUtils.sweetAlertAsync("warning", "Por favor, anexe pelo menos uma mídia para o projeto!");
+                return;
+            }
+
+            if (project.medias.length > 10) {
+                sweetAlertUtils.sweetAlertAsync("warning", "Por favor, anexe no máximo 10 mídias para o projeto!");
+                return;
+            }
+
+            const projectId = +$("input[name=projectId]").val().trim() || null;
+            const isUpdate = !!projectId;
+            project.title = $("input[name=title]").val().trim() || null;
+            project.description = $("textarea[name=description]").val().trim() || null;
+            project.startedAt = $("input[name=startedAt]").val().trim();
+            project.finishedAt = $("input[name=finishedAt]").val().trim() || null;
+            project.areaId = +$("select[name=areaId]").val();
+            project.courseId = +$("select[name=courseId]").val();
+
+            sweetAlertUtils.sweetAlertBlockingScreen(`${isUpdate ? "Atualizando" : "Criando"} projeto`);
+
+            const formData = new FormData;
+            formData.append("title", project.title);
+            if (project.description) formData.append("description", project.description);
+            formData.append("startedAt", project.startedAt);
+            formData.append("finishedAt", project.finishedAt);
+            formData.append("areaId", project.areaId);
+            formData.append("courseId", project.courseId);
+            project.involvedUsers.forEach(involvedUserId => formData.append("involvedUsers", involvedUserId));
+            project.medias.forEach((media, index) => {
+                if (media.mediaId) formData.append(`medias[${index}].mediaId`, media.mediaId);
+                if (media.description) formData.append(`medias[${index}].description`, media.description);
+                formData.append(`medias[${index}].title`, media.title);
+                formData.append(`medias[${index}].file`, media.file || new File([], media.fileName));
+            });
+
+            const { statusCode, notifications, headers } = isUpdate
+                ? await restApi.patchAsync(`v1/projects/${projectId}`, formData)
+                : await restApi.postAsync("v1/projects", formData);
+            if (statusCode === null) {
+                sweetAlertUtils.sweetAlertAsync("error", `Ocorreu um erro durante a ${isUpdate ? "atualização" : "criação"} do projeto.`);
+                return;
+            }
+
+            if (statusCode !== 201 && statusCode !== 204) {
+                showNotifications(notifications, statusCode);
+                return;
+            }
+
+            if (isUpdate) {
+                await sweetAlertUtils.sweetAlertAsync("success", "Projeto salvo com sucesso!");
+                toggleAskBeforeExit(false);
+                location.reload();
+                return;
+            }
+
+            Swal.fire({
+                icon: "success",
+                html: `<div class="qrCode mb-1 d-flex justify-content-center"></div><h2 style="color:white;">Projeto criado com sucesso!</h2>`,
+                background: "rgb(70, 5, 7)",
+                allowOutsideClick: false
+            });
+            new QRCode($(".qrCode")[0], headers.get("Location"));
+            clearAllFields();
+            $(".medias").empty();
+            project.title = project.description = project.startedAt = project.finishedAt = project.areaId = project.courseId = null;
+            project.involvedUsers = [];
+            project.medias = [];
+        });
+
 
         const fileIsValidWithAlertReturn = ({ size, type }) => {
             const validExtensions = ["mp4", "png", "jpg", "jpeg"];
             const [mimeType, extension] = type.split("/");
 
             if (size > 4 * 1024 ** 2) {
-                sweetAlert("warning", "Por favor, selecione mídias com menos de 4MB.");
+                sweetAlertUtils.sweetAlertAsync("warning", "Por favor, selecione mídias com menos de 4MB!");
                 return false;
             }
 
             if (mimeType != "image" && mimeType != "video") {
-                sweetAlert("warning", "É permitido apenas anexos do tipo vídeo e foto.");
+                sweetAlertUtils.sweetAlertAsync("warning", "É permitido apenas anexos do tipo vídeo e foto!");
                 return false;
             }
 
             if (!validExtensions.includes(extension)) {
-                sweetAlert("warning", "Apenas mídias .jpg, .jpeg, .png e .mp4.");
+                sweetAlertUtils.sweetAlertAsync("warning", "Apenas mídias .jpg, .jpeg, .png e .mp4!");
                 return false;
             }
 
@@ -58,7 +137,7 @@
 
         $(".btn-add-media").click(() => {
             if (project.medias.length >= 10) {
-                sweetAlert("warning", "Limite de dez mídias atingido.");
+                sweetAlertUtils.sweetAlertAsync("warning", "Limite de dez mídias atingido.");
                 return;
             };
             $(".input-new-medias").click();
@@ -123,7 +202,7 @@
 
                 fileReader.onloadend = ({ target: { result } }) => {
                     if (project.medias.length == 10) {
-                        sweetAlert("warning", "Limite de 10 mídias atingido.");
+                        sweetAlertUtils.sweetAlertAsync("warning", "Limite de 10 mídias atingido.");
                         return;
                     }
 
@@ -163,7 +242,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input maxlength="60" class="form-control" type="text" value="${media.title}">
+                                        <input required maxlength="60" class="form-control" type="text" value="${media.title}">
                                     </div>
                                     <div class="form-group">
                                         <label>Descrição</label>

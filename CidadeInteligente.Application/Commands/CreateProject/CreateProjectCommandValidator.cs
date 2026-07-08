@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CidadeInteligente.Application.Validators;
+using FluentValidation;
 
 namespace CidadeInteligente.Application.Commands.CreateProject
 {
@@ -6,55 +7,27 @@ namespace CidadeInteligente.Application.Commands.CreateProject
     {
         public CreateProjectCommandValidator()
         {
-            RuleFor(p => p.Title)
-                .NotEmpty().WithMessage("É necessário informar o título do projeto!")
-                .MaximumLength(100).WithMessage("O título do projeto não pode exceder 100 caracteres!");
-
-            RuleFor(p => p.AreaId)
-                .GreaterThan(0).WithMessage("É necessário informar a área do projeto!");
-
-            RuleFor(p => p.CourseId)
-                .GreaterThan(0).WithMessage("É necessário informar o curso do projeto!");
-
-            RuleFor(p => p.Description)
-                .MaximumLength(800).WithMessage("A descrição do projeto não pode exceder 800 caracteres!");
-
-            RuleFor(p => p.StartedAt)
-                .NotEmpty().WithMessage("É necessário informar a data de ínicio do projeto!")
-                .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("A data de início não pode ser uma data futura!");
-
-            RuleFor(p => p.FinishedAt)
-                .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("A data de início não pode ser uma data futura!");
-
-            RuleFor(p => p.InvolvedUsers)
-                .NotEmpty().WithMessage("O projeto precisa ter pelo menos um usuário envolvido!")
-                .Must(userIds => userIds.All(userId => userId > 0))
-                .WithMessage("Informe um usuário válido!");
-
-            RuleFor(p => p.Medias)
-                .NotEmpty().WithMessage("O projeto precisa ter pelo menos uma mídia em anexo!");
-
-            RuleForEach(p => p.Medias)
-                .SetValidator(new CreateMediaCommandValidator());
+            RuleFor(c => c.CurrentUserId).UserId("It is necessary to specify the project creator");
+            RuleFor(c => c.Title).ProjectTitle();
+            RuleFor(c => c.AreaId).AreaId("It is necessary to specify the project area");
+            RuleFor(c => c.CourseId).CourseId("It is necessary to specify the project course");
+            RuleFor(c => c.Description).ProjectDescription();
+            RuleFor(c => c.StartedAt).ProjectStartedAt();
+            RuleFor(c => c.FinishedAt).ProjectFinishedAt(c => c.StartedAt);
+            RuleFor(c => c.InvolvedUsers).ProjectInvolvedUsers();
+            RuleFor(c => c.Medias).ProjectMedias();
+            RuleForEach(c => c.Medias).SetValidator(new CreateMediaCommandValidator());
         }
-    }
 
-    public class CreateMediaCommandValidator : AbstractValidator<CreateProjectCommand.CreateMediaCommand>
-    {
-        public CreateMediaCommandValidator()
+        public class CreateMediaCommandValidator : AbstractValidator<CreateProjectCommand.CreateMediaCommand>
         {
-            RuleFor(m => m.Title)
-                .NotEmpty().WithMessage("É necessário informar o título da mídia!")
-                .MaximumLength(60).WithMessage("O título da mídia não pode exceder 60 caracteres!");
-
-            RuleFor(m => m.Description)
-                .MaximumLength(300).WithMessage("A descrição da mídia não pode exceder 300 caracteres!");
-
-            RuleFor(m => m.MimeType)
-                .NotEmpty().WithMessage("É necessário informar o tipo da mídia!");
-
-            RuleFor(m => m.OpenStream)
-                .NotNull().WithMessage("É necessário anexar o arquivo da mídia!");
+            public CreateMediaCommandValidator()
+            {
+                RuleFor(c => c.Title).MediaTitle();
+                RuleFor(c => c.Description).MediaDescription();
+                RuleFor(c => c.MimeType).MediaMimeType();
+                RuleFor(c => c.OpenStream).MediaOpenStream();
+            }
         }
     }
 }

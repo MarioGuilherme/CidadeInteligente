@@ -33,7 +33,7 @@ public class CreateProjectCommandHandler(INotificationContext notification, IUni
 
         Project project = new(request.AreaId,
             request.CourseId,
-            request.CreatorUserId,
+            request.CurrentUserId,
             request.Title,
             request.Description,
             request.StartedAt,

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CidadeInteligente.Application.Validators;
+using FluentValidation;
 
 namespace CidadeInteligente.Application.Commands.CreateUser;
 
@@ -6,21 +7,11 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     public CreateUserCommandValidator()
     {
-        RuleFor(u => u.CourseId).GreaterThan(0).WithMessage("É necessário informar um curso válido!");
-
-        RuleFor(u => u.Name)
-            .NotEmpty().WithMessage("É necessário informar o nome do usuário!")
-            .MaximumLength(60).WithMessage("O nome do usuário não pode exceder 60 caracteres!");
-
-        RuleFor(u => u.Email)
-            .NotEmpty().WithMessage("É necessário informar o e-mail do usuário!")
-            .EmailAddress().WithMessage("Informe um e-mail válido!")
-            .MaximumLength(60).WithMessage("O e-mail do usuário não pode exceder 60 caracteres!");
-
-        RuleFor(u => u.Password)
-            .NotEmpty().WithMessage("É necessário informar uma senha para o usuário!");
-
-        RuleFor(u => u.Role)
-            .IsInEnum().WithMessage("É necessário informar uma permissão para o usuário!");
+        RuleFor(c => c.CourseId).CourseId("It is necessary to specify the user course");
+        RuleFor(c => c.Name).UserName();
+        RuleFor(c => c.Email).UserEmail();
+        RuleFor(c => c.Password).UserPassword();
+        RuleFor(c => c.ConfirmPassword).UserConfirmPassword(c => c.Password);
+        RuleFor(c => c.Role).UserRole();
     }
 }

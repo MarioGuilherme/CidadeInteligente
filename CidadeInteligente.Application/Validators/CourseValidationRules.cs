@@ -7,7 +7,7 @@ public static class CourseValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> CourseId(string? messageWhenEmpty = default) => ruleBuilder
-            .GreaterThan(0).WithMessage(messageWhenEmpty ?? "The course identifier is invalid");
+            .RequiredId(messageWhenEmpty ?? "The course identifier is invalid");
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)

@@ -10,7 +10,7 @@ public static class ProjectValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> ProjectId(string? messageWhenEmpty = default) => ruleBuilder
-            .GreaterThan(0).WithMessage(messageWhenEmpty ?? "The project identifier is invalid");
+            .RequiredId(messageWhenEmpty ?? "The project identifier is invalid");
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)
@@ -30,14 +30,14 @@ public static class ProjectValidationRules
     {
         public IRuleBuilderOptions<T, DateOnly> ProjectStartedAt() => ruleBuilder
             .NotEmpty().WithMessage("The project start date is required")
-            .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project start date cannot be in the future");
+            .LessThanOrEqualTo(_ => DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project start date cannot be in the future");
     }
 
     extension<T>(IRuleBuilder<T, DateOnly?> ruleBuilder)
     {
         public IRuleBuilderOptions<T, DateOnly?> ProjectFinishedAt(Expression<Func<T, DateOnly?>> startedAtSelector) => ruleBuilder
             .GreaterThanOrEqualTo(startedAtSelector).WithMessage("The project finish date cannot be before the start date")
-            .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project finish date cannot be in the future");
+            .LessThanOrEqualTo(_ => DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project finish date cannot be in the future");
     }
 
     extension<T>(IRuleBuilder<T, IEnumerable<int>> ruleBuilder)

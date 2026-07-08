@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace CidadeInteligente.Application.Validators;
 
-public static class UserValidationRule
+public static class UserValidationRules
 {
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {

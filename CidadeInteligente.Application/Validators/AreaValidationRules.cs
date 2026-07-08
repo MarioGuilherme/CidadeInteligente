@@ -7,7 +7,7 @@ public static class AreaValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> AreaId(string? messageWhenEmpty = default) => ruleBuilder
-            .GreaterThan(0).WithMessage(messageWhenEmpty ?? "The area identifier is invalid");
+            .RequiredId(messageWhenEmpty ?? "The area identifier is invalid");
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)

@@ -22,16 +22,16 @@ public static class MediaValidationRules
     {
         public IRuleBuilderOptions<T, string> MediaTitle() => ruleBuilder
             .NotEmpty().WithMessage("The media title is required")
-            .MaximumLength(45).WithMessage("The media title cannot exceed 60 characters");
+            .MaximumLength(60).WithMessage("The media title cannot exceed 60 characters");
 
         public IRuleBuilderOptions<T, string> MediaMimeType() => ruleBuilder
             .NotEmpty().WithMessage("The media mime type is required")
-            .Must(_allowedMimeTypes.Contains).WithMessage($"Unsupported media type! Accepted types: {string.Join(", ", _allowedMimeTypes)}");
+            .Must(mime => mime is not null && _allowedMimeTypes.Contains(mime)).WithMessage($"Unsupported media type! Accepted types: {string.Join(", ", _allowedMimeTypes)}");
     }
 
     extension<T>(IRuleBuilder<T, string?> ruleBuilder)
     {
-        public IRuleBuilderOptions<T, string> MediaDescription() => ruleBuilder
+        public IRuleBuilderOptions<T, string?> MediaDescription() => ruleBuilder
             .MaximumLength(300).WithMessage("The media description cannot exceed 300 characters");
     }
 

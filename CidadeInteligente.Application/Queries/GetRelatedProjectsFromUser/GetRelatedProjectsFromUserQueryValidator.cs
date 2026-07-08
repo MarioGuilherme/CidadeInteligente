@@ -8,6 +8,6 @@ public class GetRelatedProjectsFromUserQueryValidator : AbstractValidator<GetRel
     public GetRelatedProjectsFromUserQueryValidator()
     {
         RuleFor(q => q.UserId).UserId();
-        RuleFor(q => q.Page).Page();
+        RuleFor(q => q.Page).RequiredPage();
     }
 }

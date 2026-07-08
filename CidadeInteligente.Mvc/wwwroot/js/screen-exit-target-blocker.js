@@ -15,14 +15,14 @@
     };
 
     onClickBlockingTargetAndLeavingFromScreen = ($btn, customCallbackAsync) => {
-        $btn.click(async e => {
-            await this.#baseCallBackAsync(() => customCallbackAsync(e.currentTarget));
+        $btn.click(async ({ currentTarget }) => {
+            await this.#baseCallBackAsync(() => customCallbackAsync(currentTarget));
         });
     };
 
     onClickBlockingTargetAndLeavingFromScreenEventDelegate = ($baseElement, targetElement, customCallbackAsync) => {
-        $baseElement.on("click", targetElement, async e => {
-            await this.#baseCallBackAsync(() => customCallbackAsync(e.currentTarget));
+        $baseElement.on("click", targetElement, async ({ currentTarget }) => {
+            await this.#baseCallBackAsync(() => customCallbackAsync(currentTarget));
         });
     };
 }

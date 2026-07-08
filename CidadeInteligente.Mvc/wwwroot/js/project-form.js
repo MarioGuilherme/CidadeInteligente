@@ -166,7 +166,7 @@
         });
 
         $(".input-change-media").on("change", function () {
-            const file = $(this)[0].files[0];
+            const [file] = $(this)[0].files;
             $(this).val(null);
 
             if (!file || !fileIsValidWithAlertReturn(file)) return;

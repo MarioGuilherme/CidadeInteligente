@@ -39,18 +39,14 @@
             dataTable.clear();
             data.forEach(entity => {
                 if (!Object.hasOwn(entity, "userId")) {
-                    dataTable.row.add([entity.areaId ?? entity.courseId, entity.description, renderButtons(entity.areaId ?? entity.courseId)]).draw();
+                    const { areaId, courseId, description } = entity;
+                    const id = areaId ?? courseId;
+                    dataTable.row.add([id, description, renderButtons(id)]).draw();
                     return;
                 }
 
-                dataTable.row.add([
-                    entity.userId,
-                    entity.name,
-                    entity.email,
-                    entity.course,
-                    entity.roleDescription,
-                    renderButtons(entity.userId)
-                ]).draw();
+                const { userId, name, email, course, roleDescription } = entity;
+                dataTable.row.add([userId, name, email, course, roleDescription, renderButtons(userId)]).draw();
             });
         };
 
@@ -118,21 +114,23 @@
                 return;
             }
 
+            const { userId, areaId, courseId, name, email, role, description } = data;
+
             $(".modal-title").html("Editar Registro");
             $("#passwordInputs").hide();
-            $("input[name=entityId]").val(data.userId ?? data.areaId ?? data.courseId);
+            $("input[name=entityId]").val(userId ?? areaId ?? courseId);
 
             if (entityName === "users") {
                 $("form#areaOrCourseForm").hide();
                 $("form#userForm").show();
-                $("input[name=name]").val(data.name);
-                $("input[name=email]").val(data.email);
-                $("select[name=courseId]").val(data.courseId);
-                $("select[name=role]").val(data.role);
+                $("input[name=name]").val(name);
+                $("input[name=email]").val(email);
+                $("select[name=courseId]").val(courseId);
+                $("select[name=role]").val(role);
             } else {
                 $("form#userForm").hide();
                 $("form#areaOrCourseForm").show();
-                $("input[name=description]").val(data.description);
+                $("input[name=description]").val(description);
             }
 
             swal.close();

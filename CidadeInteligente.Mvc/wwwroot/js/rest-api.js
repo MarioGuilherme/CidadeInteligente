@@ -25,13 +25,14 @@ class RestApi {
     };
 
     #handleResponseAsync = async response => {
+        const { status, headers } = response;
         const baseResponse = {
             ...this.#BASE_RESPONSE,
-            statusCode: response.status,
-            headers: response.headers
+            statusCode: status,
+            headers
         };
 
-        const contentType = response.headers.get("content-type") ?? "";
+        const contentType = headers.get("content-type") ?? "";
         if (contentType.includes("application/json")) {
             const body = await response.json();
             baseResponse.data ??= body?.data;

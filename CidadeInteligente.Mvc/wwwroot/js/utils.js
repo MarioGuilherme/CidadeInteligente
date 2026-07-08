@@ -19,9 +19,9 @@ const hasEmptyField = $form => {
     return hasEmpty;
 };
 
-const buildDataFromForm = form => [...form.find("input, textarea, select")].reduce((acc, field) => {
-    const trimmedNullableValue = field.value.trim() || null;
-    acc[field.name] = !isNaN(+trimmedNullableValue) ? +trimmedNullableValue : trimmedNullableValue;
+const buildDataFromForm = form => [...form.find("input, textarea, select")].reduce((acc, { name, value }) => {
+    const trimmedNullableValue = value.trim() || null;
+    acc[name] = !isNaN(+trimmedNullableValue) ? +trimmedNullableValue : trimmedNullableValue;
     return acc;
 }, {});
 

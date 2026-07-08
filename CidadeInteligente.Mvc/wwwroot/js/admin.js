@@ -28,10 +28,10 @@
 
             const dataTable = $(`div#${entityName} table`).DataTable();
 
-            if (entityName == "courses")
+            if (entityName === "courses")
                 refreshCoursesSelectInUserForm(data);
 
-            if (data.length == 0) {
+            if (data.length === 0) {
                 dataTable.clear().draw();
                 return;
             }
@@ -52,12 +52,12 @@
                     renderButtons(entity.userId)
                 ]).draw();
             });
-        }
+        };
 
         const refreshCoursesSelectInUserForm = async courses => {
             $("select[name=courseId] option").remove();
             $("select[name=courseId]").append(courses.reduce((acc, { courseId, description }) => acc + `<option value=${courseId}>${description}</option>`, ""));
-        }
+        };
 
         screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-save"), async () => {
             const entityName = getCurrentEntityName();
@@ -137,7 +137,7 @@
 
             swal.close();
             $(".modal").modal("show");
-        })
+        });
 
         screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreenEventDelegate($("tbody"), ".btn-delete", async button => {
             const { value } = await sweetAlertUtils.sweetAlertQuestionAsync("Deseja mesmo excluir este registro");

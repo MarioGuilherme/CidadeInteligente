@@ -28,12 +28,12 @@
             if (hasEmptyField($("form")))
                 return;
 
-            if (project.involvedUsers.length == 0) {
+            if (project.involvedUsers.length === 0) {
                 sweetAlertUtils.sweetAlertAsync("warning", "Por favor, selecione pelo menos uma pessoa envolvida no projeto!");
                 return;
             }
 
-            if (project.medias.length == 0) {
+            if (project.medias.length === 0) {
                 sweetAlertUtils.sweetAlertAsync("warning", "Por favor, anexe pelo menos uma mídia para o projeto!");
                 return;
             }
@@ -113,7 +113,7 @@
                 return false;
             }
 
-            if (mimeType != "image" && mimeType != "video") {
+            if (mimeType !== "image" && mimeType !== "video") {
                 sweetAlertUtils.sweetAlertAsync("warning", "É permitido apenas anexos do tipo vídeo e foto!");
                 return false;
             }
@@ -124,22 +124,22 @@
             }
 
             return true;
-        }
+        };
 
         let indexMediaToUpdate = 0;
 
         $(".user").click(function () {
-            $(this).attr("involved") == "true"
+            $(this).attr("involved") === "true"
                 ? project.involvedUsers.splice(project.involvedUsers.indexOf(+$(this).attr("id")), 1)
                 : project.involvedUsers.push(+$(this).attr("id"));
-            $(this).attr("involved", $(this).attr("involved") != "true");
+            $(this).attr("involved", $(this).attr("involved") !== "true");
         });
 
         $(".btn-add-media").click(() => {
             if (project.medias.length >= 10) {
                 sweetAlertUtils.sweetAlertAsync("warning", "Limite de dez mídias atingido.");
                 return;
-            };
+            }
             $(".input-new-medias").click();
         });
 
@@ -160,7 +160,7 @@
 
         $(".medias").on("input", "input, textarea", function () {
             const i = [...$(".medias > div")].indexOf($(this).parents(".col-12")[0]);
-            project.medias[i][$(this).prop("tagName") == "TEXTAREA" ? "description" : "title"] = $(this).val() || null;
+            project.medias[i][$(this).prop("tagName") === "TEXTAREA" ? "description" : "title"] = $(this).val() || null;
         });
 
         $(".input-change-media").on("change", function () {
@@ -172,7 +172,7 @@
 
                 const extension = file.type.split("/")[1];
                 $($(".media")[indexMediaToUpdate]).find("img, video").remove();
-                $($(".media")[indexMediaToUpdate]).find(".card-body").prepend(extension == "mp4"
+                $($(".media")[indexMediaToUpdate]).find(".card-body").prepend(extension === "mp4"
                     ? `<video src="${result}" style="max-width: 100%" controls></video>`
                     : `<img src="${result}" class="img-fluid">`
                 );
@@ -180,7 +180,7 @@
                 project.medias[indexMediaToUpdate].preview.path = result.split(",")[1];
                 project.medias[indexMediaToUpdate].preview.extension = extension;
                 project.medias[indexMediaToUpdate].file = file;
-            }
+            };
 
             fileReader.readAsDataURL(file);
             $(this).val(null);
@@ -201,7 +201,7 @@
                 const fileReader = new FileReader;
 
                 fileReader.onloadend = ({ target: { result } }) => {
-                    if (project.medias.length == 10) {
+                    if (project.medias.length === 10) {
                         sweetAlertUtils.sweetAlertAsync("warning", "Limite de 10 mídias atingido.");
                         return;
                     }
@@ -210,7 +210,7 @@
 
                     const media = {
                         file,
-                        title: file.name.split(".").slice(0, -1).join(".").substr(0, 60),
+                        title: file.name.split(".").slice(0, -1).join(".").slice(0, 60),
                         description: null,
                         preview: {
                             extension: file.type.split("/")[1],
@@ -222,7 +222,7 @@
                         <div class="col-12 col-sm-12 col-lg-3 col-md-3 my-3">
                             <div class="card media">
                                 <div class="card-body">
-                                    ${media.preview.extension == "mp4"
+                                    ${media.preview.extension === "mp4"
                                         ? `<video src="${result}" style="max-width: 100%" controls></video>`
                                         : `<img src="${result}" class="d-block w-100">`
                                     }
@@ -253,7 +253,7 @@
                         </div>
                     `);
                     project.medias.push(media);
-                }
+                };
                 fileReader.readAsDataURL(file);
             }
             $(this).val(null);

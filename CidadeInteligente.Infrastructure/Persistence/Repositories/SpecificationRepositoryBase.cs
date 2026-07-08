@@ -10,7 +10,7 @@ public abstract class SpecificationRepositoryBase<T>(CidadeInteligenteDbContext 
 {
     protected readonly CidadeInteligenteDbContext Context = context;
     protected readonly DbSet<T> DbSet = context.Set<T>();
-    
+
     public async Task AddAsync(T entity, CancellationToken cancellationToken)
     {
         await DbSet.AddAsync(entity, cancellationToken);
@@ -28,16 +28,16 @@ public abstract class SpecificationRepositoryBase<T>(CidadeInteligenteDbContext 
 
     public async Task<List<TResult>> GetAllBySpecAsync<TResult>(Specification<T, TResult> spec, CancellationToken cancellationToken)
     {
-        return await ApplySpecification(spec.Query)
+        return (await ApplySpecification(spec.Query)
             .Select(spec.Selector)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken))!;
     }
 
     public async Task<T?> GetBySpecAsync(Specification<T> spec, CancellationToken cancellationToken)
     {
         return await ApplySpecification(spec).FirstOrDefaultAsync(cancellationToken);
     }
- 
+
     public async Task<TResult?> GetBySpecAsync<TResult>(Specification<T, TResult> spec, CancellationToken cancellationToken)
     {
         return await ApplySpecification(spec.Query)
@@ -50,9 +50,9 @@ public abstract class SpecificationRepositoryBase<T>(CidadeInteligenteDbContext 
         int totalCount = await ApplyCriteriaOnly(spec.Query).CountAsync(cancellationToken);
         int page = ClampPage(spec.Query.PageNumber, spec.Query.PageSize, totalCount);
 
-        List<TResult> items = await ApplySpecification(spec.Query)
+        List<TResult> items = (await ApplySpecification(spec.Query)
             .Select(spec.Selector)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken))!;
 
         return new(items, totalCount, page, spec.Query.PageSize);
     }

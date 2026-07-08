@@ -22,10 +22,10 @@
             $(button).parents("div.col-12").hide(500);
             setTimeout(() => {
                 $(button).parents("div.col-12").remove();
-                if ($(".myProjects").find("div.col-12").length == 0 && $(".pages").find("a").length == 0)
+                if ($(".myProjects").find("div.col-12").length === 0 && $(".pages").find("a").length === 0)
                     $(".myProjects").html("<h3 class='text-center'>Você não está envolvido em nenhum projeto.</h3>");
 
-                if ($(".myProjects").find("div.col-12").length == 0 && $(".pages").find("a").length > 0)
+                if ($(".myProjects").find("div.col-12").length === 0 && $(".pages").find("a").length > 0)
                     [...$(".pages a")].at(-1).click();
             }, 500);
         });

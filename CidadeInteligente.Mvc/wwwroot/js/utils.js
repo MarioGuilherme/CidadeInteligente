@@ -29,12 +29,12 @@ const clearAllFields = () => {
     $(".user").attr("involved", false);
     $("input, select, textarea").val("");
     $("select").prop("selectedIndex", 0);
-}
+};
 
 const showNotifications = (notifications, statusCode) => {
-    const finalNotifications = statusCode == 400
+    const finalNotifications = statusCode === 400
         ? Object.values(notifications).flatMap(v => v)
-        : notifications == null || notifications.length == 0 ? ["<ul>Erro não mapeado</ul>"] : notifications;
+        : !notifications || notifications.length === 0 ? ["<ul>Erro não mapeado</ul>"] : notifications;
 
     if (statusCode >= 500) {
         sweetAlertUtils.sweetAlertAsync("error", `<ul>${finalNotifications.map(n => `<li>${n}</li>`).join("")}</ul>`);

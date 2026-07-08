@@ -22,7 +22,7 @@ class RestApi {
             console.error(error);
             return this.#BASE_RESPONSE;
         }
-    }
+    };
 
     #handleResponseAsync = async response => {
         const baseResponse = {
@@ -39,7 +39,7 @@ class RestApi {
         }
 
         return baseResponse;
-    }
+    };
 
     #buildRequestMetadata = data => {
         const request = {};
@@ -61,27 +61,27 @@ class RestApi {
         }
 
         return request;
-    }
+    };
 
     getAsync = async url => {
         return this.#baseRequestAsync(url, "GET");
-    }
+    };
 
     postAsync = async (url, data) => {
         return this.#baseRequestAsync(url, "POST", data);
-    }
+    };
 
     patchAsync = async (url, data) => {
         return this.#baseRequestAsync(url, "PATCH", data);
-    }
+    };
 
     putAsync = async (url, data) => {
         return this.#baseRequestAsync(url, "PUT", data);
-    }
+    };
 
     deleteAsync = async (url, data = null) => {
         return this.#baseRequestAsync(url, "DELETE", data);
-    }
+    };
 }
 
 const restApi = new RestApi;

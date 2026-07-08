@@ -48,7 +48,7 @@ public abstract class SpecificationRepositoryBase<T>(CidadeInteligenteDbContext 
     public async Task<PagedResult<TResult>> GetPagedBySpecAsync<TResult>(Specification<T, TResult> spec, CancellationToken cancellationToken)
     {
         int totalCount = await ApplyCriteriaOnly(spec.Query).CountAsync(cancellationToken);
-        int page = ClampPage(spec.Query.PageNumber, spec.Query.PageSize, totalCount);
+        int page = ClampPage(spec.Query.Page, spec.Query.PageSize, totalCount);
 
         List<TResult> items = (await ApplySpecification(spec.Query)
             .Select(spec.Selector)

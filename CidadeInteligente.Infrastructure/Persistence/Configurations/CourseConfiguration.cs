@@ -1,4 +1,5 @@
-﻿using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Constants;
+using CidadeInteligente.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.HasKey(c => c.CourseId);
 
         builder.HasIndex(c => c.Description).IsUnique();
-        builder.Property(c => c.Description).HasMaxLength(45);
+        builder.Property(c => c.Description).HasMaxLength(CourseConstraints.DescriptionMaxLength);
 
         builder.HasMany(c => c.Projects)
                .WithOne(p => p.Course)

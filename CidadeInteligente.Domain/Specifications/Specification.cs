@@ -11,7 +11,7 @@ public abstract class Specification<T> where T : class
     public Expression<Func<T, object>>? OrderByDescending { get; private set; }
     public int Skip { get; private set; }
     public int Take { get; private set; }
-    public int PageNumber { get; private set; }
+    public int Page { get; private set; }
     public int PageSize { get; private set; }
     public bool IsPagingEnabled { get; private set; }
     public bool IsSplitQuery { get; private set; }
@@ -35,16 +35,16 @@ public abstract class Specification<T> where T : class
         IncludeStrings.Add(includeString);
     }
 
-    internal void ApplyPaging(int pageNumber, int pageSize)
+    internal void ApplyPaging(int page, int pageSize)
     {
-        if (pageNumber < 1)
-            throw new ArgumentException("Page number must be greater than 0", nameof(pageNumber));
+        if (page < 1)
+            throw new ArgumentException("Page must be greater than 0", nameof(page));
         if (pageSize < 1)
             throw new ArgumentException("Page size must be greater than 0", nameof(pageSize));
 
-        PageNumber = pageNumber;
+        Page = page;
         PageSize = pageSize;
-        Skip = (pageNumber - 1) * pageSize;
+        Skip = (page - 1) * pageSize;
         Take = pageSize;
         IsPagingEnabled = true;
     }

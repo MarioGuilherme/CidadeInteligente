@@ -1,4 +1,5 @@
 ﻿using CidadeInteligente.Application.Commands.CreateProject;
+using CidadeInteligente.Domain.Constants;
 using CidadeInteligente.Domain.Entities;
 using FluentValidation;
 using System.Linq.Expressions;
@@ -10,34 +11,34 @@ public static class ProjectValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> ProjectId(string? messageWhenEmpty = default) => ruleBuilder
-            .GreaterThan(0).WithMessage(messageWhenEmpty ?? "The project identifier is invalid");
+            .RequiredId(messageWhenEmpty ?? "The project identifier is invalid");
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string> ProjectTitle() => ruleBuilder
             .NotEmpty().WithMessage("The project title is required")
-            .MaximumLength(100).WithMessage("The project title cannot exceed 100 characters");
+            .MaximumLength(ProjectConstraints.TitleMaxLength).WithMessage($"The project title cannot exceed {ProjectConstraints.TitleMaxLength} characters");
     }
 
     extension<T>(IRuleBuilder<T, string?> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string?> ProjectDescription() => ruleBuilder
-            .MaximumLength(800).WithMessage("The project description cannot exceed 800 characters");
+            .MaximumLength(ProjectConstraints.DescriptionMaxLength).WithMessage($"The project description cannot exceed {ProjectConstraints.DescriptionMaxLength} characters");
     }
 
     extension<T>(IRuleBuilder<T, DateOnly> ruleBuilder)
     {
         public IRuleBuilderOptions<T, DateOnly> ProjectStartedAt() => ruleBuilder
             .NotEmpty().WithMessage("The project start date is required")
-            .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project start date cannot be in the future");
+            .LessThanOrEqualTo(_ => DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project start date cannot be in the future");
     }
 
     extension<T>(IRuleBuilder<T, DateOnly?> ruleBuilder)
     {
         public IRuleBuilderOptions<T, DateOnly?> ProjectFinishedAt(Expression<Func<T, DateOnly?>> startedAtSelector) => ruleBuilder
             .GreaterThanOrEqualTo(startedAtSelector).WithMessage("The project finish date cannot be before the start date")
-            .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project finish date cannot be in the future");
+            .LessThanOrEqualTo(_ => DateOnly.FromDateTime(DateTime.Now)).WithMessage("The project finish date cannot be in the future");
     }
 
     extension<T>(IRuleBuilder<T, IEnumerable<int>> ruleBuilder)

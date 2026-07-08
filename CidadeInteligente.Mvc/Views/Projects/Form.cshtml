@@ -1,4 +1,5 @@
 ﻿@using CidadeInteligente.Application.Queries.GetProjectById
+@using CidadeInteligente.Domain.Constants
 @using static CidadeInteligente.Application.Queries.GetAreas.GetAreasQueryResult
 @using static CidadeInteligente.Application.Queries.GetCourses.GetCoursesQueryResult
 @using static CidadeInteligente.Application.Queries.GetProjectById.GetProjectByIdQueryResult
@@ -31,7 +32,7 @@
                     <div class="col-12 col-md-12 input-form-title">
                         <div class="form-group">
                             <label>Título</label>
-                            <input value="@Model?.Title" required type="text" maxlength="100" name="title" class="form-control" placeholder="Digite o titulo">
+                            <input value="@Model?.Title" required type="text" maxlength="@ProjectConstraints.TitleMaxLength" name="title" class="form-control" placeholder="Digite o titulo">
                         </div>
                     </div>
                 </div>
@@ -63,13 +64,13 @@
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label>Data de ínicio do projeto</label>
-                                    <input required class="form-control" max=@DateTime.Now.ToString("yyyy-MM-dd") value="@(isUpdate ? Model!.StartedAt.ToString("yyyy-MM-dd") : string.Empty)" type="date" name="startedAt">
+                                    <input required class="form-control" max=@ProjectConstraints.StartedAtMaxDateOnly.ToString("yyyy-MM-dd") value="@(isUpdate ? Model!.StartedAt.ToString("yyyy-MM-dd") : string.Empty)" type="date" name="startedAt">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label>Data de término do projeto</label>
-                                    <input class="form-control" max=@DateTime.Now.ToString("yyyy-MM-dd") value="@(Model?.FinishedAt is not null ? Model.FinishedAt.Value.ToString("yyyy-MM-dd") : string.Empty)" type="date" name="finishedAt">
+                                    <input class="form-control" max=@ProjectConstraints.FinishedAtMaxDateOnly.ToString("yyyy-MM-dd") value="@(Model?.FinishedAt is not null ? Model.FinishedAt.Value.ToString("yyyy-MM-dd") : string.Empty)" type="date" name="finishedAt">
                                 </div>
                             </div>
                         </div>
@@ -92,7 +93,7 @@
                     <div class="col-12 col-md-12">
                         <div class="form-group">
                             <label for="description">Descrição</label>
-                            <textarea id="description" class="form-control" name="description" maxlength="800" rows="5">@(Model?.Description ?? string.Empty)</textarea>
+                            <textarea id="description" class="form-control" name="description" maxlength="@ProjectConstraints.DescriptionMaxLength" rows="5">@(Model?.Description ?? string.Empty)</textarea>
                         </div>
                     </div>
                 </div>
@@ -105,8 +106,8 @@
                                 <i class="mdi mdi-plus"></i>
                                 Adicionar mídia
                             </button>
-                            <input type="file" name="medias[]" class="d-none input-new-medias" multiple accept=".jpg,.jpeg,.png,.mp4">
-                            <input type="file" class="d-none input-change-media" accept=".jpg,.jpeg,.png,.mp4">
+                            <input type="file" name="medias[]" class="d-none input-new-medias" multiple accept="@string.Join(',', MediaConstraints.AllowedMimeTypes.Select(m => $".{m.Split('/')[1]}"))">
+                            <input type="file" class="d-none input-change-media" accept="@string.Join(',', MediaConstraints.AllowedMimeTypes.Select(m => $".{m.Split('/')[1]}"))">
                         </div>
                     </div>
                 </div>
@@ -140,11 +141,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input required maxlength="60" class="form-control" type="text" value="@media.Title">
+                                        <input required maxlength="@MediaConstraints.TitleMaxLength" class="form-control" type="text" value="@media.Title">
                                     </div>
                                     <div class="form-group">
                                         <label>Descrição</label>
-                                        <textarea maxlength="300" class="form-control" rows="3">@media.Description</textarea>
+                                        <textarea maxlength="@MediaConstraints.DescriptionMaxLength" class="form-control" rows="3">@media.Description</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -164,5 +165,5 @@
 @section Scripts
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="~/js/project-form.js"></script>
+    <script media-title-max-length="@MediaConstraints.TitleMaxLength" media-description-max-length="@MediaConstraints.DescriptionMaxLength" src="~/js/project-form.js"></script>
 }

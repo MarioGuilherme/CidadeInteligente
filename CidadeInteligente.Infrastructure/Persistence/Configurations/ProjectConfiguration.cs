@@ -1,4 +1,5 @@
-﻿using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Constants;
+using CidadeInteligente.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,10 +11,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
     {
         builder.HasKey(p => p.ProjectId);
 
-        builder.Property(p => p.Title).HasMaxLength(100);
+        builder.Property(p => p.Title).HasMaxLength(ProjectConstraints.TitleMaxLength);
         builder.Property(p => p.Description)
                .IsRequired(false)
-               .HasMaxLength(800);
+               .HasMaxLength(ProjectConstraints.DescriptionMaxLength);
         builder.Property(p => p.RegisteredAt).HasDefaultValueSql("GETDATE()");
         builder.Property(p => p.FinishedAt).IsRequired(false);
 

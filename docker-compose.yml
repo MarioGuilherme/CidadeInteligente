@@ -6,7 +6,7 @@ services:
       dockerfile: CidadeInteligente.Mvc/Dockerfile
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CidadeInteligente;User=sa;Password=Adm1n23%;TrustServerCertificate=True
-      - AzureStorage__ConnectionString=DefaultEndpointsProtocol=https;AccountName=testedfsggdsfdfgs5464563;AccountKey=OQ69eqgiwWQi3OmMsp+olLqQX1zfp+Ef0JUD+bAzmGA1Z29xSG7AJLO4n52QFsIfRnEooij3Df8o+AStsJqI4g==;EndpointSuffix=core.windows.net
+      - AzureStorage__ConnectionString=
       - SendGrid__ApiKey=
 
   db:

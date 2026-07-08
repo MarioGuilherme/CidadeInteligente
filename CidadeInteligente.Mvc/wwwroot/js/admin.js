@@ -59,11 +59,12 @@
             const entityName = getCurrentEntityName();
             const entityId = +$(".modal input[name=entityId]").val().trim() || null;
             const isUpdate = !!entityId;
+            const formName = entityName === "users" ? "userForm" : entityName === "areas" ? "areaForm" : "courseForm";
             $("div#passwordInputs input").attr("required", entityName === "users" && !isUpdate);
 
-            if (hasEmptyField($(`.modal form#${entityName === "users" ? "userForm" : "areaOrCourseForm"}`))) return;
+            if (hasEmptyField($(`.modal form#${formName}`))) return;
 
-            const dataJson = buildDataFromForm($(`.modal form#${entityName === "users" ? "userForm" : "areaOrCourseForm"}`));
+            const dataJson = buildDataFromForm($(`.modal form#${formName}`));
             sweetAlertUtils.sweetAlertBlockingScreen(`${isUpdate ? "Atualizando" : "Criando"} registro`);
 
             const { statusCode, data, notifications } = isUpdate
@@ -87,22 +88,23 @@
         $("button[data-target='#formModal']").click(() => {
             clearAllFields();
 
-            $(".modal-title").html("Novo registro");
+            const entityName = getCurrentEntityName();
+            const displayEntityName = entityName === "users" ? "usuário" : entityName === "areas" ? "área" : "curso";
+            $(".modal-title").html(`Cadastrar ${displayEntityName}`);
 
+            $("form#userForm, form#areaForm, form#courseForm").hide();
             if (getCurrentEntityName() === "users") {
-                $("form#areaOrCourseForm").hide();
                 $("form#userForm, #passwordInputs").show();
                 return;
             }
-
-            $("form#areaOrCourseForm").show();
-            $("form#userForm").hide();
+            $(`form#${getCurrentEntityName() === "areas" ? "area" : "course"}Form`).show();
         });
 
         screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreenEventDelegate($("tbody"), ".btn-edit", async button => {
             sweetAlertUtils.sweetAlertBlockingScreen("Buscando os dados deste registro");
 
             const entityName = getCurrentEntityName();
+            const displayEntityName = entityName === "users" ? "usuário" : entityName === "areas" ? "área" : "curso";
             const { statusCode, data, notifications } = await restApi.getAsync(`v1/${entityName}/${$(button).attr("id")}`);
             if (statusCode === null) {
                 sweetAlertUtils.sweetAlertAsync("error", "Ocorreu um erro durante a busca do registro.");
@@ -116,20 +118,18 @@
 
             const { userId, areaId, courseId, name, email, role, description } = data;
 
-            $(".modal-title").html("Editar Registro");
-            $("#passwordInputs").hide();
+            $(".modal-title").html(`Editar ${displayEntityName}`);
+            $("form#userForm, form#areaForm, form#courseForm, #passwordInputs").hide();
             $("input[name=entityId]").val(userId ?? areaId ?? courseId);
 
             if (entityName === "users") {
-                $("form#areaOrCourseForm").hide();
                 $("form#userForm").show();
                 $("input[name=name]").val(name);
                 $("input[name=email]").val(email);
                 $("select[name=courseId]").val(courseId);
                 $("select[name=role]").val(role);
             } else {
-                $("form#userForm").hide();
-                $("form#areaOrCourseForm").show();
+                $(`form#${getCurrentEntityName() === "areas" ? "area" : "course"}Form`).show();
                 $("input[name=description]").val(description);
             }
 

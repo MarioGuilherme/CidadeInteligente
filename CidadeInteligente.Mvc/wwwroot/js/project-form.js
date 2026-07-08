@@ -23,6 +23,8 @@
                 }
             }))
         };
+        const MEDIA_TITLE_MAX_LENGTH = +$("script[media-title-max-length]").attr("media-title-max-length");
+        const MEDIA_DESCRIPTION_MAX_LENGTH = +$("script[media-description-max-length]").attr("media-description-max-length");
 
         screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-save"), async () => {
             if (hasEmptyField($("form")))
@@ -256,11 +258,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input required maxlength="60" class="form-control" type="text" value="${media.title}">
+                                        <input required maxlength="${MEDIA_TITLE_MAX_LENGTH}" class="form-control" type="text" value="${media.title}">
                                     </div>
                                     <div class="form-group">
                                         <label>Descrição</label>
-                                        <textarea maxlength="300" class="form-control" rows="5"></textarea>
+                                        <textarea maxlength="${MEDIA_DESCRIPTION_MAX_LENGTH}" class="form-control" rows="5"></textarea>
                                     </div>
                                 </div>
                             </div>

@@ -42,7 +42,7 @@ public class ProjectsController(IMediator mediator) : Controller
     [HttpGet("projects/{projectId:int}/view", Name = "ViewProject")]
     public async Task<ViewResult> View(int projectId)
     {
-        GetProjectByIdQuery getProjectDetailsByIdQuery = new(projectId, User.UserId);
+        GetProjectByIdQuery getProjectDetailsByIdQuery = new(projectId);
         GetProjectByIdQueryResult? getProjectDetailsByIdQueryResult = await _mediator.Send(getProjectDetailsByIdQuery);
         return View(getProjectDetailsByIdQueryResult);
     }

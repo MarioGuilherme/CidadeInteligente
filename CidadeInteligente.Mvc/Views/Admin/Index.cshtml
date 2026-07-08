@@ -2,6 +2,7 @@
 @using CidadeInteligente.Application.Queries.GetAreas
 @using CidadeInteligente.Application.Queries.GetCourses
 @using CidadeInteligente.Application.Queries.GetUsers
+@using CidadeInteligente.Domain.Constants
 @using CidadeInteligente.Domain.Enums;
 
 @{
@@ -182,20 +183,20 @@
                 <form id="userForm">
                     <div class="form-group">
                         <label class="text-dark">Nome</label>
-                        <input required class="form-control" maxlength="60" type="text" name="name">
+                        <input required class="form-control" maxlength="@UserConstraints.NameMaxLength" type="text" name="name">
                     </div>
                     <div class="form-group">
                         <label class="text-dark">E-mail</label>
-                        <input required class="form-control" maxlength="60" type="text" name="email">
+                        <input required class="form-control" maxlength="@UserConstraints.EmailMaxLength" type="text" name="email">
                     </div>
                     <div id="passwordInputs">
                         <div class="form-group">
                             <label class="text-dark">Senha</label>
-                            <input required class="form-control" maxlength="60" type="password" name="password">
+                            <input required class="form-control" min="@UserConstraints.RawPasswordMinLength" type="password" name="password">
                         </div>
                         <div class="form-group">
                             <label class="text-dark">Confirmar Senha</label>
-                            <input required class="form-control" maxlength="60" type="password" name="confirmPassword">
+                            <input required class="form-control" min="@UserConstraints.RawPasswordMinLength" type="password" name="confirmPassword">
                         </div>
                     </div>
                     <div class="form-group">
@@ -219,10 +220,16 @@
                         </select>
                     </div>
                 </form>
-                <form id="areaOrCourseForm">
+                <form id="areaForm">
                     <div class="form-group">
                         <label class="text-dark">Descrição</label>
-                        <input required class="form-control" maxlength="45" type="text" name="description">
+                        <input required class="form-control" maxlength="@AreaConstraints.DescriptionMaxLength" type="text" name="description">
+                    </div>
+                </form>
+                <form id="courseForm">
+                    <div class="form-group">
+                        <label class="text-dark">Descrição</label>
+                        <input required class="form-control" maxlength="@CourseConstraints.DescriptionMaxLength" type="text" name="description">
                     </div>
                 </form>
             </div>

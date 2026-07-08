@@ -12,5 +12,5 @@ public record CreateProjectCommand(int CurrentUserId,
     IEnumerable<int> InvolvedUsers,
     IEnumerable<CreateProjectCommand.CreateMediaCommand> Medias) : IRequest<int?>
 {
-    public record CreateMediaCommand(string Title, string? Description, string MimeType, Func<Stream> OpenStream);
+    public record CreateMediaCommand(string Title, string? Description, string MimeType, long FileSize, Func<Stream> OpenStream);
 }

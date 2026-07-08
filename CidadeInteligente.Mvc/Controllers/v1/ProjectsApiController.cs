@@ -30,6 +30,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
             request.Medias.Select(m => new CreateProjectCommand.CreateMediaCommand(m.Title,
                 m.Description,
                 m.File.ContentType,
+                m.File.Length,
                 m.File.OpenReadStream)));
         int? projectId = await _mediator.Send(createProjectCommand);
         return CreatedAtRoute("ViewProject", new { projectId }, default);
@@ -51,6 +52,7 @@ public class ProjectsApiController(IMediator mediator) : Controller
                 m.Title,
                 m.Description,
                 m.File.ContentType,
+                m.File.Length,
                 m.File.OpenReadStream)));
         await _mediator.Send(updateProjectCommand);
         return NoContent();

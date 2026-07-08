@@ -4,8 +4,10 @@ public static class MediaConstraints
 {
     public const int TitleMaxLength = 60;
     public const int FileNameMaxLength = 50;
-    public const int MimeTypeMaxLength = 10;
     public const int DescriptionMaxLength = 300;
+    public const long FileMaxSizeInMegaBytes = 4;
+    public const long FileMaxSizeInBytes = FileMaxSizeInMegaBytes * 1024 * 1024;
+    public static int MimeTypeMaxLength => AllowedMimeTypes.Max(m => m.Length);
 
     public static readonly IReadOnlySet<string> AllowedMimeTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {

@@ -16,10 +16,20 @@ public static class MediaValidationRules
         public IRuleBuilderOptions<T, string> MediaTitle() => ruleBuilder
             .NotEmpty().WithMessage("The media title is required")
             .MaximumLength(MediaConstraints.TitleMaxLength).WithMessage($"The media title cannot exceed {MediaConstraints.TitleMaxLength} characters");
+    }
 
+    extension<T>(IRuleBuilderInitial<T, string> ruleBuilder)
+    {
         public IRuleBuilderOptions<T, string> MediaMimeType() => ruleBuilder
+            .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("The media mime type is required")
             .Must(mime => mime is not null && MediaConstraints.AllowedMimeTypes.Contains(mime)).WithMessage($"Unsupported media type! Accepted types: {string.Join(", ", MediaConstraints.AllowedMimeTypes)}");
+    }
+
+    extension<T>(IRuleBuilder<T, long> ruleBuilder)
+    {
+        public IRuleBuilderOptions<T, long> MediaFileSize() => ruleBuilder
+            .LessThanOrEqualTo(MediaConstraints.FileMaxSizeInBytes).WithMessage($"The media file cannot exceed {MediaConstraints.FileMaxSizeInMegaBytes} MB");
     }
 
     extension<T>(IRuleBuilder<T, string?> ruleBuilder)

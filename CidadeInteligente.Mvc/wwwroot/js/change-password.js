@@ -5,7 +5,7 @@
         screenExitTargetBlocker.onClickBlockingTargetAndLeavingFromScreen($(".btn-changePassword"), async () => {
             if (hasEmptyField($("form"))) return;
 
-            if ($("input[type=password]:eq(0)").val() != $("input[type=password]:eq(1)").val()) {
+            if ($("input[type=password]:eq(0)").val() !== $("input[type=password]:eq(1)").val()) {
                 sweetAlertUtils.sweetAlertAsync("warning", "As senhas não conferem");
                 return;
             }

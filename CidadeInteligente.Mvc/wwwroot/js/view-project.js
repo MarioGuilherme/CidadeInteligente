@@ -10,5 +10,5 @@
             });
             new QRCode(document.querySelector(".qrCode"), window.location.href);
         });
-    })
+    });
 })(jQuery);

@@ -11,7 +11,7 @@ public class SpecificationBuilder<T> where T : class
         _spec = spec ?? throw new ArgumentNullException(nameof(spec));
     }
 
-    public static SpecificationBuilder<T> Create() => new (new BaseSpecification<T>());
+    public static SpecificationBuilder<T> Create() => new(new BaseSpecification<T>());
 
     public SpecificationBuilder<T> Where(Expression<Func<T, bool>> criteria)
     {

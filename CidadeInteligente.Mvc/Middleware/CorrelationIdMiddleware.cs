@@ -1,6 +1,4 @@
-﻿using Serilog;
-using Serilog.Context;
-using Serilog.Core;
+﻿using Serilog.Context;
 
 namespace CidadeInteligente.Mvc.Middleware;
 

@@ -2,7 +2,6 @@
 using CidadeInteligente.Domain.Notifications;
 using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Specifications;
-using CidadeInteligente.Domain.Specifications.Courses;
 using MediatR;
 
 namespace CidadeInteligente.Application.Commands.CreateCourse;

@@ -1,4 +1,5 @@
-﻿using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Constants;
+using CidadeInteligente.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,12 +11,12 @@ public class MediaConfiguration : IEntityTypeConfiguration<Media>
     {
         builder.HasKey(m => m.MediaId);
 
-        builder.Property(m => m.Title).HasMaxLength(60);
-        builder.Property(m => m.FileName).HasMaxLength(50);
-        builder.Property(m => m.MimeType).HasMaxLength(10);
+        builder.Property(m => m.Title).HasMaxLength(MediaConstraints.TitleMaxLength);
+        builder.Property(m => m.FileName).HasMaxLength(MediaConstraints.FileNameMaxLength);
+        builder.Property(m => m.MimeType).HasMaxLength(MediaConstraints.MimeTypeMaxLength);
         builder.Property(m => m.Description)
                .IsRequired(false)
-               .HasMaxLength(300);
+               .HasMaxLength(MediaConstraints.DescriptionMaxLength);
 
         builder.HasOne(m => m.Project)
                .WithMany(p => p.Medias)

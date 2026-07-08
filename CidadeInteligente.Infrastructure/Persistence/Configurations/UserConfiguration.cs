@@ -1,4 +1,5 @@
-﻿using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Constants;
+using CidadeInteligente.Domain.Entities;
 using CidadeInteligente.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -12,11 +13,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.UserId);
         builder.HasIndex(u => u.Email).IsUnique();
 
-        builder.Property(u => u.Name).HasMaxLength(60);
-        builder.Property(u => u.Email).HasMaxLength(60);
-        builder.Property(u => u.Password).HasMaxLength(255);
+        builder.Property(u => u.Name).HasMaxLength(UserConstraints.NameMaxLength);
+        builder.Property(u => u.Email).HasMaxLength(UserConstraints.EmailMaxLength);
+        builder.Property(u => u.Password).HasMaxLength(UserConstraints.PasswordMaxLength);
 
-        builder.Property(u => u.TokenRecoverPassword).HasMaxLength(156);
+        builder.Property(u => u.TokenRecoverPassword).HasMaxLength(UserConstraints.TokenRecoverPasswordMaxLength);
 
         builder.HasOne(u => u.Course)
                .WithMany()

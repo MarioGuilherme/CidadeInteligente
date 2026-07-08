@@ -1,4 +1,5 @@
-﻿using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Constants;
+using CidadeInteligente.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,7 @@ public class AreaConfiguration : IEntityTypeConfiguration<Area>
         builder.HasKey(a => a.AreaId);
 
         builder.HasIndex(a => a.Description).IsUnique();
-        builder.Property(a => a.Description).HasMaxLength(45);
+        builder.Property(a => a.Description).HasMaxLength(AreaConstraints.DescriptionMaxLength);
 
         builder.HasMany(a => a.Projects)
                .WithOne(p => p.Area)

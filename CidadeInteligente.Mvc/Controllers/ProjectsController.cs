@@ -17,8 +17,9 @@ public class ProjectsController(IMediator mediator) : Controller
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
-    public async Task<ViewResult> Index(GetProjectsQuery getAllProjectsQuery)
+    public async Task<ViewResult> Index([FromQuery] int page = 1)
     {
+        GetProjectsQuery getAllProjectsQuery = new(page);
         GetProjectsQueryResult getProjectsQueryResult = await _mediator.Send(getAllProjectsQuery);
         return View(getProjectsQueryResult);
     }
@@ -64,7 +65,7 @@ public class ProjectsController(IMediator mediator) : Controller
 
     [HttpGet("projects/my")]
     [Authorize]
-    public async Task<ViewResult> MyProjects(int page = 1)
+    public async Task<ViewResult> MyProjects([FromQuery] int page = 1)
     {
         GetRelatedProjectsFromUserQuery getInvolvedProjectsFromUserQuery = new(User.UserId!.Value, page);
         GetRelatedProjectsFromUserQueryResult? getRelatedProjectsFromUserQueryResult = await _mediator.Send(getInvolvedProjectsFromUserQuery);

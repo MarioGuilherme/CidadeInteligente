@@ -36,7 +36,12 @@ public class UsersController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
-        CreateUserCommand createUserCommand = new(request.CourseId, request.Name, request.Email, request.Password, request.Role);
+        CreateUserCommand createUserCommand = new(request.CourseId,
+            request.Name,
+            request.Email,
+            request.Password,
+            request.ConfirmPassword,
+            request.Role);
         int? userId = await _mediator.Send(createUserCommand);
         return CreatedAtAction(nameof(GetUserById), new { userId }, createUserCommand);
     }

@@ -1,14 +1,9 @@
-﻿using FluentValidation;
+﻿using CidadeInteligente.Application.Validators;
+using FluentValidation;
 
 namespace CidadeInteligente.Application.Commands.SendEmailRecover;
 
 public class SendEmailRecoverCommandValidator : AbstractValidator<SendEmailRecoverCommand>
 {
-    public SendEmailRecoverCommandValidator()
-    {
-        RuleFor(s => s.Email)
-            .NotEmpty().WithMessage("É necessário informar o e-mail do usuário!")
-            .EmailAddress().WithMessage("Informe um e-mail válido!")
-            .MaximumLength(60).WithMessage("O e-mail do usuário não pode exceder 60 caracteres!");
-    }
+    public SendEmailRecoverCommandValidator() => RuleFor(c => c.Email).UserEmail();
 }

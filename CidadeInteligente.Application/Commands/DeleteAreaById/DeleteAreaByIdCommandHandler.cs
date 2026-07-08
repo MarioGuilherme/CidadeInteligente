@@ -15,7 +15,6 @@ public class DeleteAreaByIdCommandHandler(INotificationContext notification, IUn
 
     public async Task<Unit?> Handle(DeleteAreaByIdCommand request, CancellationToken cancellationToken)
     {
-
         Specification<Area> getAreaByIdSpec = AreaSpecifications.GetById(request.AreaId).Build();
         if (!await _unitOfWork.Areas.AnyBySpecAsync(getAreaByIdSpec, cancellationToken))
         {

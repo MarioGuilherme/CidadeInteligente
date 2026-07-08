@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CidadeInteligente.Application.Validators;
+using FluentValidation;
 
 namespace CidadeInteligente.Application.Commands.UpdateCourse;
 
@@ -6,8 +7,7 @@ public class UpdateCourseCommandValidator : AbstractValidator<UpdateCourseComman
 {
     public UpdateCourseCommandValidator()
     {
-        RuleFor(c => c.Description)
-            .NotEmpty().WithMessage("É necessário informar a descrição do curso!")
-            .MaximumLength(45).WithMessage("A descrição do curso não pode exceder 45 caracteres!");
+        RuleFor(c => c.CourseId).CourseId();
+        RuleFor(c => c.Description).CourseDescription();
     }
 }

@@ -2,10 +2,10 @@
 
 namespace CidadeInteligente.Application.Commands.CreateProject;
 
-public record CreateProjectCommand(string Title,
+public record CreateProjectCommand(int CurrentUserId,
+    string Title,
     int AreaId,
     int CourseId,
-    int CreatorUserId,
     string? Description,
     DateOnly StartedAt,
     DateOnly? FinishedAt,

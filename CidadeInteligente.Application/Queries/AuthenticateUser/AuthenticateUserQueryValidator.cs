@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CidadeInteligente.Application.Validators;
+using FluentValidation;
 
 namespace CidadeInteligente.Application.Queries.AuthenticateUser;
 
@@ -6,12 +7,7 @@ public class AuthenticateUserQueryValidator : AbstractValidator<AuthenticateUser
 {
     public AuthenticateUserQueryValidator()
     {
-        RuleFor(u => u.Email)
-            .NotEmpty().WithMessage("É necessário informar o e-mail do usuário!")
-            .EmailAddress().WithMessage("Informe um e-mail válido!")
-            .MaximumLength(60).WithMessage("O e-mail do usuário não pode exceder 60 caracteres!");
-
-        RuleFor(u => u.Password)
-            .NotEmpty().WithMessage("É necessário informar a senha do usuário!");
+        RuleFor(q => q.Email).UserEmail();
+        RuleFor(q => q.Password).UserPassword();
     }
 }

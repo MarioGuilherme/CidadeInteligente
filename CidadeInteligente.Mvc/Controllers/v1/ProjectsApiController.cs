@@ -19,10 +19,10 @@ public class ProjectsApiController(IMediator mediator) : Controller
     [HttpPost]
     public async Task<ActionResult> CreateProject([FromForm] CreateProjectRequest request)
     {
-        CreateProjectCommand createProjectCommand = new(request.Title,
+        CreateProjectCommand createProjectCommand = new(User.UserId!.Value,
+            request.Title,
             request.AreaId,
             request.CourseId,
-            User.UserId!.Value,
             request.Description,
             request.StartedAt,
             request.FinishedAt,

@@ -1,4 +1,5 @@
-﻿using CidadeInteligente.Domain.Enums;
+﻿using CidadeInteligente.Domain.Constants;
+using CidadeInteligente.Domain.Enums;
 using FluentValidation;
 using System.Linq.Expressions;
 
@@ -16,16 +17,16 @@ public static class UserValidationRules
     {
         public IRuleBuilderOptions<T, string> UserName() => ruleBuilder
             .NotEmpty().WithMessage("The user name is required")
-            .MaximumLength(60).WithMessage("The user name cannot exceed 60 characters");
+            .MaximumLength(UserConstraints.NameMaxLength).WithMessage($"The user name cannot exceed {UserConstraints.NameMaxLength} characters");
 
         public IRuleBuilderOptions<T, string> UserEmail() => ruleBuilder
             .NotEmpty().WithMessage("The user email is required")
             .EmailAddress().WithMessage("The user email is not valid")
-            .MaximumLength(60).WithMessage("The user email cannot exceed 60 characters");
+            .MaximumLength(UserConstraints.EmailMaxLength).WithMessage($"The user email cannot exceed {UserConstraints.EmailMaxLength} characters");
 
         public IRuleBuilderOptions<T, string> UserPassword() => ruleBuilder
             .NotEmpty().WithMessage("The new password is required")
-            .MinimumLength(8).WithMessage("The password must have at least 8 characters");
+            .MinimumLength(UserConstraints.RawPasswordMinLength).WithMessage($"The password must have at least {UserConstraints.RawPasswordMinLength} characters");
 
         public IRuleBuilderOptions<T, string> UserConfirmPassword(Expression<Func<T, string>> passwordSelector) => ruleBuilder
             .NotEmpty().WithMessage("The password confirmation is required")
@@ -33,7 +34,7 @@ public static class UserValidationRules
 
         public IRuleBuilderOptions<T, string> UserToken() => ruleBuilder
             .NotEmpty().WithMessage("The token for password reset is required")
-            .Length(156).WithMessage("The password reset token must have 156 characters");
+            .Length(UserConstraints.TokenRecoverPasswordMaxLength).WithMessage($"The password reset token must have {UserConstraints.TokenRecoverPasswordMaxLength} characters");
     }
 
     extension<T>(IRuleBuilder<T, Role> ruleBuilder)

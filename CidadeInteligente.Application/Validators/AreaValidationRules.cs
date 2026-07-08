@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CidadeInteligente.Domain.Constants;
+using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
@@ -14,6 +15,6 @@ public static class AreaValidationRules
     {
         public IRuleBuilderOptions<T, string> AreaDescription() => ruleBuilder
             .NotEmpty().WithMessage("The area description is required")
-            .MaximumLength(45).WithMessage("The area description cannot exceed 45 characters");
+            .MaximumLength(AreaConstraints.DescriptionMaxLength).WithMessage($"The area description cannot exceed {AreaConstraints.DescriptionMaxLength} characters");
     }
 }

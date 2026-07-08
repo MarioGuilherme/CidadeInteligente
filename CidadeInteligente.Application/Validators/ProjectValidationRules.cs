@@ -1,4 +1,5 @@
 ﻿using CidadeInteligente.Application.Commands.CreateProject;
+using CidadeInteligente.Domain.Constants;
 using CidadeInteligente.Domain.Entities;
 using FluentValidation;
 using System.Linq.Expressions;
@@ -17,13 +18,13 @@ public static class ProjectValidationRules
     {
         public IRuleBuilderOptions<T, string> ProjectTitle() => ruleBuilder
             .NotEmpty().WithMessage("The project title is required")
-            .MaximumLength(100).WithMessage("The project title cannot exceed 100 characters");
+            .MaximumLength(ProjectConstraints.TitleMaxLength).WithMessage($"The project title cannot exceed {ProjectConstraints.TitleMaxLength} characters");
     }
 
     extension<T>(IRuleBuilder<T, string?> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string?> ProjectDescription() => ruleBuilder
-            .MaximumLength(800).WithMessage("The project description cannot exceed 800 characters");
+            .MaximumLength(ProjectConstraints.DescriptionMaxLength).WithMessage($"The project description cannot exceed {ProjectConstraints.DescriptionMaxLength} characters");
     }
 
     extension<T>(IRuleBuilder<T, DateOnly> ruleBuilder)

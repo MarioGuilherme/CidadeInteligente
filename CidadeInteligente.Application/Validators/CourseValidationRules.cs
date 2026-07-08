@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CidadeInteligente.Domain.Constants;
+using FluentValidation;
 
 namespace CidadeInteligente.Application.Validators;
 
@@ -14,6 +15,6 @@ public static class CourseValidationRules
     {
         public IRuleBuilderOptions<T, string> CourseDescription() => ruleBuilder
             .NotEmpty().WithMessage("The course description is required")
-            .MaximumLength(45).WithMessage("The course description cannot exceed 45 characters");
+            .MaximumLength(CourseConstraints.DescriptionMaxLength).WithMessage($"The course description cannot exceed {CourseConstraints.DescriptionMaxLength} characters");
     }
 }

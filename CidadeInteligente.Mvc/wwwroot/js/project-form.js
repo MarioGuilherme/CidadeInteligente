@@ -38,8 +38,8 @@
                 return;
             }
 
-            if (project.medias.length > 10) {
-                sweetAlertUtils.sweetAlertAsync("warning", "Por favor, anexe no máximo 10 mídias para o projeto!");
+            if (project.medias.length > MAX_MEDIAS) {
+                sweetAlertUtils.sweetAlertAsync("warning", `Por favor, anexe no máximo ${MAX_MEDIAS} mídias para o projeto!`);
                 return;
             }
 
@@ -126,7 +126,9 @@
             return true;
         };
 
+        const MAX_MEDIAS = 10;
         let indexMediaToUpdate = 0;
+        let pendingMedias = 0;
 
         $(".user").click(function () {
             $(this).attr("involved") === "true"
@@ -136,8 +138,8 @@
         });
 
         $(".btn-add-media").click(() => {
-            if (project.medias.length >= 10) {
-                sweetAlertUtils.sweetAlertAsync("warning", "Limite de dez mídias atingido.");
+            if (project.medias.length + pendingMedias >= MAX_MEDIAS) {
+                sweetAlertUtils.sweetAlertAsync("warning", `Limite de ${MAX_MEDIAS} mídias atingido.`);
                 return;
             }
             $(".input-new-medias").click();
@@ -165,11 +167,12 @@
 
         $(".input-change-media").on("change", function () {
             const file = $(this)[0].files[0];
+            $(this).val(null);
+
+            if (!file || !fileIsValidWithAlertReturn(file)) return;
+
             const fileReader = new FileReader;
-
             fileReader.onloadend = ({ target: { result } }) => {
-                if (!fileIsValidWithAlertReturn(file)) return;
-
                 const extension = file.type.split("/")[1];
                 $($(".media")[indexMediaToUpdate]).find("img, video").remove();
                 $($(".media")[indexMediaToUpdate]).find(".card-body").prepend(extension === "mp4"
@@ -183,7 +186,6 @@
             };
 
             fileReader.readAsDataURL(file);
-            $(this).val(null);
         });
 
         $(".medias").on("click", ".btn-remove-media", function () {
@@ -193,20 +195,32 @@
             project.medias.splice(indexMediaToDelete, 1);
         });
 
-        $(".input-new-medias").on("change", function() {
-            const files = $(this)[0].files;
+        $(".input-new-medias").on("change", function () {
+            const files = [...$(this)[0].files];
+            $(this).val(null);
 
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+            let availableSlots = MAX_MEDIAS - project.medias.length - pendingMedias;
+            if (availableSlots <= 0) {
+                sweetAlertUtils.sweetAlertAsync("warning", `Limite de ${MAX_MEDIAS} mídias atingido.`);
+                return;
+            }
+
+            let ignoredByLimit = 0;
+            files.forEach(file => {
+                if (availableSlots <= 0) {
+                    ignoredByLimit++;
+                    return;
+                }
+
+                if (!fileIsValidWithAlertReturn(file)) return;
+
+                availableSlots--;
+                pendingMedias++;
+
                 const fileReader = new FileReader;
-
                 fileReader.onloadend = ({ target: { result } }) => {
-                    if (project.medias.length === 10) {
-                        sweetAlertUtils.sweetAlertAsync("warning", "Limite de 10 mídias atingido.");
-                        return;
-                    }
-
-                    if (!fileIsValidWithAlertReturn(file)) return;
+                    pendingMedias--;
+                    if (!result) return;
 
                     const media = {
                         file,
@@ -255,8 +269,10 @@
                     project.medias.push(media);
                 };
                 fileReader.readAsDataURL(file);
-            }
-            $(this).val(null);
+            });
+
+            if (ignoredByLimit > 0)
+                sweetAlertUtils.sweetAlertAsync("warning", `Você pode anexar no máximo ${MAX_MEDIAS} mídias. ${ignoredByLimit} arquivo(s) ignorado(s).`);
         });
     });
 })(jQuery);

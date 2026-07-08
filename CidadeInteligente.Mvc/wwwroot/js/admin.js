@@ -38,7 +38,7 @@
 
             dataTable.clear();
             data.forEach(entity => {
-                if (!entity.hasOwnProperty("userId")) {
+                if (!Object.hasOwn(entity, "userId")) {
                     dataTable.row.add([entity.areaId ?? entity.courseId, entity.description, renderButtons(entity.areaId ?? entity.courseId)]).draw();
                     return;
                 }

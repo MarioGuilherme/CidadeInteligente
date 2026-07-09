@@ -1,6 +1,4 @@
-﻿using CidadeInteligente.Application.Commands.CreateProject;
-using CidadeInteligente.Domain.Constants;
-using CidadeInteligente.Domain.Entities;
+﻿using CidadeInteligente.Domain.Constants;
 using FluentValidation;
 using System.Linq.Expressions;
 

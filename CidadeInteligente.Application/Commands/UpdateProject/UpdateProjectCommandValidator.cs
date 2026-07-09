@@ -1,6 +1,5 @@
 ﻿using CidadeInteligente.Application.Validators;
 using FluentValidation;
-using static CidadeInteligente.Application.Commands.CreateProject.CreateProjectCommandValidator;
 
 namespace CidadeInteligente.Application.Commands.UpdateProject;
 

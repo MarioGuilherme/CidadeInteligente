@@ -1,8 +1,5 @@
-﻿using CidadeInteligente.Application.Commands.UpdateProject;
-using CidadeInteligente.Application.Extensions;
-using CidadeInteligente.Domain.Notifications;
+﻿using CidadeInteligente.Domain.Notifications;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace CidadeInteligente.Application.Notifications;
 

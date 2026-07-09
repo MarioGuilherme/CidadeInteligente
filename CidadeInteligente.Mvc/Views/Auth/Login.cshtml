@@ -19,11 +19,11 @@
                         <h3 class="text-center title mb-3">Login</h3>
                         <form class="form">
                             <div class="inputIcon">
-                                <input required max="@UserConstraints.EmailMaxLength" type="email" name="email" class="form-input" aria-describedby="emailHelp" placeholder="Digite o email">
+                                <input required maxlength="@UserConstraints.EmailMaxLength" type="email" name="email" class="form-input" aria-describedby="emailHelp" placeholder="Digite o email">
                                 <i class="mdi mdi-email-check"></i>
                             </div>
                             <div class="inputIcon mt-3">
-                                <input required min="@UserConstraints.RawPasswordMinLength" type="password" name="password" class="form-input" placeholder="Digite a sua senha">
+                                <input required minlength="@UserConstraints.RawPasswordMinLength" type="password" name="password" class="form-input" placeholder="Digite a sua senha">
                                 <i class="mdi mdi-key"></i>
                             </div>
                             <div class="row mt-3">

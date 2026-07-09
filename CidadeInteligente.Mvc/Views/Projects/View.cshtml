@@ -52,11 +52,11 @@
         <div class="row mt-5 text-center">
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Data de ínicio do projeto</h5>
-                <p>@Model.StartedAt.ToShortDateString()</p>
+                <p>@Model.StartedAt.ToString("dd/MM/yyyy")</p>
             </div>
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h5 class="font-weight-bold default-color">Data de término do projeto</h5>
-                <p>@(Model.FinishedAt?.ToShortDateString() ?? "Em andamento")</p>
+                <p>@(Model.FinishedAt?.ToString("dd/MM/yyyy") ?? "Em andamento")</p>
             </div>
         </div>
         <hr>

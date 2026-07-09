@@ -1,6 +1,5 @@
 ﻿using CidadeInteligente.Application.Validators;
 using FluentValidation;
-using static CidadeInteligente.Application.Commands.CreateProject.CreateProjectCommandValidator;
 
 namespace CidadeInteligente.Application.Commands.UpdateProject;
 
@@ -28,9 +27,8 @@ public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectComm
             RuleFor(c => c.MediaId).MediaId();
             RuleFor(c => c.Title).MediaTitle();
             RuleFor(c => c.Description).MediaDescription();
-            RuleFor(c => c.MimeType).MediaMimeType();
+            RuleFor(c => c.MimeType).MediaMimeType().When(c => c.FileSize > 0);
             RuleFor(c => c.FileSize).MediaFileSize();
-            RuleFor(c => c.OpenStream).MediaOpenStream();
         }
     }
 }

@@ -7,20 +7,16 @@
             title: $("input[name=title]").val().trim() || null,
             startedAt: $("input[name=startedAt]").val() || null,
             finishedAt: $("input[name=finishedAt]").val() || null,
-            description: $("textarea[name=description]").val()?.trim() || null,
+            description: $("textarea[name=description]").val().trim() || null,
             areaId: +$("select[name=areaId]").val() || null,
             courseId: +$("select[name=courseId]").val() || null,
             involvedUsers: $(".user[involved=true]").toArray().map(e => +$(e).attr("id")),
-            medias: $(".media").toArray().map(e => ({
-                mediaId: +$(e).attr("id"),
-                title: $(e).find("input").val().trim(),
-                description: $(e).find("textarea").val()?.trim() || null,
-                file: null,
-                fileName: $(e).find("img, video").attr("src").split("/").at(-1),
-                preview: {
-                    extension: $(e).find("img, video").attr("src").split(".").at(-1),
-                    path: $(e).find("img, video").attr("src")
-                }
+            medias: $(".media").toArray().map(m => ({
+                mediaId: +$(m).attr("id"),
+                title: $(m).find("input[name=title]").val().trim(),
+                description: $(m).find("textarea[name=description]").val().trim() || null,
+                file: new File([], $(m).find("img, video").attr("src").split("/").at(-1), { type: $(m).find("input[name=mimeType]").val().trim() }),
+                path: $(m).find("img, video").attr("src")
             }))
         };
         const MEDIA_TITLE_MAX_LENGTH = +$("script[media-title-max-length]").attr("media-title-max-length");
@@ -68,7 +64,7 @@
                 if (media.mediaId) formData.append(`medias[${index}].mediaId`, media.mediaId);
                 if (media.description) formData.append(`medias[${index}].description`, media.description);
                 formData.append(`medias[${index}].title`, media.title);
-                formData.append(`medias[${index}].file`, media.file || new File([], media.fileName));
+                formData.append(`medias[${index}].file`, media.file);
             });
 
             const { statusCode, notifications, headers } = isUpdate
@@ -178,13 +174,12 @@
                 const extension = file.type.split("/")[1];
                 $($(".media")[indexMediaToUpdate]).find("img, video").remove();
                 $($(".media")[indexMediaToUpdate]).find(".card-body").prepend(extension === "mp4"
-                    ? `<video src="${result}" style="max-width: 100%" controls></video>`
+                    ? `<video src="${result}" style="width: 100%" controls></video>`
                     : `<img src="${result}" class="img-fluid">`
                 );
 
-                project.medias[indexMediaToUpdate].preview.path = result.split(",")[1];
-                project.medias[indexMediaToUpdate].preview.extension = extension;
                 project.medias[indexMediaToUpdate].file = file;
+                project.medias[indexMediaToUpdate].path = result.split(",")[1];
             };
 
             fileReader.readAsDataURL(file);
@@ -192,7 +187,7 @@
 
         $(".medias").on("click", ".btn-remove-media", function () {
             const indexMediaToDelete = [...$(".media")].indexOf($(this).parents(".media")[0]);
-            setTimeout(() => $(this).parents(".col-12").remove(), 1000);
+            $(this).parents(".col-12").remove();
             $(this).parents(".col-12").hide(150);
             project.medias.splice(indexMediaToDelete, 1);
         });
@@ -224,22 +219,20 @@
                     pendingMedias--;
                     if (!result) return;
 
+                    const extension = file.type.split("/")[1];
                     const media = {
                         file,
-                        title: file.name.split(".").slice(0, -1).join(".").slice(0, 60),
+                        title: file.name.split(".").slice(0, -1).join("."),
                         description: null,
-                        preview: {
-                            extension: file.type.split("/")[1],
-                            path: result.split(",")[1]
-                        }
+                        path: result.split(",")[1]
                     };
 
                     $(".medias").append(`
                         <div class="col-12 col-sm-12 col-lg-3 col-md-3 my-3">
                             <div class="card media">
                                 <div class="card-body">
-                                    ${media.preview.extension === "mp4"
-                                        ? `<video src="${result}" style="max-width: 100%" controls></video>`
+                                    ${extension === "mp4"
+                                        ? `<video src="${result}" style="width: 100%" controls></video>`
                                         : `<img src="${result}" class="d-block w-100">`
                                     }
                                     <div class="row my-1">

@@ -125,6 +125,7 @@
                                     {
                                         <img class="d-block w-100 img-card" src="@media.Path">
                                     }
+                                    <input type="hidden" name="mimeType" value="@media.MimeType">
                                     <div class="row my-1">
                                         <div class="col-12 col-lg-6">
                                             <button type="button" class="btn btn-change-media w-100 btn-warning my-1">
@@ -141,11 +142,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input required maxlength="@MediaConstraints.TitleMaxLength" class="form-control" type="text" value="@media.Title">
+                                        <input required maxlength="@MediaConstraints.TitleMaxLength" name="title" class="form-control" type="text" value="@media.Title">
                                     </div>
                                     <div class="form-group">
                                         <label>Descrição</label>
-                                        <textarea maxlength="@MediaConstraints.DescriptionMaxLength" class="form-control" rows="3">@media.Description</textarea>
+                                        <textarea maxlength="@MediaConstraints.DescriptionMaxLength" name="description" class="form-control" rows="3">@media.Description</textarea>
                                     </div>
                                 </div>
                             </div>

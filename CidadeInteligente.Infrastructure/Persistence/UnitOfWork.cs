@@ -1,8 +1,6 @@
-﻿using CidadeInteligente.Application.Commands.UpdateProject;
-using CidadeInteligente.Domain.Repositories;
+﻿using CidadeInteligente.Domain.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace CidadeInteligente.Infrastructure.Persistence;
 

@@ -92,11 +92,8 @@ public class UpdateProjectCommandHandler(INotificationContext notification,
             {
                 Media mediaDb = project.Medias.First(m => m.MediaId == cmd.MediaId!.Value);
                 if (cmd.FileSize > 0)
-                {
-                    await using Stream stream = cmd.OpenStream.Invoke();
                     mediaUpdates.Add((mediaDb, cmd.Title, cmd.Description, cmd.FileSize, cmd.OpenStream));
-                }
-                mediaDb.Update(cmd.Title, cmd.Description, cmd.MimeType);
+                mediaDb.Update(cmd.Title, cmd.Description, cmd.FileSize > 0 ? cmd.MimeType : null);
             }
         },
         onRollback: async ct =>

@@ -9,11 +9,11 @@ using Microsoft.Extensions.Options;
 
 namespace CidadeInteligente.Application.Queries.GetProjectById;
 
-public class GetProjectByIdQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork, IOptions<AzureStorageOptions> options) : IRequestHandler<GetProjectByIdQuery, GetProjectByIdQueryResult?>
+public class GetProjectByIdQueryHandler(INotificationContext notification, IUnitOfWork unitOfWork, IOptions<FileStorageOptions> options) : IRequestHandler<GetProjectByIdQuery, GetProjectByIdQueryResult?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly string _blobUrl = options.Value.BlobUrl!.TrimEnd('/');
+    private readonly string _baseUrl = options.Value.BaseUrl;
 
     public async Task<GetProjectByIdQueryResult?> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
     {
@@ -31,7 +31,7 @@ public class GetProjectByIdQueryHandler(INotificationContext notification, IUnit
                 p.Medias.Select(m => new GetProjectByIdQueryResult.MediaDetailsViewModel(m.MediaId,
                     m.Title,
                     m.Description,
-                    $"{_blobUrl}/{m.FileName}",
+                    $"{_baseUrl}/{m.FileName}",
                     m.MimeType))));
 
         GetProjectByIdQueryResult? project = await _unitOfWork.Projects.GetBySpecAsync(getProjectByIdSpec, cancellationToken);

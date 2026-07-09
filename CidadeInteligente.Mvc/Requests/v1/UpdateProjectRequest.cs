@@ -9,5 +9,5 @@ public record UpdateProjectRequest(string Title,
     IEnumerable<int> InvolvedUsers,
     IEnumerable<UpdateProjectRequest.UpdateMediaRequest> Medias)
 {
-    public record UpdateMediaRequest(int? MediaId, string Title, string? Description, IFormFile File);
+    public record UpdateMediaRequest(int? MediaId, string Title, string? Description, IFormFile? File);
 }

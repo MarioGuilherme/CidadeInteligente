@@ -7,12 +7,11 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Commands.GetOrRemoveUserTokenRecoverPassword;
 
-public class GetOrRemoveUserTokenRecoverPasswordCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, TimeProvider timeProvider)
+public class GetOrRemoveUserTokenRecoverPasswordCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork)
     : IRequestHandler<GetOrRemoveUserTokenRecoverPasswordCommand, GetOrRemoveUserTokenRecoverPasswordCommandResult?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly TimeProvider _timeProvider = timeProvider;
 
     public async Task<GetOrRemoveUserTokenRecoverPasswordCommandResult?> Handle(GetOrRemoveUserTokenRecoverPasswordCommand request, CancellationToken cancellationToken)
     {
@@ -24,7 +23,7 @@ public class GetOrRemoveUserTokenRecoverPasswordCommandHandler(INotificationCont
             return null;
         }
 
-        if (_timeProvider.GetUtcNow() > user.TokenRecoverPasswordExpiration)
+        if (DateTime.UtcNow > user.TokenRecoverPasswordExpiration)
         {
             await _unitOfWork.ExecuteInTransactionAsync(user.RemoveTokenInformations, cancellationToken: cancellationToken);
             _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);

@@ -17,7 +17,7 @@ public class Project(int areaId,
     public Course Course { get; private set; } = null!;
     public string Title { get; private set; } = title;
     public string? Description { get; private set; } = description;
-    public DateOnly RegisteredAt { get; init; } = DateOnly.FromDateTime(DateTime.Now);
+    public DateOnly RegisteredAt { get; init; } = DateOnly.FromDateTime(DateTime.UtcNow);
     public DateOnly StartedAt { get; private set; } = startedAt;
     public DateOnly? FinishedAt { get; private set; } = finishedAt;
     public virtual ICollection<User> InvolvedUsers { get; set; } = [];

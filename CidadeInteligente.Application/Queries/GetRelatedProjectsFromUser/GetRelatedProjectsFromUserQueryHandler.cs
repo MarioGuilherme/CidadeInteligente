@@ -13,12 +13,12 @@ namespace CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
 
 public class GetRelatedProjectsFromUserQueryHandler(INotificationContext notification,
     IUnitOfWork unitOfWork,
-    IOptions<AzureStorageOptions> azureStorageOptions,
+    IOptions<FileStorageOptions> azureStorageOptions,
     IOptions<PaginationOptions> paginationOptions) : IRequestHandler<GetRelatedProjectsFromUserQuery, GetRelatedProjectsFromUserQueryResult?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly string _blobUrl = azureStorageOptions.Value.BlobUrl!.TrimEnd('/');
+    private readonly string _baseUrl = azureStorageOptions.Value.BaseUrl;
     private readonly int _pageSize = paginationOptions.Value.MaxPageSize;
 
     public async Task<GetRelatedProjectsFromUserQueryResult?> Handle(GetRelatedProjectsFromUserQuery request, CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ public class GetRelatedProjectsFromUserQueryHandler(INotificationContext notific
                 p.Description,
                 p.Medias.Select(m => new GetRelatedProjectsFromUserQueryResult.ProjectViewModel.MediaViewModel(
                     m.MediaId,
-                    $"{_blobUrl}/{m.FileName}",
+                    $"{_baseUrl}/{m.FileName}",
                     m.MimeType)).ToList()))!;
 
         PagedResult<GetRelatedProjectsFromUserQueryResult.ProjectViewModel> pagedProjects = await _unitOfWork.Projects.GetPagedBySpecAsync(getRelatedProjectsFromUserSpec, cancellationToken);

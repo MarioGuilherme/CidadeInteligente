@@ -24,9 +24,8 @@ public class ChangePasswordCommandHandler(INotificationContext notification, IUn
             return null;
         }
 
-        if (DateTime.Now > user.TokenRecoverPasswordExpiration)
+        if (DateTime.UtcNow > user.TokenRecoverPasswordExpiration)
         {
-            user.RemoveTokenInformations();
             await _unitOfWork.ExecuteInTransactionAsync(user.RemoveTokenInformations, cancellationToken: cancellationToken);
             _notification.AddNotification(NotificationType.TokenRecoverPasswordExpired);
             return null;

@@ -9,5 +9,5 @@ public record CreateProjectRequest(string Title,
     IEnumerable<int> InvolvedUsers,
     IEnumerable<CreateProjectRequest.CreateMediaRequest> Medias)
 {
-    public record CreateMediaRequest(string Title, string? Description, IFormFile File);
+    public record CreateMediaRequest(string Title, string? Description, IFormFile? File);
 }

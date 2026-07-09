@@ -10,8 +10,6 @@ using Serilog;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, cfg) => cfg.ReadFrom.Configuration(ctx.Configuration));
 
-builder.Services.AddSingleton(TimeProvider.System);
-
 builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication();

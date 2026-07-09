@@ -1,8 +1,8 @@
-﻿using Serilog;
+﻿using CidadeInteligente.Mvc.Responses;
 
 namespace CidadeInteligente.Mvc.Middleware;
 
-public class ExceptionMiddleware(RequestDelegate next)
+public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
 {
     private readonly RequestDelegate _next = next;
 
@@ -15,7 +15,12 @@ public class ExceptionMiddleware(RequestDelegate next)
         catch (Exception ex)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            Log.Error(ex, "Internal error in the CidadeInteligente App");
+            await context.Response.WriteAsJsonAsync(new RestResponse
+            {
+                Notifications = ["Internal error"]
+            });
+
+            logger.LogError(ex, "Internal error in the CidadeInteligente App");
         }
     }
 }

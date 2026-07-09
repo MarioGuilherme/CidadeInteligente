@@ -6,12 +6,15 @@ using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Domain.Specifications.Projects;
 using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
 namespace CidadeInteligente.Application.Commands.UpdateProject;
 
-public class UpdateProjectCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, IFileStorage fileStorage) : IRequestHandler<UpdateProjectCommand, Unit?>
+public class UpdateProjectCommandHandler(INotificationContext notification,
+    IUnitOfWork unitOfWork,
+    IFileStorage fileStorage,
+    ILogger<UpdateProjectCommandHandler> logger) : IRequestHandler<UpdateProjectCommand, Unit?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -40,7 +43,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
         int[] mediaIdsToKeep = [.. request.Medias.Where(m => m.MediaId is not null).Select(m => m.MediaId!.Value)];
         List<Media> mediasToRemove = [.. project.Medias.Where(m => !mediaIdsToKeep.Contains(m.MediaId))];
         ConcurrentBag<Media> uploadedMedias = [];
-        List<(Media Entity, string Title, string? Description, Func<Stream>? StreamFactory)> mediaUpdates = [];
+        List<(Media Entity, string Title, string? Description, long FileSize, Func<Stream>? StreamFactory)> mediaUpdates = [];
 
         await _unitOfWork.ExecuteInTransactionAsync(async ct =>
         {
@@ -54,9 +57,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
             int[] currentUserIds = [.. project.InvolvedUsers.Select(u => u.UserId)];
 
             foreach (User toRemove in project.InvolvedUsers.Where(u => !request.InvolvedUsers.Contains(u.UserId)).ToList())
-            {
                 project.InvolvedUsers.Remove(toRemove);
-            }
 
             foreach (int involvedUserId in request.InvolvedUsers.Where(iuId => !currentUserIds.Contains(iuId)))
             {
@@ -90,11 +91,10 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
             foreach (UpdateProjectCommand.UpdateMediaCommand? cmd in request.Medias.Where(m => m.MediaId is not null))
             {
                 Media mediaDb = project.Medias.First(m => m.MediaId == cmd.MediaId!.Value);
-                await using Stream stream = cmd.OpenStream.Invoke();
-                if (stream.Length > 0)
+                if (cmd.FileSize > 0)
                 {
-                    await _fileStorage.UploadOrUpdateFileAsync(mediaDb.FileName, stream, cancellationToken);
-                    mediaUpdates.Add((mediaDb, cmd.Title, cmd.Description, cmd.OpenStream));
+                    await using Stream stream = cmd.OpenStream.Invoke();
+                    mediaUpdates.Add((mediaDb, cmd.Title, cmd.Description, cmd.FileSize, cmd.OpenStream));
                 }
                 mediaDb.Update(cmd.Title, cmd.Description, cmd.MimeType);
             }
@@ -109,7 +109,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Falha ao limpar upload {FileName}", m.FileName);
+                    logger.LogError(ex, "Falha ao limpar upload {FileName}", m.FileName);
                 }
             }));
         },
@@ -123,7 +123,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Falha ao remover arquivo órfão {FileName}", m.FileName);
+                logger.LogError(ex, "Falha ao remover arquivo órfão {FileName}", m.FileName);
             }
         }));
 
@@ -131,8 +131,8 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
             .Where(u => u.StreamFactory is not null)
             .Select(async u =>
             {
+                if (u.FileSize == 0) return;
                 await using Stream stream = u.StreamFactory!();
-                if (stream.Length == 0) return;
 
                 try
                 {
@@ -140,7 +140,7 @@ public class UpdateProjectCommandHandler(INotificationContext notification, IUni
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Falha ao atualizar conteúdo do arquivo {FileName}", u.Entity.FileName);
+                    logger.LogError(ex, "Falha ao atualizar conteúdo do arquivo {FileName}", u.Entity.FileName);
                 }
             }));
 

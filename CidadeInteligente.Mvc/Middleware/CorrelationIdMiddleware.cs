@@ -2,10 +2,9 @@
 
 namespace CidadeInteligente.Mvc.Middleware;
 
-public class CorrelationIdMiddleware(RequestDelegate next, ILogger<CorrelationIdMiddleware> logger)
+public partial class CorrelationIdMiddleware(RequestDelegate next, ILogger<CorrelationIdMiddleware> logger)
 {
     private readonly RequestDelegate _next = next;
-    private readonly ILogger<CorrelationIdMiddleware> _logger = logger;
 
     public async Task Invoke(HttpContext context)
     {
@@ -15,8 +14,11 @@ public class CorrelationIdMiddleware(RequestDelegate next, ILogger<CorrelationId
 
         using (LogContext.PushProperty("CorrelationId", correlationId))
         {
-            _logger.LogInformation("Start of request with CorrelationId {CorrelationId}.", correlationId);
+            LogStartOfRequest(correlationId);
             await _next(context);
         }
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Start of request with CorrelationId {CorrelationId}.")]
+    private partial void LogStartOfRequest(string correlationId);
 }

@@ -1,10 +1,12 @@
-﻿using CidadeInteligente.Application.Extensions;
+﻿using CidadeInteligente.Application.Commands.UpdateProject;
+using CidadeInteligente.Application.Extensions;
 using CidadeInteligente.Domain.Notifications;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace CidadeInteligente.Application.Notifications;
 
-public sealed class NotificationContext : INotificationContext
+public sealed class NotificationContext(ILogger<NotificationContext> logger) : INotificationContext
 {
     private readonly List<Notification> _notifications = [];
     private readonly List<Tuple<string, string>> _validations = [];
@@ -21,7 +23,9 @@ public sealed class NotificationContext : INotificationContext
     public void AddNotification(NotificationType notificationType, IEnumerable<object>? @params = default)
     {
         Notification notification = new(notificationType, @params);
-        Log.Warning(notification.Type.GetDescription(), @params);
+        logger.LogWarning("Notification raised: {NotificationType} with params {@Params}",
+            notificationType,
+            @params);
         _notifications.Add(notification);
     }
 

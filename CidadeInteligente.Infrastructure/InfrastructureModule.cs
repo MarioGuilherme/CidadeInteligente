@@ -92,13 +92,11 @@ public static class InfrastructureModule
             BlobContainerClient blobContainerClient = new(connectionString, containerName);
             blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
 
-            services.Configure<AzureStorageOptions>(options =>
+            services.Configure<FileStorageOptions>(options =>
             {
                 options.ConnectionString = connectionString;
-                options.ContainerName = containerName;
-                options.BlobUrl = blobContainerClient.Uri.ToString();
+                options.BaseUrl = blobContainerClient.Uri.ToString();
             });
-
             services.AddSingleton<IFileStorage, AzureStorageService>(_ => new(blobContainerClient));
             return services;
         }

@@ -35,14 +35,9 @@ public class AuthApiController(INotificationContext notification, IMediator medi
             return Unauthorized(restResponse);
         }
 
-        await HttpContext.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
             authenticateUserQueryResult!.ClaimsPrincipal,
-            new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
-            });
+            new AuthenticationProperties { IsPersistent = true });
 
         return Created();
     }

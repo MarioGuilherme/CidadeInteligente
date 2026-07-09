@@ -68,6 +68,6 @@ public class User
         }
 
         TokenRecoverPassword = Convert.ToHexStringLower(randomBytes);
-        TokenRecoverPasswordExpiration = DateTime.Now.AddMinutes(60);
+        TokenRecoverPasswordExpiration = DateTime.UtcNow.AddMinutes(60);
     }
 }

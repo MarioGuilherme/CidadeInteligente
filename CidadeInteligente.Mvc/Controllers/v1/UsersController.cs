@@ -43,7 +43,7 @@ public class UsersController(IMediator mediator) : ControllerBase
             request.ConfirmPassword,
             request.Role);
         int? userId = await _mediator.Send(createUserCommand);
-        return CreatedAtAction(nameof(GetUserById), new { userId }, createUserCommand);
+        return CreatedAtAction(nameof(GetUserById), new { userId }, new { userId, createUserCommand.Name, createUserCommand.Email, createUserCommand.Role });
     }
 
     [HttpPatch("{userId:int}")]

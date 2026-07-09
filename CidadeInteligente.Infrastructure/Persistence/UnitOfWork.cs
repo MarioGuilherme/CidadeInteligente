@@ -1,5 +1,7 @@
-﻿using CidadeInteligente.Domain.Repositories;
+﻿using CidadeInteligente.Application.Commands.UpdateProject;
+using CidadeInteligente.Domain.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace CidadeInteligente.Infrastructure.Persistence;
@@ -8,7 +10,8 @@ public class UnitOfWork(CidadeInteligenteDbContext dbContext,
     IAreaRepository areas,
     ICourseRepository courses,
     IProjectRepository projects,
-    IUserRepository users) : IUnitOfWork
+    IUserRepository users,
+    ILogger<UnitOfWork> logger) : IUnitOfWork
 {
     private readonly CidadeInteligenteDbContext _dbContext = dbContext;
     private IDbContextTransaction? _transaction;
@@ -75,7 +78,7 @@ public class UnitOfWork(CidadeInteligenteDbContext dbContext,
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Falha na compensação pós-rollback");
+                    logger.LogError(ex, "Post-rollback compensation failure");
                 }
             }
 

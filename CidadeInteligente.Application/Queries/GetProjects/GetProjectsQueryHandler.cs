@@ -8,10 +8,10 @@ using Microsoft.Extensions.Options;
 
 namespace CidadeInteligente.Application.Queries.GetProjects;
 
-public class GetProjectsQueryHandler(IUnitOfWork unitOfWork, IOptions<AzureStorageOptions> azureStorageOptions, IOptions<PaginationOptions> paginationOptions) : IRequestHandler<GetProjectsQuery, GetProjectsQueryResult>
+public class GetProjectsQueryHandler(IUnitOfWork unitOfWork, IOptions<FileStorageOptions> azureStorageOptions, IOptions<PaginationOptions> paginationOptions) : IRequestHandler<GetProjectsQuery, GetProjectsQueryResult>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly string _blobUrl = azureStorageOptions.Value.BlobUrl!.TrimEnd('/');
+    private readonly string _baseUrl = azureStorageOptions.Value.BaseUrl;
     private readonly int _pageSize = paginationOptions.Value.MaxPageSize;
 
     public async Task<GetProjectsQueryResult> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ public class GetProjectsQueryHandler(IUnitOfWork unitOfWork, IOptions<AzureStora
                 p.Title,
                 p.Description,
                 p.Medias.Select(m => new GetProjectsQueryResult.ProjectViewModel.MediaViewModel(m.MediaId,
-                    $"{_blobUrl}/{m.FileName}",
+                    $"{_baseUrl}/{m.FileName}",
                     m.MimeType)).ToList()))!;
 
         PagedResult<GetProjectsQueryResult.ProjectViewModel> pagedProjects = await _unitOfWork.Projects.GetPagedBySpecAsync(getPagedProjectsSpec, cancellationToken);

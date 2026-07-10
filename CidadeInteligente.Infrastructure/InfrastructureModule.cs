@@ -33,7 +33,7 @@ public static class InfrastructureModule
 
         private IServiceCollection AddPersistence(IConfiguration configuration)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection")!;
+            string connectionString = configuration.GetConnectionString("Database")!;
             services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(connectionString));
 
             services.AddOptions<PaginationOptions>().BindConfiguration("Pagination");
@@ -80,7 +80,7 @@ public static class InfrastructureModule
 
         private IServiceCollection AddFileStorage(IConfiguration configuration)
         {
-            string? connectionString = configuration["AzureStorage:ConnectionString"];
+            string? connectionString = configuration.GetConnectionString("FileStorage");
 
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -88,7 +88,7 @@ public static class InfrastructureModule
                 return services;
             }
 
-            string containerName = configuration["AzureStorage:ContainerName"] ?? "project-medias";
+            string containerName = configuration["FileStorage:ContainerName"] ?? "project-medias";
             BlobContainerClient blobContainerClient = new(connectionString, containerName);
             blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
 

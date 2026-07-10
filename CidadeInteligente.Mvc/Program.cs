@@ -16,7 +16,7 @@ builder.Services
 
 builder.Services
     .AddHealthChecks()
-    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!, name: "database");
+    .AddSqlServer(builder.Configuration.GetConnectionString("Database")!, name: "database");
 
 IMvcBuilder mvcBuilder = builder.Services
     .AddControllersWithViews(options => options.Filters.Add<NotificationResultFilter>())

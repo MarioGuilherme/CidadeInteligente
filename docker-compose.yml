@@ -4,16 +4,15 @@ services:
     build:
       context: .
       dockerfile: CidadeInteligente.Mvc/Dockerfile
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CidadeInteligente;User=sa;Password=Adm1n23%;TrustServerCertificate=True
-      - AzureStorage__ConnectionString=
-      - SendGrid__ApiKey=
+    depends_on:
+      - db
 
   db:
     image: mcr.microsoft.com/mssql/server
     environment:
-      MSSQL_SA_PASSWORD: "Adm1n23%"
+      MSSQL_SA_PASSWORD: ${DATABASE_PASSWORD}
       ACCEPT_EULA: "Y"
+
     ports:
       - "1433:1433"
     volumes:

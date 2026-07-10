@@ -13,12 +13,12 @@ namespace CidadeInteligente.Application.Queries.GetRelatedProjectsFromUser;
 
 public class GetRelatedProjectsFromUserQueryHandler(INotificationContext notification,
     IUnitOfWork unitOfWork,
-    IOptions<FileStorageOptions> azureStorageOptions,
+    IOptions<FileStorageOptions> fileStorageOptions,
     IOptions<PaginationOptions> paginationOptions) : IRequestHandler<GetRelatedProjectsFromUserQuery, GetRelatedProjectsFromUserQueryResult?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly string _baseUrl = azureStorageOptions.Value.BaseUrl;
+    private readonly string _baseUrl = fileStorageOptions.Value.BaseUrl;
     private readonly int _pageSize = paginationOptions.Value.MaxPageSize;
 
     public async Task<GetRelatedProjectsFromUserQueryResult?> Handle(GetRelatedProjectsFromUserQuery request, CancellationToken cancellationToken)

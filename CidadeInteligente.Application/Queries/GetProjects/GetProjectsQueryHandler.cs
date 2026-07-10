@@ -8,10 +8,10 @@ using Microsoft.Extensions.Options;
 
 namespace CidadeInteligente.Application.Queries.GetProjects;
 
-public class GetProjectsQueryHandler(IUnitOfWork unitOfWork, IOptions<FileStorageOptions> azureStorageOptions, IOptions<PaginationOptions> paginationOptions) : IRequestHandler<GetProjectsQuery, GetProjectsQueryResult>
+public class GetProjectsQueryHandler(IUnitOfWork unitOfWork, IOptions<FileStorageOptions> fileStorageOptions, IOptions<PaginationOptions> paginationOptions) : IRequestHandler<GetProjectsQuery, GetProjectsQueryResult>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly string _baseUrl = azureStorageOptions.Value.BaseUrl;
+    private readonly string _baseUrl = fileStorageOptions.Value.BaseUrl;
     private readonly int _pageSize = paginationOptions.Value.MaxPageSize;
 
     public async Task<GetProjectsQueryResult> Handle(GetProjectsQuery request, CancellationToken cancellationToken)

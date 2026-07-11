@@ -1,10 +1,7 @@
 ﻿using CidadeInteligente.Application.Commands.ChangePasswordCommand;
 using CidadeInteligente.Application.Commands.SendEmailRecover;
 using CidadeInteligente.Application.Queries.AuthenticateUser;
-using CidadeInteligente.Domain.Notifications;
-using CidadeInteligente.Mvc.Extensions;
 using CidadeInteligente.Mvc.Requests.v1;
-using CidadeInteligente.Mvc.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,9 +12,8 @@ namespace CidadeInteligente.Mvc.Controllers.v1;
 
 [Route("api/v1/auth")]
 [ApiController]
-public class AuthApiController(INotificationContext notification, IMediator mediator) : ControllerBase
+public class AuthApiController(IMediator mediator) : ControllerBase
 {
-    private readonly INotificationContext _notification = notification;
     private readonly IMediator _mediator = mediator;
 
     [HttpPost("login")]

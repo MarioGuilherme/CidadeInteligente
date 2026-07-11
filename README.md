@@ -85,7 +85,7 @@
   ```
   .\scripts\set-user-secrets.bat
   ```
-  - É necessário que tenha o SQL Server em sua máquina, caso não possua, siga a etapa <a href="#via-docker-compose">🐳 Via Docker Compose</a>. Caso possua, navegue até o diretório da camada MVC da aplicação:
+  - É necessário que tenha o SQL Server em sua máquina, caso não possua, pule para a etapa <a href="#-via-docker-compose">🐳 Via Docker Compose</a>. Caso possua, navegue até o diretório da camada MVC da aplicação:
   ```
   cd ./CidadeInteligente.Mvc/
   ```

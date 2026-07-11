@@ -70,30 +70,52 @@
   ```
 
 ## ▶️ Execução
-  - Via HTTP.sys:
-    - Navegue até o diretório da camada MVC da aplicação:
-    ```
-    cd ./CidadeInteligente.Mvc/
-    ```
-    - Insira o comando de execução do projeto:
-    ```
-    dotnet run --launch-profile https
-    ```
-    - Acesse [https://localhost:7233](https://localhost:7233)
+### 🔐 Variáveis de ambiente (obrigatório para todos os meios de execução)
+  - Copie o arquivo `.env.example` para `.env` na raiz do repositório:
+  ```
+  copy .env.example .env
+  ```
+  - Preencha as variáveis no arquivo `.env`:
+    - `DATABASE_PASSWORD`: senha do SQL Server (mínimo de 8 caracteres, com letras maiúsculas, minúsculas e números);
+    - `CONNECTIONSTRINGS__FILESTORAGE`: connection string do Azure Blob Storage (pode deixar vazio, mas não haverá imagens);
+    - `SENDGRID_APIKEY`: API Key do SendGrid para envio de e-mails (pode deixar vazio, mas não enviará e-mails);
 
-  - Via Docker Compose:
-    - Defina a senha do banco de dados e suba os containers:
-    ```
-    docker compose up --build
-    ```
+### 💻 Via HTTP.sys
+  - Configure os user-secrets do projeto MVC a partir do `.env` com o script:
+  ```
+  .\scripts\set-user-secrets.bat
+  ```
+  - É necessário que tenha o SQL Server em sua máquina, caso não possua, siga a etapa <a href="#via-docker-compose">🐳 Via Docker Compose</a>. Caso possua, navegue até o diretório da camada MVC da aplicação:
+  ```
+  cd ./CidadeInteligente.Mvc/
+  ```
+  - Insira o comando de execução do projeto:
+  ```
+  dotnet run --launch-profile https
+  ```
+  - Acesse [https://localhost:7233](https://localhost:7233)
 
-  - Via Kubernetes local (minikube/kind):
-    - Execute o comando para aplicar todos os arquivos yamls presentes no diretório:
-    ```
-    kubectl apply -f .\k8s\
-    ```
-    - Em seguida faça o PortForward:
-    ```
-    kubectl port-forward svc/cidade-inteligente-mvc-service 8080:80
-    ```
-    - Acesse [http://localhost:8080](http://localhost:8080)
+### 🐳 Via Docker Compose
+  - Suba os containers (o `.env` é carregado automaticamente):
+  ```
+  docker compose up --build
+  ```
+
+### ☸️ Via Kubernetes local (minikube/kind)
+  - Navegue até o diretório de scripts:
+  ```
+  cd ./scripts/
+  ```
+  - Crie o secret do cluster a partir das variáveis do `.env`:
+  ```
+  create-k8s-secret.bat
+  ```
+  - Aplique os manifests e reinicie o deployment:
+  ```
+  deploy-k8s.bat
+  ```
+  - Em seguida faça o PortForward:
+  ```
+  kubectl port-forward svc/cidade-inteligente-mvc-service 8080:80
+  ```
+  - Acesse [http://localhost:8080](http://localhost:8080)

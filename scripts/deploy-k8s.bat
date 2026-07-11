@@ -12,10 +12,6 @@ if errorlevel 1 (
 )
 
 echo.
-echo === Restarting deployment to pick up new image/secret. ===
-kubectl rollout restart deployment/cidade-inteligente-mvc
-
-echo.
 echo === Status dos pods ===
 kubectl get pods
 

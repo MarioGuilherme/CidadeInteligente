@@ -1,5 +1,5 @@
 using CidadeInteligente.Application.Commands.CreateProject;
-using CidadeInteligente.Domain.Constants;
+using CidadeInteligente.Application.Validators;
 using FluentAssertions;
 using FluentValidation.Results;
 
@@ -50,7 +50,7 @@ public class CreateProjectCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Count(e => e.ErrorMessage == "A data de término do projeto não pode ser anterior à data de início").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Project.FinishedAtBeforeStartedAt).Should().Be(1);
     }
 
     [Fact(DisplayName = "Project without involved users should fail validation")]
@@ -65,7 +65,7 @@ public class CreateProjectCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Count(e => e.ErrorMessage == "O projeto deve ter pelo menos um usuário envolvido").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Project.InvolvedUsersRequired).Should().Be(1);
     }
 
     [Fact(DisplayName = "Media with unsupported mime type should fail validation")]
@@ -83,6 +83,6 @@ public class CreateProjectCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Count(e => e.ErrorMessage == $"Tipo de mídia não suportado! Tipos aceitos: {string.Join(", ", MediaConstraints.AllowedMimeTypes)}").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.MimeTypeNotSupported).Should().Be(1);
     }
 }

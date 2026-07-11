@@ -9,37 +9,37 @@ public static class MediaValidationRules
     {
         public IRuleBuilderOptions<T, int?> MediaId(string? messageWhenEmpty = default) => ruleBuilder
             .GreaterThan(0)
-                .WithMessage(messageWhenEmpty ?? "O identificador da mídia é inválido");
+                .WithMessage(messageWhenEmpty ?? ValidationMessages.Media.InvalidId);
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string> MediaTitle() => ruleBuilder
-            .NotEmpty().WithMessage("O título da mídia é obrigatório")
+            .NotEmpty().WithMessage(ValidationMessages.Media.TitleRequired)
             .MaximumLength(MediaConstraints.TitleMaxLength)
-                .WithMessage($"O título da mídia não pode exceder {MediaConstraints.TitleMaxLength} caracteres");
+                .WithMessage(ValidationMessages.Media.TitleMaxLength);
     }
 
     extension<T>(IRuleBuilderInitial<T, string> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string> MediaMimeType() => ruleBuilder
             .Cascade(CascadeMode.Stop)
-            .NotEmpty().WithMessage("O tipo (mime type) da mídia é obrigatório")
+            .NotEmpty().WithMessage(ValidationMessages.Media.MimeTypeRequired)
             .Must(mime => mime is not null && MediaConstraints.AllowedMimeTypes.Contains(mime))
-                .WithMessage($"Tipo de mídia não suportado! Tipos aceitos: {string.Join(", ", MediaConstraints.AllowedMimeTypes)}");
+                .WithMessage(ValidationMessages.Media.MimeTypeNotSupported);
     }
 
     extension<T>(IRuleBuilder<T, long> ruleBuilder)
     {
         public IRuleBuilderOptions<T, long> MediaFileSize() => ruleBuilder
             .LessThanOrEqualTo(MediaConstraints.FileMaxSizeInBytes)
-                .WithMessage($"O arquivo da mídia não pode exceder {MediaConstraints.FileMaxSizeInMegaBytes} MB");
+                .WithMessage(ValidationMessages.Media.FileMaxSize);
     }
 
     extension<T>(IRuleBuilder<T, string?> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string?> MediaDescription() => ruleBuilder
             .MaximumLength(MediaConstraints.DescriptionMaxLength)
-                .WithMessage($"A descrição da mídia não pode exceder {MediaConstraints.DescriptionMaxLength} caracteres");
+                .WithMessage(ValidationMessages.Media.DescriptionMaxLength);
     }
 }

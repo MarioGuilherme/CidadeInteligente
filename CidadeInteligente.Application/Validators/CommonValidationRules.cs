@@ -10,6 +10,6 @@ public static class CommonValidationRules
             .GreaterThan(0).WithMessage(message);
 
         public IRuleBuilderOptions<T, int> RequiredPage() => ruleBuilder
-            .GreaterThan(0).WithMessage("A página é inválida");
+            .GreaterThan(0).WithMessage(ValidationMessages.Common.InvalidPage);
     }
 }

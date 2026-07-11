@@ -1,4 +1,5 @@
 using CidadeInteligente.Application.Commands.DeleteProjectById;
+using CidadeInteligente.Application.Validators;
 using FluentAssertions;
 using FluentValidation.Results;
 
@@ -32,7 +33,7 @@ public class DeleteProjectByIdCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(2);
-        result.Errors.Count(e => e.ErrorMessage == "O identificador do projeto é inválido").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "O identificador do usuário é inválido").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Project.InvalidId).Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.InvalidId).Should().Be(1);
     }
 }

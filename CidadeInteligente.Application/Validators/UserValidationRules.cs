@@ -10,36 +10,36 @@ public static class UserValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> UserId(string? messageWhenEmpty = default) => ruleBuilder
-            .RequiredId(messageWhenEmpty ?? "O identificador do usuário é inválido");
+            .RequiredId(messageWhenEmpty ?? ValidationMessages.User.InvalidId);
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string> UserName() => ruleBuilder
-            .NotEmpty().WithMessage("O nome do usuário é obrigatório")
-            .MaximumLength(UserConstraints.NameMaxLength).WithMessage($"O nome do usuário não pode exceder {UserConstraints.NameMaxLength} caracteres");
+            .NotEmpty().WithMessage(ValidationMessages.User.NameRequired)
+            .MaximumLength(UserConstraints.NameMaxLength).WithMessage(ValidationMessages.User.NameMaxLength);
 
         public IRuleBuilderOptions<T, string> UserEmail() => ruleBuilder
-            .NotEmpty().WithMessage("O e-mail do usuário é obrigatório")
-            .EmailAddress().WithMessage("O e-mail do usuário não é válido")
-            .MaximumLength(UserConstraints.EmailMaxLength).WithMessage($"O e-mail do usuário não pode exceder {UserConstraints.EmailMaxLength} caracteres");
+            .NotEmpty().WithMessage(ValidationMessages.User.EmailRequired)
+            .EmailAddress().WithMessage(ValidationMessages.User.EmailInvalid)
+            .MaximumLength(UserConstraints.EmailMaxLength).WithMessage(ValidationMessages.User.EmailMaxLength);
 
         public IRuleBuilderOptions<T, string> UserPassword() => ruleBuilder
-            .NotEmpty().WithMessage("A nova senha é obrigatória")
-            .MinimumLength(UserConstraints.RawPasswordMinLength).WithMessage($"A senha deve ter pelo menos {UserConstraints.RawPasswordMinLength} caracteres");
+            .NotEmpty().WithMessage(ValidationMessages.User.PasswordRequired)
+            .MinimumLength(UserConstraints.RawPasswordMinLength).WithMessage(ValidationMessages.User.PasswordMinLength);
 
         public IRuleBuilderOptions<T, string> UserConfirmPassword(Expression<Func<T, string>> passwordSelector) => ruleBuilder
-            .NotEmpty().WithMessage("A confirmação da senha é obrigatória")
-            .Equal(passwordSelector).WithMessage("As senhas não conferem");
+            .NotEmpty().WithMessage(ValidationMessages.User.ConfirmPasswordRequired)
+            .Equal(passwordSelector).WithMessage(ValidationMessages.User.PasswordsDoNotMatch);
 
         public IRuleBuilderOptions<T, string> UserToken() => ruleBuilder
-            .NotEmpty().WithMessage("O token de redefinição de senha é obrigatório")
-            .Length(UserConstraints.TokenRecoverPasswordMaxLength).WithMessage($"O token de redefinição de senha deve ter {UserConstraints.TokenRecoverPasswordMaxLength} caracteres");
+            .NotEmpty().WithMessage(ValidationMessages.User.TokenRequired)
+            .Length(UserConstraints.TokenRecoverPasswordMaxLength).WithMessage(ValidationMessages.User.TokenLength);
     }
 
     extension<T>(IRuleBuilder<T, Role> ruleBuilder)
     {
         public IRuleBuilderOptions<T, Role> UserRole() => ruleBuilder
-            .IsInEnum().WithMessage("É necessário especificar uma permissão para o usuário!");
+            .IsInEnum().WithMessage(ValidationMessages.User.RoleRequired);
     }
 }

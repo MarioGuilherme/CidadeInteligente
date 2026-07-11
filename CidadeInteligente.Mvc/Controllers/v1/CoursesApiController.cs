@@ -13,7 +13,8 @@ namespace CidadeInteligente.Mvc.Controllers.v1;
 
 [Route("api/v1/courses")]
 [Authorize(Roles = nameof(Role.Teacher))]
-public class CoursesController(IMediator mediator) : ControllerBase
+[ApiController]
+public class CoursesApiController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
@@ -38,7 +39,7 @@ public class CoursesController(IMediator mediator) : ControllerBase
     {
         CreateCourseCommand createCourseCommand = new(request.Description);
         int? courseId = await _mediator.Send(createCourseCommand);
-        return CreatedAtAction(nameof(GetCourseById), new { courseId }, createCourseCommand);
+        return CreatedAtAction(nameof(GetCourseById), new { courseId }, default);
     }
 
     [HttpPatch("{courseId:int}")]

@@ -26,9 +26,9 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
             return _notification.HasNotifications ? BuildErrorView(context) : context.Result;
 
         if (_notification.HasValidations)
-            return new BadRequestObjectResult(new RestResponseWithInvalidFields { Notifications = _notification.Validations });
+            return new BadRequestObjectResult(new RestResponse<IReadOnlyDictionary<string, string[]>> { Notifications = _notification.Validations });
 
-        if (_notification.HasNotifications && context.Result is NoContentResult or AcceptedResult)
+        if (_notification.HasNotifications)
             return BuildNotificationResult();
 
         if (context.Result is ObjectResult { StatusCode: >= 200 and < 300 } objectResult)

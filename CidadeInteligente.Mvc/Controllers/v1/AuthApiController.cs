@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CidadeInteligente.Mvc.Controllers.v1;
 
@@ -20,29 +21,20 @@ public class AuthApiController(INotificationContext notification, IMediator medi
     private readonly IMediator _mediator = mediator;
 
     [HttpPost("login")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login([FromBody] AuthenticateUserRequest request)
     {
         AuthenticateUserQuery authenticateUserQuery = new(request.Email, request.Password);
         AuthenticateUserQueryResult? authenticateUserQueryResult = await _mediator.Send(authenticateUserQuery);
 
-        if (authenticateUserQueryResult is null)
-        {
-            RestResponse restResponse = new()
-            {
-                Notifications = _notification.AsListString
-            };
-
-            return Unauthorized(restResponse);
-        }
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            authenticateUserQueryResult!.ClaimsPrincipal,
-            new AuthenticationProperties { IsPersistent = true });
+        if (authenticateUserQueryResult is not null)
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticateUserQueryResult.ClaimsPrincipal, new() { IsPersistent = true });
 
         return Created();
     }
 
     [HttpPatch("send-email-recover")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> SendEmailRecover([FromBody] SendEmailRecoverRequest request)
     {
         SendEmailRecoverCommand sendEmailRecoverCommand = new(request.Email);

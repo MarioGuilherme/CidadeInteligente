@@ -12,6 +12,7 @@ namespace CidadeInteligente.Mvc.Controllers.v1;
 
 [Route("api/v1/projects")]
 [Authorize(Roles = nameof(Role.Teacher))]
+[ApiController]
 public class ProjectsApiController(IMediator mediator) : Controller
 {
     private readonly IMediator _mediator = mediator;

@@ -5,7 +5,7 @@ REM Run from the project root
 cd /d %~dp0..
 
 set PROJECT=CidadeInteligente.Mvc
-set ENV_FILE=./../.env
+set ENV_FILE=./.env
 set DB_SERVER=localhost,1433
 
 if not exist %ENV_FILE% (
@@ -25,7 +25,7 @@ echo.
 echo === Defining secrets ===
 dotnet user-secrets set "ConnectionStrings:Database" "Server=%DB_SERVER%;Database=%DB_NAME%;User Id=%DB_USER%;Password=%DB_PASSWORD%;TrustServerCertificate=True" --project %PROJECT%
 
-dotnet user-secrets set "ConnectionStrings:FileStorage" "%AzureStorage__ConnectionString%" --project %PROJECT%
+dotnet user-secrets set "ConnectionStrings:FileStorage" "%ConnectionStrings__FileStorage%" --project %PROJECT%
 
 dotnet user-secrets set "SendGrid:ApiKey" "%SendGrid__ApiKey%" --project %PROJECT%
 

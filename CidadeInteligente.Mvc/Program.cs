@@ -6,6 +6,7 @@ using CidadeInteligente.Mvc.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using Serilog;
+using System.Threading.RateLimiting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, cfg) => cfg.ReadFrom.Configuration(ctx.Configuration));
@@ -17,6 +18,14 @@ builder.Services
 builder.Services
     .AddHealthChecks()
     .AddSqlServer(builder.Configuration.GetConnectionString("Database")!, name: "database");
+
+builder.Services.AddRateLimiter(o =>
+{
+    o.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    o.AddPolicy("auth", ctx => RateLimitPartition.GetFixedWindowLimiter(
+        ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1) }));
+});
 
 IMvcBuilder mvcBuilder = builder.Services
     .AddControllersWithViews(options => options.Filters.Add<NotificationResultFilter>())
@@ -56,6 +65,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSerilogRequestLogging();
 
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();

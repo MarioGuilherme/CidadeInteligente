@@ -13,7 +13,8 @@ namespace CidadeInteligente.Mvc.Controllers.v1;
 
 [Route("api/v1/users")]
 [Authorize(Roles = nameof(Role.Teacher))]
-public class UsersController(IMediator mediator) : ControllerBase
+[ApiController]
+public class UsersApiController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
@@ -43,7 +44,7 @@ public class UsersController(IMediator mediator) : ControllerBase
             request.ConfirmPassword,
             request.Role);
         int? userId = await _mediator.Send(createUserCommand);
-        return CreatedAtAction(nameof(GetUserById), new { userId }, new { userId, createUserCommand.Name, createUserCommand.Email, createUserCommand.Role });
+        return CreatedAtAction(nameof(GetUserById), new { userId }, default);
     }
 
     [HttpPatch("{userId:int}")]

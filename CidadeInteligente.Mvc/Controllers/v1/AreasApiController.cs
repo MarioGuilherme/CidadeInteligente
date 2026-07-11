@@ -13,7 +13,8 @@ namespace CidadeInteligente.Mvc.Controllers.v1;
 
 [Route("api/v1/areas")]
 [Authorize(Roles = nameof(Role.Teacher))]
-public class AreasController(IMediator mediator) : ControllerBase
+[ApiController]
+public class AreasApiController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
@@ -38,7 +39,7 @@ public class AreasController(IMediator mediator) : ControllerBase
     {
         CreateAreaCommand createAreaCommand = new(request.Description);
         int? areaId = await _mediator.Send(createAreaCommand);
-        return CreatedAtAction(nameof(GetAreaById), new { areaId }, request);
+        return CreatedAtAction(nameof(GetAreaById), new { areaId }, default);
     }
 
     [HttpPatch("{areaId:int}")]

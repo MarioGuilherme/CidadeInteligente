@@ -35,6 +35,6 @@ public class ChangePasswordCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Count(e => e.ErrorMessage == $"The password reset token must have {UserConstraints.TokenRecoverPasswordMaxLength} characters").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == $"O token de redefinição de senha deve ter {UserConstraints.TokenRecoverPasswordMaxLength} caracteres").Should().Be(1);
     }
 }

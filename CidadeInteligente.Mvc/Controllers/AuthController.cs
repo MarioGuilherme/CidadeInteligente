@@ -37,5 +37,5 @@ public class AuthController(IMediator mediator) : Controller
 
     [HttpGet("forbidden")]
     [Authorize]
-    public ViewResult Forbidden() => View("~/Views/Error.cshtml", new ErrorViewModel(403, "Você não tem permissão para acessar está página!"));
+    public ViewResult Forbidden() => View("~/Views/Error.cshtml", new ErrorViewModel(403, "Você não tem permissão para acessar esta página!"));
 }

@@ -32,7 +32,7 @@ public class DeleteProjectByIdCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(2);
-        result.Errors.Count(e => e.ErrorMessage == "The project identifier is invalid").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "The user identifier is invalid").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "O identificador do projeto é inválido").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "O identificador do usuário é inválido").Should().Be(1);
     }
 }

@@ -8,13 +8,13 @@ public static class AreaValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> AreaId(string? messageWhenEmpty = default) => ruleBuilder
-            .RequiredId(messageWhenEmpty ?? "The area identifier is invalid");
+            .RequiredId(messageWhenEmpty ?? "O identificador da área é inválido");
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string> AreaDescription() => ruleBuilder
-            .NotEmpty().WithMessage("The area description is required")
-            .MaximumLength(AreaConstraints.DescriptionMaxLength).WithMessage($"The area description cannot exceed {AreaConstraints.DescriptionMaxLength} characters");
+            .NotEmpty().WithMessage("A descrição da área é obrigatória")
+            .MaximumLength(AreaConstraints.DescriptionMaxLength).WithMessage($"A descrição da área não pode exceder {AreaConstraints.DescriptionMaxLength} caracteres");
     }
 }

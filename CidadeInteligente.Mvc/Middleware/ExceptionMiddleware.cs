@@ -26,7 +26,7 @@ public partial class ExceptionMiddleware(RequestDelegate next, ILogger<Exception
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new RestResponse
             {
-                Notifications = ["Internal error"]
+                Notifications = ["Erro interno"]
             });
         }
     }

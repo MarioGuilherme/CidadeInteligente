@@ -31,7 +31,7 @@ public abstract class Specification<T> where T : class
     internal void AddInclude(string includeString)
     {
         if (string.IsNullOrWhiteSpace(includeString))
-            throw new ArgumentException("Include string não pode ser vazio", nameof(includeString));
+            throw new ArgumentException("Include string cannot be empty", nameof(includeString));
         IncludeStrings.Add(includeString);
     }
 

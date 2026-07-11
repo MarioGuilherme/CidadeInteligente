@@ -7,7 +7,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     public CreateUserCommandValidator()
     {
-        RuleFor(c => c.CourseId).CourseId("It is necessary to specify the user course");
+        RuleFor(c => c.CourseId).CourseId("É necessário especificar o curso do usuário");
         RuleFor(c => c.Name).UserName();
         RuleFor(c => c.Email).UserEmail();
         RuleFor(c => c.Password).UserPassword();

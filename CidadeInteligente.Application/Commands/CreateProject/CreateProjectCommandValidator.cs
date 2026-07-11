@@ -7,10 +7,10 @@ namespace CidadeInteligente.Application.Commands.CreateProject
     {
         public CreateProjectCommandValidator()
         {
-            RuleFor(c => c.CurrentUserId).UserId("É necessário especificar o criador do projeto");
+            RuleFor(c => c.CurrentUserId).UserId(ValidationMessages.Project.CreatorRequired);
             RuleFor(c => c.Title).ProjectTitle();
-            RuleFor(c => c.AreaId).AreaId("É necessário especificar a área do projeto");
-            RuleFor(c => c.CourseId).CourseId("É necessário especificar o curso do projeto");
+            RuleFor(c => c.AreaId).AreaId(ValidationMessages.Project.AreaRequired);
+            RuleFor(c => c.CourseId).CourseId(ValidationMessages.Project.CourseRequired);
             RuleFor(c => c.Description).ProjectDescription();
             RuleFor(c => c.StartedAt).ProjectStartedAt();
             RuleFor(c => c.FinishedAt).ProjectFinishedAt(c => c.StartedAt);

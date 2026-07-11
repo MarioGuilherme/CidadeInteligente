@@ -1,4 +1,5 @@
 using CidadeInteligente.Application.Commands.UpdateProject;
+using CidadeInteligente.Application.Validators;
 using FluentAssertions;
 using FluentValidation.Results;
 
@@ -66,6 +67,6 @@ public class UpdateProjectCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Count(e => e.ErrorMessage == "O identificador da mídia é inválido").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.InvalidId).Should().Be(1);
     }
 }

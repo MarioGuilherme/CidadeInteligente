@@ -1,4 +1,5 @@
 using CidadeInteligente.Application.Commands.UpdateArea;
+using CidadeInteligente.Application.Validators;
 using FluentAssertions;
 using FluentValidation.Results;
 
@@ -32,7 +33,7 @@ public class UpdateAreaCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(2);
-        result.Errors.Count(e => e.ErrorMessage == "O identificador da área é inválido").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "A descrição da área é obrigatória").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Area.InvalidId).Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Area.DescriptionRequired).Should().Be(1);
     }
 }

@@ -1,4 +1,5 @@
 using CidadeInteligente.Application.Commands.CreateUser;
+using CidadeInteligente.Application.Validators;
 using CidadeInteligente.Domain.Constants;
 using CidadeInteligente.Domain.Enums;
 using FluentAssertions;
@@ -39,12 +40,12 @@ public class CreateUserCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(6);
-        result.Errors.Count(e => e.ErrorMessage == "É necessário especificar o curso do usuário").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == $"O nome do usuário não pode exceder {UserConstraints.NameMaxLength} caracteres").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "O e-mail do usuário não é válido").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == $"A senha deve ter pelo menos {UserConstraints.RawPasswordMinLength} caracteres").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "As senhas não conferem").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "É necessário especificar uma permissão para o usuário!").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.CourseRequired).Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.NameMaxLength).Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.EmailInvalid).Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.PasswordMinLength).Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.PasswordsDoNotMatch).Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.RoleRequired).Should().Be(1);
     }
 
 }

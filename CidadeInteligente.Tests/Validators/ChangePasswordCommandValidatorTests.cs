@@ -1,4 +1,5 @@
 using CidadeInteligente.Application.Commands.ChangePasswordCommand;
+using CidadeInteligente.Application.Validators;
 using CidadeInteligente.Domain.Constants;
 using FluentAssertions;
 using FluentValidation.Results;
@@ -35,6 +36,6 @@ public class ChangePasswordCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Count(e => e.ErrorMessage == $"O token de redefinição de senha deve ter {UserConstraints.TokenRecoverPasswordMaxLength} caracteres").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.User.TokenLength).Should().Be(1);
     }
 }

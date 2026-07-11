@@ -18,7 +18,7 @@ public class UpdateAreaCommandHandler(INotificationContext notification, IUnitOf
         Area? area = await _unitOfWork.Areas.GetBySpecAsync(getAreaByIdSpec, cancellationToken);
         if (area is null)
         {
-            _notification.AddNotification(NotificationType.AreaNotFound);
+            _notification.AddNotification(NotificationType.AreaNotFound, [request.AreaId]);
             return null;
         }
 

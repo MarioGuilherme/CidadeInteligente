@@ -18,7 +18,7 @@ public class UpdateCourseCommandHandler(INotificationContext notification, IUnit
         Course? course = await _unitOfWork.Courses.GetBySpecAsync(getCourseByIdSpec, cancellationToken);
         if (course is null)
         {
-            _notification.AddNotification(NotificationType.CourseNotFound);
+            _notification.AddNotification(NotificationType.CourseNotFound, [request.CourseId]);
             return null;
         }
 

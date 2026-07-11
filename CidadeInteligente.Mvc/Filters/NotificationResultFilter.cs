@@ -23,7 +23,7 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
     private IActionResult TransformResult(ResultExecutingContext context)
     {
         if (context.Result is ViewResult)
-            return _notification.HasNotifications ? BuildErrorView(context) : context.Result;
+            return _notification.HasNotifications || _notification.HasValidations ? BuildErrorView(context) : context.Result;
 
         if (_notification.HasValidations)
             return new BadRequestObjectResult(new RestResponse<IReadOnlyDictionary<string, string[]>> { Notifications = _notification.Validations });
@@ -40,9 +40,10 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
     private ViewResult BuildErrorView(ResultExecutingContext context)
     {
         IModelMetadataProvider metadataProvider = context.HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
+        string notificationsOrValidations = string.Join(", ", _notification.HasNotifications ? _notification.NotificationsToListString : _notification.ValidationsToListString);
         ViewDataDictionary<ErrorViewModel> viewData = new(metadataProvider, context.ModelState)
         {
-            Model = new ErrorViewModel(MapStatusCode(_notification.Notifications), string.Join(", ", _notification.AsListString))
+            Model = new ErrorViewModel(MapStatusCode(_notification.Notifications), notificationsOrValidations)
         };
 
         return new ViewResult
@@ -52,7 +53,7 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
         };
     }
 
-    private ObjectResult BuildNotificationResult() => new(new RestResponse { Notifications = _notification.AsListString })
+    private ObjectResult BuildNotificationResult() => new(new RestResponse { Notifications = _notification.NotificationsToListString })
     {
         StatusCode = MapStatusCode(_notification.Notifications)
     };
@@ -66,7 +67,7 @@ public class NotificationResultFilter(INotificationContext notification) : IAsyn
             if (_notification.HasNotifications)
             {
                 objectResult.StatusCode = (int)HttpStatusCode.MultiStatus;
-                objectResult.Value = restResponse with { Notifications = _notification.AsListString };
+                objectResult.Value = restResponse with { Notifications = _notification.NotificationsToListString };
             }
             else
             {

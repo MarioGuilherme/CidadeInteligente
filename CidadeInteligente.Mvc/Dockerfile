@@ -10,6 +10,10 @@ COPY CidadeInteligente.Application/CidadeInteligente.Application.csproj CidadeIn
 COPY CidadeInteligente.Domain/CidadeInteligente.Domain.csproj CidadeInteligente.Domain/
 COPY CidadeInteligente.Infrastructure/CidadeInteligente.Infrastructure.csproj CidadeInteligente.Infrastructure/
 
+# If the solution uses NuGet.config, Directory.Build.props,
+# Directory.Packages.props or global.json, copy them here (before restore), e.g.:
+# COPY NuGet.config Directory.Build.props Directory.Packages.props global.json ./
+
 # Restore dependencies
 RUN dotnet restore CidadeInteligente.Mvc/CidadeInteligente.Mvc.csproj
 
@@ -49,7 +53,8 @@ ENV ASPNETCORE_URLS=http://+:8080 \
 
 # Healthcheck (useful outside k8s, e.g., docker compose / standalone docker run;
 # inside k8s, the manifest probes take on this role)
+# Note: Alpine ships BusyBox wget, which only supports the short flags below.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+  CMD wget -q --spider http://localhost:8080/health || exit 1
 
 ENTRYPOINT ["dotnet", "CidadeInteligente.Mvc.dll"]

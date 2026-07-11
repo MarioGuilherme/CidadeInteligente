@@ -21,7 +21,10 @@ spec:
         - name: ACCEPT_EULA
           value: "Y"
         - name: SA_PASSWORD
-          value: "Users!Passw0rd"
+          valueFrom:
+            secretKeyRef:
+              name: cidade-inteligente-mvc-secret
+              key: DATABASE_PASSWORD
         resources:
           limits:
             memory: "1.5Gi"

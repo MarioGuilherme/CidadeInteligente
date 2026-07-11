@@ -22,8 +22,6 @@ dotnet user-secrets init --project %PROJECT%
 
 echo.
 echo === Defining secrets ===
-dotnet user-secrets set "ConnectionStrings:Database" "Server=%DATABASE_HOST%;Database=%DATABASE_NAME%;User Id=%DATABASE_USER%;Password=%DATABASE_PASSWORD%;TrustServerCertificate=True" --project %PROJECT%
-
 dotnet user-secrets set "ConnectionStrings:FileStorage" "%ConnectionStrings__FileStorage%" --project %PROJECT%
 
 dotnet user-secrets set "SendGrid:ApiKey" "%SendGrid__ApiKey%" --project %PROJECT%

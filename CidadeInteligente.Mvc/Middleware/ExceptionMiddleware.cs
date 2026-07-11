@@ -24,10 +24,11 @@ public partial class ExceptionMiddleware(RequestDelegate next, ILogger<Exception
 
             context.Response.Clear();
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await context.Response.WriteAsJsonAsync(new RestResponse
-            {
-                Notifications = ["Erro interno"]
-            });
+            if (context.Response.Headers.ContentType.ToString().Contains("application/json"))
+                await context.Response.WriteAsJsonAsync(new RestResponse
+                {
+                    Notifications = ["Erro interno"]
+                });
         }
     }
 

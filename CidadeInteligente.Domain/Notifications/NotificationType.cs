@@ -1,23 +1,23 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace CidadeInteligente.Domain.Notifications;
 
 public enum NotificationType : byte
 {
-    [Description("The email and/or password do not match.")] InvalidLoginCredentials,
-    [Description("The user with ID {0} was not found.")] UserNotFound,
-    [Description("The area with ID {0} was not found.")] AreaNotFound,
-    [Description("The area with description '{0}' already exists.")] AreaAlreadyExists,
-    [Description("The course with description '{0}' already exists.")] CourseAlreadyExists,
-    [Description("The course with ID {0} was not found.")] CourseNotFound,
-    [Description("The project with ID {0} was not found.")] ProjectNotFound,
-    [Description("The media with ID {0} was not found.")] MediaNotFound,
-    [Description("User with ID {0} is not authorized to modify project with ID {1}.")] UserNotAuthorizedToModifyProject,
-    [Description("The area with ID {0} has dependent projects and cannot be deleted.")] AreaWithDependentProjects,
-    [Description("The course with ID {0} has dependent projects or users and cannot be deleted.")] CourseWithDependentProjectsOrUser,
-    [Description("The user with ID {0} has dependent projects and cannot be deleted.")] UserWithDependentProjects,
-    [Description("The user with specific Token was not found.")] UserWithTokenNotFound,
-    [Description("The user with specific email was not found.")] UserWithEmailNotFound,
-    [Description("The token for password recovery has expired.")] TokenRecoverPasswordExpired,
-    [Description("The supplied email address is already in use.")] EmailAlreadyInUse
+    [Description("O e-mail e/ou a senha não conferem.")] InvalidLoginCredentials,
+    [Description("O usuário com ID {0} não foi encontrado.")] UserNotFound,
+    [Description("A área com ID {0} não foi encontrada.")] AreaNotFound,
+    [Description("A área com descrição '{0}' já existe.")] AreaAlreadyExists,
+    [Description("O curso com descrição '{0}' já existe.")] CourseAlreadyExists,
+    [Description("O curso com ID {0} não foi encontrado.")] CourseNotFound,
+    [Description("O projeto com ID {0} não foi encontrado.")] ProjectNotFound,
+    [Description("A mídia com ID {0} não foi encontrada.")] MediaNotFound,
+    [Description("O usuário com ID {0} não tem autorização para modificar o projeto com ID {1}.")] UserNotAuthorizedToModifyProject,
+    [Description("A área com ID {0} possui projetos dependentes e não pode ser excluída.")] AreaWithDependentProjects,
+    [Description("O curso com ID {0} possui projetos ou usuários dependentes e não pode ser excluído.")] CourseWithDependentProjectsOrUser,
+    [Description("O usuário com ID {0} possui projetos dependentes e não pode ser excluído.")] UserWithDependentProjects,
+    [Description("O usuário com o token informado não foi encontrado.")] UserWithTokenNotFound,
+    [Description("O usuário com o e-mail informado não foi encontrado.")] UserWithEmailNotFound,
+    [Description("O token de recuperação de senha expirou.")] TokenRecoverPasswordExpired,
+    [Description("O e-mail informado já está em uso.")] EmailAlreadyInUse
 }

@@ -39,12 +39,12 @@ public class CreateUserCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(6);
-        result.Errors.Count(e => e.ErrorMessage == "It is necessary to specify the user course").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == $"The user name cannot exceed {UserConstraints.NameMaxLength} characters").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "The user email is not valid").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == $"The password must have at least {UserConstraints.RawPasswordMinLength} characters").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "The passwords do not match").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "You must specify a permission for the user!").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "É necessário especificar o curso do usuário").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == $"O nome do usuário não pode exceder {UserConstraints.NameMaxLength} caracteres").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "O e-mail do usuário não é válido").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == $"A senha deve ter pelo menos {UserConstraints.RawPasswordMinLength} caracteres").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "As senhas não conferem").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "É necessário especificar uma permissão para o usuário!").Should().Be(1);
     }
 
 }

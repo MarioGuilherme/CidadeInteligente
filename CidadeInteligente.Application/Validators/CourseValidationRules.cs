@@ -8,13 +8,13 @@ public static class CourseValidationRules
     extension<T>(IRuleBuilder<T, int> ruleBuilder)
     {
         public IRuleBuilderOptions<T, int> CourseId(string? messageWhenEmpty = default) => ruleBuilder
-            .RequiredId(messageWhenEmpty ?? "The course identifier is invalid");
+            .RequiredId(messageWhenEmpty ?? "O identificador do curso é inválido");
     }
 
     extension<T>(IRuleBuilder<T, string> ruleBuilder)
     {
         public IRuleBuilderOptions<T, string> CourseDescription() => ruleBuilder
-            .NotEmpty().WithMessage("The course description is required")
-            .MaximumLength(CourseConstraints.DescriptionMaxLength).WithMessage($"The course description cannot exceed {CourseConstraints.DescriptionMaxLength} characters");
+            .NotEmpty().WithMessage("A descrição do curso é obrigatória")
+            .MaximumLength(CourseConstraints.DescriptionMaxLength).WithMessage($"A descrição do curso não pode exceder {CourseConstraints.DescriptionMaxLength} caracteres");
     }
 }

@@ -32,7 +32,7 @@ public class UpdateAreaCommandValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(2);
-        result.Errors.Count(e => e.ErrorMessage == "The area identifier is invalid").Should().Be(1);
-        result.Errors.Count(e => e.ErrorMessage == "The area description is required").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "O identificador da área é inválido").Should().Be(1);
+        result.Errors.Count(e => e.ErrorMessage == "A descrição da área é obrigatória").Should().Be(1);
     }
 }

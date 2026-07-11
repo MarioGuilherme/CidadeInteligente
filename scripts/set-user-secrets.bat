@@ -6,7 +6,6 @@ cd /d %~dp0..
 
 set PROJECT=CidadeInteligente.Mvc
 set ENV_FILE=./.env
-set DB_SERVER=localhost,1433
 
 if not exist %ENV_FILE% (
     echo [ERRO] %ENV_FILE% not found in the project root!
@@ -23,7 +22,7 @@ dotnet user-secrets init --project %PROJECT%
 
 echo.
 echo === Defining secrets ===
-dotnet user-secrets set "ConnectionStrings:Database" "Server=%DB_SERVER%;Database=%DB_NAME%;User Id=%DB_USER%;Password=%DB_PASSWORD%;TrustServerCertificate=True" --project %PROJECT%
+dotnet user-secrets set "ConnectionStrings:Database" "Server=%DATABASE_HOST%;Database=%DATABASE_NAME%;User Id=%DATABASE_USER%;Password=%DATABASE_PASSWORD%;TrustServerCertificate=True" --project %PROJECT%
 
 dotnet user-secrets set "ConnectionStrings:FileStorage" "%ConnectionStrings__FileStorage%" --project %PROJECT%
 

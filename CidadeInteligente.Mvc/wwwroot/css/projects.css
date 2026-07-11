@@ -40,21 +40,20 @@ nav {
 }
 
 .galery {
-    padding: 1em;
-    margin-bottom: 1em;
+    padding: 1em
 }
 
 @media (max-width: 600px) {
     .subtitle {
         width: 95%;
-        padding: 20px;
+        padding: 20px
     }
 }
 
 @media (max-width: 600px) {
     .title {
         font-size: 30px;
-        margin-top: 14px;
+        margin-top: 14px
     }
 }
 

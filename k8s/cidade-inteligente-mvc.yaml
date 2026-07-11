@@ -15,45 +15,69 @@ spec:
       containers:
       - name: cidade-inteligente-mvc
         image: marioguilhermedev/cidade-inteligente-mvc:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
 
-          # Startup: allows time for the app to start up (migrations, connections, etc.)
-          # before the other probes start counting.
-          startupProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            failureThreshold: 30      # 30 tentativas...
-            periodSeconds: 5          # ...a cada 5s = até 150s para subir
+        # Startup: allows time for the app to start up (migrations, connections, etc.)
+        # before the other probes start counting.
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 30      # 30 attempts...
+          periodSeconds: 5          # ...every 5s = up to 150s to rise
 
-          # Liveness: "is the process stuck/dead?" If it fails
-          # repeatedly, k8s KILLS and restarts the pod.
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 0    # startupProbe has already covered the initial delay.
-            periodSeconds: 15
-            timeoutSeconds: 5
-            failureThreshold: 3
+        # Liveness: "is the process stuck/dead?" If it fails
+        # repeatedly, k8s KILLS and restarts the pod.
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 0    # startupProbe has already covered the initial delay.
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
 
-          # Readiness: "is ready to receive traffic NOW?" If it fails,
-          # k8s removes the pod from the Service (without restarting it) until it passes again
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 0
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
+        # Readiness: "is ready to receive traffic NOW?" If it fails,
+        # k8s removes the pod from the Service (without restarting it) until it passes again
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
 
+        # Non-secret settings and individual secrets
+        # (AzureStorage__ConnectionString, SendGrid__ApiKey) both here:
         envFrom:
         - configMapRef:
             name: cidade-inteligente-mvc-configmap
         - secretRef:
             name: cidade-inteligente-mvc-secret
+
+        # Connection string components + composition.
+        # NOTE: $(VAR) only resolves variables declared *before* it in this list.
+        env:
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: cidade-inteligente-mvc-secret
+              key: DATABASE_NAME
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: cidade-inteligente-mvc-secret
+              key: DATABASE_USER
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cidade-inteligente-mvc-secret
+              key: DATABASE_PASSWORD
+        - name: ConnectionStrings__Database
+          value: "Server=cidade-inteligente-mvc-sqlserver,1433;Database=$(DATABASE_NAME);User Id=$(DATABASE_USER);Password=$(DATABASE_PASSWORD);TrustServerCertificate=True"
 
         resources:
           requests:

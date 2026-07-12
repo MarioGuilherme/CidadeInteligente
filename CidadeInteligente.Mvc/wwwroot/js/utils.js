@@ -32,9 +32,13 @@ const clearAllFields = () => {
 };
 
 const showNotifications = (notifications, statusCode) => {
-    const finalNotifications = statusCode === 400
-        ? Object.values(notifications).flatMap(v => v)
-        : !notifications || notifications.length === 0 ? ["<ul>Erro não mapeado</ul>"] : notifications;
+    let finalNotifications = null;
+
+    finalNotifications = statusCode === 429
+        ? ["<ul>Muitas tentativas realizadas! Aguarde.</ul>"]
+        : statusCode === 400
+            ? Object.values(notifications).flatMap(v => v)
+            : !notifications || notifications.length === 0 ? ["<ul>Erro não mapeado</ul>"] : notifications;
 
     if (statusCode >= 500) {
         sweetAlertUtils.sweetAlertAsync("error", `<ul>${finalNotifications.map(n => `<li>${n}</li>`).join("")}</ul>`);

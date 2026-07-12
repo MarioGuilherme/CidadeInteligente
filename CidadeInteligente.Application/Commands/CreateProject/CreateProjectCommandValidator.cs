@@ -26,6 +26,7 @@ namespace CidadeInteligente.Application.Commands.CreateProject
                 RuleFor(c => c.Title).MediaTitle();
                 RuleFor(c => c.Description).MediaDescription();
                 RuleFor(c => c.MimeType).MediaMimeType();
+                RuleFor(c => c.FileSize).MediaFileRequired();
                 RuleFor(c => c.FileSize).MediaFileSize();
             }
         }

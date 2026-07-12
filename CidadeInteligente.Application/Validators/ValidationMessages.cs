@@ -48,6 +48,7 @@ public static class ValidationMessages
         public static readonly string TitleMaxLength = $"O título da mídia não pode exceder {MediaConstraints.TitleMaxLength} caracteres";
         public const string MimeTypeRequired = "O tipo (mime type) da mídia é obrigatório";
         public static readonly string MimeTypeNotSupported = $"Tipo de mídia não suportado! Tipos aceitos: {string.Join(", ", MediaConstraints.AllowedMimeTypes)}";
+        public const string FileRequired = "É necessário anexar o arquivo da mídia";
         public static readonly string FileMaxSize = $"O arquivo da mídia não pode exceder {MediaConstraints.FileMaxSizeInMegaBytes} MB";
         public static readonly string DescriptionMaxLength = $"A descrição da mídia não pode exceder {MediaConstraints.DescriptionMaxLength} caracteres";
     }

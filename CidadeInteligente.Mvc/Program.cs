@@ -65,9 +65,9 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSerilogRequestLogging();
 
-app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapStaticAssets();

@@ -69,4 +69,22 @@ public class UpdateProjectCommandValidatorTests
         result.Errors.Should().HaveCount(1);
         result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.InvalidId).Should().Be(1);
     }
+
+    // UpdateProjectCommandValidatorTests
+    [Fact(DisplayName = "New media without file should fail validation")]
+    public void Should_BeInvalid_WhenNewMediaHasNoFile()
+    {
+        // Arrange
+        UpdateProjectCommand command = CreateValidCommand() with
+        {
+            Medias = [new(null, "Foto do protótipo", null, string.Empty, 0, () => Stream.Null)]
+        };
+
+        // Act
+        ValidationResult result = new UpdateProjectCommandValidator().Validate(command);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.FileRequired).Should().Be(1);
+    }
 }

@@ -28,6 +28,7 @@ public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectComm
             RuleFor(c => c.Title).MediaTitle();
             RuleFor(c => c.Description).MediaDescription();
             RuleFor(c => c.MimeType).MediaMimeType().When(c => c.FileSize > 0);
+            RuleFor(c => c.FileSize).MediaFileRequired().When(c => c.MediaId is null);
             RuleFor(c => c.FileSize).MediaFileSize();
         }
     }

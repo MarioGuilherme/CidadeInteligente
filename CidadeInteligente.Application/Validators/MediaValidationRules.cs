@@ -34,6 +34,9 @@ public static class MediaValidationRules
         public IRuleBuilderOptions<T, long> MediaFileSize() => ruleBuilder
             .LessThanOrEqualTo(MediaConstraints.FileMaxSizeInBytes)
                 .WithMessage(ValidationMessages.Media.FileMaxSize);
+
+        public IRuleBuilderOptions<T, long> MediaFileRequired() => ruleBuilder
+            .GreaterThan(0).WithMessage(ValidationMessages.Media.FileRequired);
     }
 
     extension<T>(IRuleBuilder<T, string?> ruleBuilder)

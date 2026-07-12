@@ -85,4 +85,22 @@ public class CreateProjectCommandValidatorTests
         result.Errors.Should().HaveCount(1);
         result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.MimeTypeNotSupported).Should().Be(1);
     }
+
+    // CreateProjectCommandValidatorTests
+    [Fact(DisplayName = "Media with empty file should fail validation")]
+    public void Should_BeInvalid_WhenMediaFileIsEmpty()
+    {
+        // Arrange
+        CreateProjectCommand command = CreateValidCommand() with
+        {
+            Medias = [new("Foto do protótipo", null, "image/png", 0, () => Stream.Null)]
+        };
+
+        // Act
+        ValidationResult result = new CreateProjectCommandValidator().Validate(command);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.FileRequired).Should().Be(1);
+    }
 }

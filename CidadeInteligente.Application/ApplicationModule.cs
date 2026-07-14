@@ -3,7 +3,6 @@ using CidadeInteligente.Application.Notifications;
 using CidadeInteligente.Application.Queries.AuthenticateUser;
 using CidadeInteligente.Domain.Notifications;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,9 +34,7 @@ public static class ApplicationModule
         {
             ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
 
-            services
-                .AddFluentValidationAutoValidation(o => o.DisableDataAnnotationsValidation = true)
-                .AddValidatorsFromAssemblyContaining<AuthenticateUserQueryValidator>();
+            services.AddValidatorsFromAssemblyContaining<AuthenticateUserQueryValidator>();
 
             return services;
         }

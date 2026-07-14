@@ -3,6 +3,7 @@ using CidadeInteligente.Infrastructure;
 using CidadeInteligente.Infrastructure.Persistence;
 using CidadeInteligente.Mvc.Filters;
 using CidadeInteligente.Mvc.Middleware;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using Serilog;
@@ -16,8 +17,17 @@ builder.Services
     .AddApplication();
 
 builder.Services
-    .AddHealthChecks()
-    .AddSqlServer(builder.Configuration.GetConnectionString("Database")!, name: "database");
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login";
+        options.LogoutPath = "/logout";
+        options.AccessDeniedPath = "/forbidden";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    });
 
 builder.Services.AddRateLimiter(o =>
 {

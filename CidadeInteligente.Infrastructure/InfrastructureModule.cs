@@ -6,8 +6,6 @@ using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Infrastructure.Persistence;
 using CidadeInteligente.Infrastructure.Persistence.Repositories;
 using CidadeInteligente.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,9 +22,10 @@ public static class InfrastructureModule
                 .AddPersistence(configuration)
                 .AddRepositories()
                 .AddUnitOfWork()
-                .AddAuthentication()
+                .AddSecurity()
                 .AddFileStorage(configuration)
-                .AddEmailService(configuration);
+                .AddEmailService(configuration)
+                .AddInfrastructureHealthChecks(configuration);
 
             return services;
         }
@@ -58,21 +57,8 @@ public static class InfrastructureModule
             return services;
         }
 
-        private IServiceCollection AddAuthentication()
+        private IServiceCollection AddSecurity()
         {
-            services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/login";
-                    options.LogoutPath = "/logout";
-                    options.AccessDeniedPath = "/forbidden";
-                    options.ExpireTimeSpan = TimeSpan.FromHours(8);
-                    options.SlidingExpiration = true;
-                    options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                });
-
             services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 
             return services;
@@ -103,13 +89,23 @@ public static class InfrastructureModule
 
         private IServiceCollection AddEmailService(IConfiguration configuration)
         {
-            services.AddHttpContextAccessor();
             services.AddSingleton<IEmailService, SendGridEmailService>(_ =>
             {
                 string apiKey = configuration["SendGrid:ApiKey"]!;
                 string senderEmail = configuration["SendGrid:SenderEmail"]!;
                 return new(apiKey, senderEmail);
             });
+
+            return services;
+        }
+
+        private IServiceCollection AddInfrastructureHealthChecks(IConfiguration configuration)
+        {
+            string connectionString = configuration.GetConnectionString("Database")!;
+
+            services
+                .AddHealthChecks()
+                .AddSqlServer(connectionString, name: "database");
 
             return services;
         }

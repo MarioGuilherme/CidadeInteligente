@@ -5,17 +5,15 @@ using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using System.Text;
 
 namespace CidadeInteligente.Application.Commands.SendEmailRecover;
 
-public class SendEmailRecoverCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, IEmailService emailService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<SendEmailRecoverCommand, Unit?>
+public class SendEmailRecoverCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, IEmailService emailService) : IRequestHandler<SendEmailRecoverCommand, Unit?>
 {
     private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IEmailService _emailService = emailService;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Unit?> Handle(SendEmailRecoverCommand request, CancellationToken cancellationToken)
     {
@@ -29,7 +27,7 @@ public class SendEmailRecoverCommandHandler(INotificationContext notification, I
         StringBuilder stringBuilder = new(rawHtmlBody);
         stringBuilder = stringBuilder
             .Replace("{{ USERNAME }}", user.Name)
-            .Replace("{{ URL }}", $"{_httpContextAccessor.HttpContext!.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}")
+            .Replace("{{ URL }}", request.BaseUrl)
             .Replace("{{ TOKEN }}", user.TokenRecoverPassword);
 
         await _emailService.SendEmailAsync(user.Email, "Redefinição de Senha", stringBuilder.ToString());

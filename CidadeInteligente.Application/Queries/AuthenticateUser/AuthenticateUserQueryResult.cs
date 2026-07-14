@@ -2,4 +2,4 @@
 
 namespace CidadeInteligente.Application.Queries.AuthenticateUser;
 
-public record AuthenticateUserQueryResult(ClaimsPrincipal ClaimsPrincipal);
+public record AuthenticateUserQueryResult(IEnumerable<Claim> Claims);

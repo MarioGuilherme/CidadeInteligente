@@ -86,7 +86,6 @@ public class CreateProjectCommandValidatorTests
         result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.MimeTypeNotSupported).Should().Be(1);
     }
 
-    // CreateProjectCommandValidatorTests
     [Fact(DisplayName = "Media with empty file should fail validation")]
     public void Should_BeInvalid_WhenMediaFileIsEmpty()
     {

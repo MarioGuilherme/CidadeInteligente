@@ -6,7 +6,6 @@ using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace CidadeInteligente.Application.Queries.AuthenticateUser;
@@ -32,9 +31,8 @@ public class AuthenticateUserQueryHandler(INotificationContext notification, IUn
         IEnumerable<Claim> claims = [
             new(nameof(possibleUser.UserId), possibleUser.UserId.ToString()),
             new(ClaimTypes.Role, possibleUser.Role.ToString())];
-        ClaimsIdentity claimsIdentity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-        return new(new(claimsIdentity));
+        return new(claims);
     }
 
     #region ReadModel

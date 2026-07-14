@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 
 namespace CidadeInteligente.Mvc.Controllers.v1;
 
@@ -24,7 +25,13 @@ public class AuthApiController(IMediator mediator) : ControllerBase
         AuthenticateUserQueryResult? authenticateUserQueryResult = await _mediator.Send(authenticateUserQuery);
 
         if (authenticateUserQueryResult is not null)
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticateUserQueryResult.ClaimsPrincipal, new() { IsPersistent = true });
+        {
+            ClaimsIdentity identity = new(authenticateUserQueryResult.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity),
+                new() { IsPersistent = true });
+        }
 
         return Created();
     }
@@ -33,7 +40,7 @@ public class AuthApiController(IMediator mediator) : ControllerBase
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> SendEmailRecover([FromBody] SendEmailRecoverRequest request)
     {
-        SendEmailRecoverCommand sendEmailRecoverCommand = new(request.Email);
+        SendEmailRecoverCommand sendEmailRecoverCommand = new(request.Email, $"{Request.Scheme}://{Request.Host}");
         await _mediator.Send(sendEmailRecoverCommand);
         return NoContent();
     }

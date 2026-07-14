@@ -70,7 +70,6 @@ public class UpdateProjectCommandValidatorTests
         result.Errors.Count(e => e.ErrorMessage == ValidationMessages.Media.InvalidId).Should().Be(1);
     }
 
-    // UpdateProjectCommandValidatorTests
     [Fact(DisplayName = "New media without file should fail validation")]
     public void Should_BeInvalid_WhenNewMediaHasNoFile()
     {

@@ -1,17 +1,14 @@
 ﻿using CidadeInteligente.Domain.Entities;
-using CidadeInteligente.Domain.Notifications;
 using CidadeInteligente.Domain.Repositories;
 using CidadeInteligente.Domain.Services;
 using CidadeInteligente.Domain.Specifications;
 using CidadeInteligente.Domain.Specifications.Users;
 using MediatR;
-using System.Text;
 
 namespace CidadeInteligente.Application.Commands.SendEmailRecover;
 
-public class SendEmailRecoverCommandHandler(INotificationContext notification, IUnitOfWork unitOfWork, IEmailService emailService) : IRequestHandler<SendEmailRecoverCommand, Unit?>
+public class SendEmailRecoverCommandHandler(IUnitOfWork unitOfWork, IEmailService emailService) : IRequestHandler<SendEmailRecoverCommand, Unit?>
 {
-    private readonly INotificationContext _notification = notification;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IEmailService _emailService = emailService;
 

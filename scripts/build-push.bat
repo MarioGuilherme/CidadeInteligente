@@ -8,7 +8,7 @@ if "%TAG%"=="" set TAG=latest
 
 echo.
 echo === Building %IMAGE_NAME%:%TAG% ===
-docker build -t %IMAGE_NAME%:%TAG% -f ./CidadeInteligente.Mvc/Dockerfile .
+docker build -t %IMAGE_NAME%:%TAG% -f ./../CidadeInteligente.Mvc/Dockerfile ./../.
 if errorlevel 1 (
     echo [ERRO] Build failed!
     exit /b 1

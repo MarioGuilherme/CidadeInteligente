@@ -1,5 +1,6 @@
 ﻿using CidadeInteligente.Application.Behaviors;
 using CidadeInteligente.Application.Notifications;
+using CidadeInteligente.Application.Options;
 using CidadeInteligente.Application.Queries.AuthenticateUser;
 using CidadeInteligente.Domain.Notifications;
 using FluentValidation;
@@ -17,7 +18,8 @@ public static class ApplicationModule
             services
                 .AddMediatR()
                 .AddFluentValidation()
-                .AddNotification();
+                .AddNotification()
+                .AddPaginationOptions();
 
             return services;
         }
@@ -42,6 +44,13 @@ public static class ApplicationModule
         private IServiceCollection AddNotification()
         {
             services.AddScoped<INotificationContext, NotificationContext>();
+
+            return services;
+        }
+
+        private IServiceCollection AddPaginationOptions()
+        {
+            services.AddOptions<PaginationOptions>().BindConfiguration("Pagination");
 
             return services;
         }

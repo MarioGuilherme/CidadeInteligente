@@ -22,15 +22,7 @@ public class SendEmailRecoverCommandHandler(INotificationContext notification, I
         if (user is null) return Unit.Value;
 
         await _unitOfWork.ExecuteInTransactionAsync(user.SaveNewTokenToRecoverPassword, cancellationToken: cancellationToken);
-        string rawHtmlBody = await File.ReadAllTextAsync("./Views/Auth/BodyEmail.html", cancellationToken);
-
-        StringBuilder stringBuilder = new(rawHtmlBody);
-        stringBuilder = stringBuilder
-            .Replace("{{ USERNAME }}", user.Name)
-            .Replace("{{ URL }}", request.BaseUrl)
-            .Replace("{{ TOKEN }}", user.TokenRecoverPassword);
-
-        await _emailService.SendEmailAsync(user.Email, "Redefinição de Senha", stringBuilder.ToString());
+        await _emailService.SendRecoverPasswordEmailAsync(user.Email, user.Name, request.BaseUrl, user.TokenRecoverPassword!);
 
         return Unit.Value;
     }

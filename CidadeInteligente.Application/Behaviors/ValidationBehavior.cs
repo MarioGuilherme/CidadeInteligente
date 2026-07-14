@@ -5,7 +5,6 @@ using MediatR;
 
 namespace CidadeInteligente.Application.Behaviors;
 
-
 public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators, INotificationContext notification) : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
@@ -18,11 +17,10 @@ public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
 
         ValidationContext<TRequest> context = new(request);
 
-        IEnumerable<ValidationFailure> failures = [.. _validators
-            .Select(v => v.Validate(context))
-            .SelectMany(r => r.Errors)];
+        ValidationResult[] results = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+        ValidationFailure[] failures = [.. results.SelectMany(r => r.Errors)];
 
-        if (failures.Any())
+        if (failures.Length > 0)
         {
             foreach (ValidationFailure error in failures)
                 _notification.AddValidation(char.ToLowerInvariant(error.PropertyName[0]) + error.PropertyName[1..], error.ErrorMessage);

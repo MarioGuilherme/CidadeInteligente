@@ -35,8 +35,6 @@ public static class InfrastructureModule
             string connectionString = configuration.GetConnectionString("Database")!;
             services.AddDbContext<CidadeInteligenteDbContext>(options => options.UseSqlServer(connectionString));
 
-            services.AddOptions<PaginationOptions>().BindConfiguration("Pagination");
-
             return services;
         }
 

@@ -24,6 +24,10 @@
     <ProjectReference Include="..\CidadeInteligente.Domain\CidadeInteligente.Domain.csproj" />
     <ProjectReference Include="..\CidadeInteligente.Application\CidadeInteligente.Application.csproj" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\RecoverPasswordEmail.html" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Persistence\Migrations\" />

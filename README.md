@@ -1,4 +1,22 @@
 # 🏙️ CidadeInteligente
+
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white" alt=".NET 10" />
+  <img src="https://img.shields.io/badge/C%23-14-239120?logo=csharp&logoColor=white" alt="C# 14" />
+  <img src="https://img.shields.io/badge/ASP.NET_Core-MVC-512BD4?logo=dotnet&logoColor=white" alt="ASP.NET Core MVC" />
+  <img src="https://img.shields.io/badge/EF_Core-ORM-512BD4?logo=dotnet&logoColor=white" alt="Entity Framework Core" />
+  <img src="https://img.shields.io/badge/SQL_Server-Database-CC2927?logo=microsoftsqlserver&logoColor=white" alt="SQL Server" />
+  <img src="https://img.shields.io/badge/Azure-Blob_Storage-0078D4?logo=microsoftazure&logoColor=white" alt="Azure Blob Storage" />
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Kubernetes-HPA-326CE5?logo=kubernetes&logoColor=white" alt="Kubernetes" />
+  <img src="https://img.shields.io/badge/Prometheus-Metrics-E6522C?logo=prometheus&logoColor=white" alt="Prometheus" />
+  <img src="https://img.shields.io/badge/Serilog-Structured_Logs-1A1A1A" alt="Serilog" />
+  <img src="https://img.shields.io/badge/xUnit-Tests-5FA04E" alt="xUnit" />
+  <a href="LICENSE.txt">
+    <img src="https://img.shields.io/github/license/MarioGuilherme/CidadeInteligente" alt="License" />
+  </a>
+</p>
+
 > Sistema gerenciador de projetos realizados por professores e alunos da Cidade Inteligente da Fatec de Lins - Professor Antônio Seabra, permitindo o cadastro, a divulgação e a administração completa dos projetos e de suas mídias.
 
 ## 📸 Demonstração
@@ -35,7 +53,7 @@
 
 ## 🛠️ Detalhes Técnicos
 ### ⭐ Arquitetura e Padrões
- - Notification Pattern (Exceptionless);
+ - Notification Pattern (fluxo sem exceptions para erros de negócio);
  - Padrão CQRS (Command Query Responsibility Segregation);
  - Mediator Pattern com MediatR;
  - Clean Architecture;

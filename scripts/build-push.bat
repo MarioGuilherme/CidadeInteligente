@@ -2,7 +2,7 @@
 setlocal
 
 REM ===== Configuração =====
-set IMAGE_NAME=marioguilhermedev/cidadeinteligentemvc
+set IMAGE_NAME=marioguilhermedev/cidade-inteligente-mvc
 set TAG=%1
 if "%TAG%"=="" set TAG=latest
 

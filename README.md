@@ -1,6 +1,20 @@
 # 🏙️ CidadeInteligente
 > Sistema gerenciador de projetos realizados por professores e alunos da Cidade Inteligente da Fatec de Lins - Professor Antônio Seabra, permitindo o cadastro, a divulgação e a administração completa dos projetos e de suas mídias.
 
+## 📸 Demonstração
+
+### Tela de Login
+  <img width="1917" height="951" alt="Tela de Login" src="https://github.com/user-attachments/assets/67845940-3a09-446e-9ea5-30bedff67753" />
+
+### Tela Principal + Visualizando Projeto
+  https://github.com/user-attachments/assets/6fa99573-e29e-4132-8550-5280856cba47
+
+### Criação, edição e exclusão do Projeto
+  https://github.com/user-attachments/assets/89f0874d-ae16-40b2-a8f9-a6dee7a67342
+
+### Tela de Admin
+  https://github.com/user-attachments/assets/bedb8112-e5ad-4482-bd80-f180f83568d2
+
 ## 🎓 Funcionalidades
   - Cadastro e autenticação de usuários (login com cookie de autenticação);
   - Recuperação e redefinição de senha via e-mail com token de expiração;
